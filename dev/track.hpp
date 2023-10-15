@@ -39,16 +39,21 @@ public:
     void set_z(const double &z) { this->z = z; }
     void set_t(const double &t) { this->t = t; }
 
-    void set_property(const std::string &key, const unsigned int &value) { this->properties[key] = value; }
-    unsigned int get_property(const std::string &key) const;
-    std::vector<std::string> get_property_keys() const;
+    void set_uint_property(const std::string &key, const unsigned int &value) { this->uint_properties[key] = value; }
+    void set_dbl_property(const std::string &key, const double &value) { this->dbl_properties[key] = value; }
+    unsigned int get_uint_property(const std::string &key) const;
+    double get_dbl_property(const std::string &key) const;
+    std::vector<std::string> get_uint_property_keys() const;
+    std::vector<std::string> get_dbl_property_keys() const;
 
 private:
     unsigned int N, Z;
     double mass;
     double vx, vy, vz;
     double x, y, z, t;
-    std::map<std::string, unsigned int> properties;
+    std::map<std::string, unsigned int> uint_properties;
+    std::map<std::string, double> dbl_properties;
+
 };
 
 #endif
