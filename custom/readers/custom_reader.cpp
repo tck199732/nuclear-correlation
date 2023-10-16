@@ -35,29 +35,34 @@ event *custom_reader::return_event()
 event *custom_reader::read()
 {
     chain->GetEntry(current_event_index);
-    event *evt = new event();
+    auto *evt = new custom_event();
 
     evt->set_multiplicity(branches.multi);
     evt->set_impact_parameter(branches.b);
-    track_collection *tracks = evt->get_track_collection();
+    evt->set_trigger_condition("");
+    evt->set_trigger(0.0);
 
+    track_collection *tracks = evt->get_track_collection();
     for (int j = 0; j < branches.multi; j++)
     {
         double mass = this->nucleon_mass * (branches.N[j] + branches.Z[j]);
-        track *trk= new track(
+        auto trk= new custom_track(
             branches.N[j],
             branches.Z[j],
             branches.vx[j],
             branches.vy[j],
             branches.vz[j],
-            mass,
-            0, 0, 0, 0
+            mass
+            //
         );
-        trk->set_uint_property("detector-index", 0);
-        tracks->push_back(trk);
+        
+        trk->set_detector_index(0);
+        trk->set_efficiency(0.5);
+        tracks->push_back((track*)trk);
     }
-    current_event_index += 1;
-    return evt;
+    this->current_event_index += 1;
+
+    return dynamic_cast<event*>(evt);
 }
 
 void custom_reader::set_branches(TChain*& chain)

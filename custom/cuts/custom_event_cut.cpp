@@ -3,29 +3,43 @@ custom_event_cut::custom_event_cut()
 {
     nevents_passed = 0;
     nevents_failed = 0;
-    multiplicity[0] = 1;
-    multiplicity[1] = 80;
+    accepted_multiplicity[0] = 1;
+    accepted_multiplicity[1] = 80;
+    accepted_impact_parameter[0] = 0.0;
+    accepted_impact_parameter[1] = DBL_MAX;
 }
 
-void custom_event_cut::set_multiplicity(const unsigned int &vmin, const unsigned int &vmax)
+void custom_event_cut::set_accepted_multiplicity(const unsigned int &vmin, const unsigned int &vmax)
 {
-    this->multiplicity = {vmin, vmax};
+    this->accepted_multiplicity = {vmin, vmax};
 }
 
-void custom_event_cut::set_impact_parameter(const double &vmin, const double &vmax)
+void custom_event_cut::set_accepted_impact_parameter(const double &vmin, const double &vmax)
 {
-    this->impact_parameter = {vmin, vmax};
+    this->accepted_impact_parameter = {vmin, vmax};
 }
 
-bool custom_event_cut::pass(const event *event)
+bool custom_event_cut::pass(const event *event) {
+    auto cev = dynamic_cast<const custom_event *>(event);
+    if (!cev) throw std::bad_cast();
+    return this->pass(cev);
+}
+
+bool custom_event_cut::pass(const custom_event *event)
 {
     unsigned int multiplicity = event->get_multiplicity();
     double impact_parameter = event->get_impact_parameter();
+    std::string trigger_condition = event->get_trigger_condition();
+    double trigger = event->get_trigger();
+
     bool accepted = (
-        multiplicity >= this->multiplicity[0] && 
-        multiplicity <= this->multiplicity[1] &&
-        impact_parameter >= this->impact_parameter[0] &&
-        impact_parameter <= this->impact_parameter[1]
+        multiplicity >= this->accepted_multiplicity[0] && 
+        multiplicity <= this->accepted_multiplicity[1] &&
+        impact_parameter >= this->accepted_impact_parameter[0] &&
+        impact_parameter <= this->accepted_impact_parameter[1] && 
+        trigger_condition == this->accepted_trigger_condition &&
+        trigger >= this->accepted_trigger_value[0] &&
+        trigger <= this->accepted_trigger_value[1]
     );
     accepted ? this->nevents_passed++ : this->nevents_failed++;
     return accepted;

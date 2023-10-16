@@ -10,6 +10,8 @@
 #include "event.hpp"
 #include "reader.hpp"
 #include "track.hpp"
+#include "custom_track.hpp"
+#include "custom_event.hpp"
 
 constexpr int MAX_MULTI = 128;
 struct custom_branches

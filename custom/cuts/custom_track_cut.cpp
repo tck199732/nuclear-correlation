@@ -4,41 +4,40 @@ custom_track_cut::custom_track_cut()
 {
     ntracks_passed = 0;
     ntracks_failed = 0;
-    N = 0;
-    Z = 0;
+
+    accepted_neutron = 0;
+    accepted_proton = 0;
     transverse_momentum = {0., DBL_MAX};
-    detector_idx = 0;
+    accepted_detector_idx = INT_MAX;
 }
 
 custom_track_cut::custom_track_cut(const custom_track_cut &cut)
 {
     ntracks_passed = cut.ntracks_passed;
     ntracks_failed = cut.ntracks_failed;
-    N = cut.N;
-    Z = cut.Z;
+    accepted_neutron = cut.accepted_neutron;
+    accepted_proton = cut.accepted_proton;
     transverse_momentum = cut.transverse_momentum;
-    detector_idx = cut.detector_idx;
+    accepted_detector_idx = cut.accepted_detector_idx;
 }
 
-bool custom_track_cut::pass(const track *trk)
+bool custom_track_cut::pass(const track *trk) {
+    auto ctrk = dynamic_cast<const custom_track *>(trk);
+    if (!ctrk) throw std::bad_cast();
+    return this->pass(ctrk);
+}
+
+bool custom_track_cut::pass(const custom_track *ctrk)
 {   
-    double pt = std::sqrt(trk->get_vx() * trk->get_vx() + trk->get_vy() * trk->get_vy());
-    unsigned int idx;
-    try {
-        idx = trk->get_uint_property("detector-index");
-    }
-    catch (const std::out_of_range &e)
-    {
-        std::cerr << e.what() << std::endl;
-        std::abort();
-    }
-    
+    double pt = std::sqrt(ctrk->get_vx() * ctrk->get_vx() + ctrk->get_vy() * ctrk->get_vy());
     bool accepted = (
-        trk->get_neutron() == this->N && 
-        trk->get_proton() == this->Z &&
+        ctrk->get_neutron() == this->accepted_neutron && 
+        ctrk->get_proton() == this->accepted_proton &&
         pt >= this->transverse_momentum[0] &&
         pt <= this->transverse_momentum[1] &&
-        detector_idx == idx
+        ctrk->get_detector_index() == this->accepted_detector_idx &&
+        ctrk->get_efficiency() > this->accepted_efficiency[0] && 
+        ctrk->get_efficiency() <= this->accepted_efficiency[1]
     );
 
     accepted ? ntracks_passed++ : ntracks_failed++;
