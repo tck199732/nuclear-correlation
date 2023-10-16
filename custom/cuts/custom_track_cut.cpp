@@ -25,7 +25,7 @@ bool custom_track_cut::pass(const track *trk)
     double pt = std::sqrt(trk->get_vx() * trk->get_vx() + trk->get_vy() * trk->get_vy());
     unsigned int idx;
     try {
-        idx = trk->get_property("detector-index");
+        idx = trk->get_uint_property("detector-index");
     }
     catch (const std::out_of_range &e)
     {

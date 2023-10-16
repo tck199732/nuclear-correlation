@@ -53,7 +53,7 @@ event *custom_reader::read()
             mass,
             0, 0, 0, 0
         );
-        trk->set_property("detector-index", 0);
+        trk->set_uint_property("detector-index", 0);
         tracks->push_back(trk);
     }
     current_event_index += 1;
