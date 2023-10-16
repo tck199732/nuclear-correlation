@@ -26,7 +26,6 @@ add_compile_options(
 # add_library(${dev_name} SHARED ${sources} ${dev_name}Dict.cxx)
 
 add_library(${dev_name} SHARED ${dev_sources})
-add_sanitizers(${dev_name})
 
 target_include_directories(
     ${dev_name}

@@ -9,9 +9,6 @@ if (ROOT_FOUND)
     message(STATUS "ROOT FOUND")
 endif()
 
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/externals/sanitizers-cmake/cmake" ${CMAKE_MODULE_PATH})
-find_package(Sanitizers)
-
 # name of the dynamically-linked library
 set(dev_name "dev")
 set(custom_name "custom")
