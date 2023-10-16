@@ -40,53 +40,6 @@ track::track(const track &track)
     this->y = track.y;
     this->z = track.z;
     this->t = track.t;
-
-    this->uint_properties = track.uint_properties;
-    this->dbl_properties = track.dbl_properties;
 }
 
 track::~track() {}
-
-unsigned int track::get_uint_property(const std::string &key) const
-{
-    try
-    {
-        return this->uint_properties.at(key);
-    }
-    catch (const std::out_of_range &e)
-    {
-        throw std::out_of_range("track::get_property: " + key + " not found");
-    }
-}
-
-double track::get_dbl_property(const std::string &key) const
-{
-    try
-    {
-        return this->dbl_properties.at(key);
-    }
-    catch (const std::out_of_range &e)
-    {
-        throw std::out_of_range("track::get_property: " + key + " not found");
-    }
-}
-
-std::vector<std::string> track::get_uint_property_keys() const
-{
-    std::vector<std::string> keys;
-    for (auto it = this->uint_properties.begin(); it != this->uint_properties.end(); it++)
-    {
-        keys.push_back(it->first);
-    }
-    return keys;
-}
-
-std::vector<std::string> track::get_dbl_property_keys() const
-{
-    std::vector<std::string> keys;
-    for (auto it = this->dbl_properties.begin(); it != this->dbl_properties.end(); it++)
-    {
-        keys.push_back(it->first);
-    }
-    return keys;
-}
