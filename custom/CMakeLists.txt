@@ -1,6 +1,8 @@
 set (
     reader_sources
     custom_reader.cpp
+    custom_event.cpp
+    custom_track.cpp
 )
 
 set ( 
