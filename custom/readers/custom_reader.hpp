@@ -5,6 +5,7 @@
 #include "TChain.h"
 #include <string>
 #include <vector>
+#include <random>
 #include <stdexcept>
 
 #include "event.hpp"
@@ -34,6 +35,10 @@ public:
     event *return_event();
 
 private:
+
+    std::random_device rd;
+    std::mt19937 gen;
+
     std::string tree_name;
     TChain *chain;
     long current_event_index;

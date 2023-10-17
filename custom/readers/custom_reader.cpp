@@ -1,6 +1,10 @@
 #include "custom_reader.hpp"
 custom_reader::custom_reader(const std::string& tree_name, const std::string& filename) : reader()
 {
+    // random generators
+    this->gen = std::mt19937(this->rd());
+
+    // set the tree name and the TChain
     chain = new TChain(tree_name.c_str(), "");
     chain->AddFile(filename.c_str());
     this->set_branches(chain);
@@ -55,9 +59,16 @@ event *custom_reader::read()
             mass
             //
         );
-        
-        trk->set_detector_index(0);
+
+        // set properties directly in the derived class, used in the track cut
+        // NOTE: this information will be lost in the pair since only partial information is copied
         trk->set_efficiency(0.5);
+
+        // use `track::set_property` to set important properties which is crucial in the pair-cut
+        // e.g. set the detector index so as to exclude pairs from the neighboring detectors
+        // if possible, always use this method, though it needs `std::any_cast` to retrieve the value
+        std::bernoulli_distribution d(0.5);
+        trk->set_property("detector_index", d(this->gen) ? 0 : 1);
         tracks->push_back((track*)trk);
     }
     this->current_event_index += 1;
