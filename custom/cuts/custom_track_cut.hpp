@@ -21,14 +21,12 @@ public:
 
     void set_accepted_neutron(const unsigned int &N) { this->accepted_neutron = N; }
     void set_accepted_proton(const unsigned int &Z) { this->accepted_proton = Z; }
-    void set_transverse_momentum(const double &vmin, const double &vmax) { this->transverse_momentum = {vmin, vmax}; }
-    void set_accepted_detector_idx(const unsigned int &idx) { this->accepted_detector_idx = idx; }
+    void set_transverse_velocity_gate(const double &vmin, const double &vmax) { this->transverse_velocity_gate = {vmin, vmax}; }
     void set_accepted_efficiency(const double &vmin, const double &vmax) { this->accepted_efficiency = {vmin, vmax}; }
 
     unsigned int get_accepted_neutron() const { return this->accepted_neutron; }
     unsigned int get_accepted_proton() const { return this->accepted_proton; }
-    int get_accepted_detector_idx() const { return this->accepted_detector_idx; }
-    std::array<double, 2> get_transverse_momentum() const { return this->transverse_momentum; }
+    std::array<double, 2> get_transverse_velocity_gate() const { return this->transverse_velocity_gate; }
     std::array<double, 2> get_accepted_efficiency() const { return this->accepted_efficiency; }
 
     long get_ntracks_passed() const { return ntracks_passed; }
@@ -36,8 +34,7 @@ public:
 
 private:
     unsigned int accepted_neutron, accepted_proton;
-    std::array<double, 2> transverse_momentum;
-    int accepted_detector_idx;
+    std::array<double, 2> transverse_velocity_gate;
     std::array<double, 2> accepted_efficiency;
     long ntracks_passed;
     long ntracks_failed;
