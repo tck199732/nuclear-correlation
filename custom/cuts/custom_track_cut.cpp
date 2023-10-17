@@ -7,8 +7,7 @@ custom_track_cut::custom_track_cut()
 
     accepted_neutron = 0;
     accepted_proton = 0;
-    transverse_momentum = {0., DBL_MAX};
-    accepted_detector_idx = INT_MAX;
+    transverse_velocity_gate = {0., DBL_MAX};
 }
 
 custom_track_cut::custom_track_cut(const custom_track_cut &cut)
@@ -17,8 +16,7 @@ custom_track_cut::custom_track_cut(const custom_track_cut &cut)
     ntracks_failed = cut.ntracks_failed;
     accepted_neutron = cut.accepted_neutron;
     accepted_proton = cut.accepted_proton;
-    transverse_momentum = cut.transverse_momentum;
-    accepted_detector_idx = cut.accepted_detector_idx;
+    transverse_velocity_gate = cut.transverse_velocity_gate;
 }
 
 bool custom_track_cut::pass(const track *trk) {
@@ -33,9 +31,8 @@ bool custom_track_cut::pass(const custom_track *ctrk)
     bool accepted = (
         ctrk->get_neutron() == this->accepted_neutron && 
         ctrk->get_proton() == this->accepted_proton &&
-        pt >= this->transverse_momentum[0] &&
-        pt <= this->transverse_momentum[1] &&
-        ctrk->get_detector_index() == this->accepted_detector_idx &&
+        pt >= this->transverse_velocity_gate[0] &&
+        pt <= this->transverse_velocity_gate[1] &&
         ctrk->get_efficiency() > this->accepted_efficiency[0] && 
         ctrk->get_efficiency() <= this->accepted_efficiency[1]
     );

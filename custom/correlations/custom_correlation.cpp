@@ -58,42 +58,30 @@ void custom_correlation::add_real_pair(const pair *pr)
 {
     auto first = pr->get_first_particle();
     auto second = pr->get_second_particle();
-    auto a1 = first->get_N() + first->get_Z();
-    auto a2 = second->get_N() + second->get_Z();
 
-    std::array<double, 4> p1 = {first->get_px(), first->get_py(), first->get_pz(), first->get_e()};
-    std::array<double, 4> p2 = {second->get_px(), second->get_py(), second->get_pz(), second->get_e()};
-    std::array<double, 4> x1 = {first->get_x(), first->get_y(), first->get_z(), first->get_t()};
-    std::array<double, 4> x2 = {second->get_x(), second->get_y(), second->get_z(), second->get_t()};
-
-    for (int idim = 0; idim < 4; idim++)
-    {
-        p1[idim] /= a1;
-        p2[idim] /= a2;
-    }
-    std::array<double, 3> prel = {p1[0] - p2[0], p1[1] - p2[1], p1[2] - p2[2]};
-    double q = std::sqrt(prel[0] * prel[0] + prel[1] * prel[1] + prel[2] * prel[2]);
-    this->numerator->Fill(q);
+    double px1 = first->get_px(), py1 = first->get_py(), pz1 = first->get_pz(), e1 = first->get_e();
+    double px2 = second->get_px(), py2 = second->get_py(), pz2 = second->get_pz(), e2 = second->get_e();
+    double mass1 = std::sqrt(e1*e1 - px1*px1 - py1*py1 - pz1*pz1);
+    double mass2 = std::sqrt(e2*e2 - px2*px2 - py2*py2 - pz2*pz2);
+        
+    double px = (mass2 * px1 - mass1 * px2) / (mass1 + mass2);
+    double py = (mass2 * py1 - mass1 * py2) / (mass1 + mass2);
+    double pz = (mass2 * pz1 - mass1 * pz2) / (mass1 + mass2);
+    this->numerator->Fill(std::sqrt(px * px + py * py + pz * pz));
 }
 
 void custom_correlation::add_mixed_pair(const pair *pr)
 {
     auto first = pr->get_first_particle();
     auto second = pr->get_second_particle();
-    auto a1 = first->get_N() + first->get_Z();
-    auto a2 = second->get_N() + second->get_Z();
 
-    std::array<double, 4> p1 = {first->get_px(), first->get_py(), first->get_pz(), first->get_e()};
-    std::array<double, 4> p2 = {second->get_px(), second->get_py(), second->get_pz(), second->get_e()};
-    std::array<double, 4> x1 = {first->get_x(), first->get_y(), first->get_z(), first->get_t()};
-    std::array<double, 4> x2 = {second->get_x(), second->get_y(), second->get_z(), second->get_t()};
-
-    for (int idim = 0; idim < 4; idim++)
-    {
-        p1[idim] /= a1;
-        p2[idim] /= a2;
-    }
-    std::array<double, 3> prel = {p1[0] - p2[0], p1[1] - p2[1], p1[2] - p2[2]};
-    double q = std::sqrt(prel[0] * prel[0] + prel[1] * prel[1] + prel[2] * prel[2]);
-    this->denominator->Fill(q);
+    double px1 = first->get_px(), py1 = first->get_py(), pz1 = first->get_pz(), e1 = first->get_e();
+    double px2 = second->get_px(), py2 = second->get_py(), pz2 = second->get_pz(), e2 = second->get_e();
+    double mass1 = std::sqrt(e1*e1 - px1*px1 - py1*py1 - pz1*pz1);
+    double mass2 = std::sqrt(e2*e2 - px2*px2 - py2*py2 - pz2*pz2);
+    
+    double px = (mass2 * px1 - mass1 * px2) / (mass1 + mass2);
+    double py = (mass2 * py1 - mass1 * py2) / (mass1 + mass2);
+    double pz = (mass2 * pz1 - mass1 * pz2) / (mass1 + mass2);
+    this->denominator->Fill(std::sqrt(px * px + py * py + pz * pz));
 }

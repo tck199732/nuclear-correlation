@@ -20,18 +20,17 @@ int main(int argc, char *argv[])
 
     trkcut1->set_accepted_neutron(1);
     trkcut1->set_accepted_proton(1);
-    trkcut1->set_transverse_momentum(0, 1e5);
-    trkcut1->set_accepted_detector_idx(0);
+    trkcut1->set_transverse_velocity_gate(0, 1e5);
     trkcut1->set_accepted_efficiency(0, 1e5);
     
     // if identical particle, second track cut should be set as first track cut
     trkcut2->set_accepted_neutron(2);
     trkcut2->set_accepted_proton(2);
-    trkcut2->set_transverse_momentum(0, 1e5);
-    trkcut2->set_accepted_detector_idx(0);
+    trkcut2->set_transverse_velocity_gate(0, 1e5);
     trkcut2->set_accepted_efficiency(0, 1e5);
 
-    prcut->set_transverse_momentum(0, 1e5);
+    prcut->set_transverse_velocity_gate(0, 1e5);
+    prcut->set_consider_detector_index(1);
 
     anal->set_event_cut(evcut);
     anal->set_first_track_cut(trkcut1);
@@ -48,14 +47,9 @@ int main(int argc, char *argv[])
 
     while (nevents_processed < 1000000 && reader_status == 0) {
         reader_status = man->process();
+        if (nevents_processed % 10000 == 0) std::cout << nevents_processed << std::endl;
         nevents_processed++;
     }
-
-    std::cout << trkcut1->get_ntracks_passed() << std::endl;
-    std::cout << trkcut1->get_ntracks_failed() << std::endl;
-    std::cout << trkcut2->get_ntracks_passed() << std::endl;
-    std::cout << trkcut2->get_ntracks_failed() << std::endl;
-
 
     TFile *outf = new TFile("output.root", "RECREATE");
     corr->Write();
