@@ -40,6 +40,12 @@ track::track(const track &track)
     this->y = track.y;
     this->z = track.z;
     this->t = track.t;
+
+    for (auto &[key, val] : track.properties) {this->properties[key] = val;}
 }
 
-track::~track() {}
+track::~track()
+{
+    // if not empty, destroys the contained object.
+    for (auto &[_, val] : this->properties) {val.reset();}
+}

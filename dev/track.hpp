@@ -3,17 +3,19 @@
 
 #include <array>
 #include <map>
+#include <any>
 #include <string>
 #include <vector>
+#include <iostream>
 #include <stdexcept>
 
 class track
 {
 public:
     track() { ; }
-    track(const unsigned int &N, const unsigned int &Z, const double &vx, const double &vy, const double &vz, const double &mass, const double &x=0., const double &y=0., const double &z=0., const double &t=0.);
+    track(const unsigned int &N, const unsigned int &Z, const double &vx, const double &vy, const double &vz, const double &mass, const double &x = 0., const double &y = 0., const double &z = 0., const double &t = 0.);
 
-    track(const unsigned int &N, const unsigned int &Z, const double &mass, const std::array<double, 3> &v, const std::array<double, 4> &x={0., 0., 0., 0.});
+    track(const unsigned int &N, const unsigned int &Z, const double &mass, const std::array<double, 3> &v, const std::array<double, 4> &x = {0., 0., 0., 0.});
     track(const track &);
     virtual ~track();
 
@@ -39,11 +41,32 @@ public:
     void set_z(const double &z) { this->z = z; }
     void set_t(const double &t) { this->t = t; }
 
+    template <typename T>
+    void set_property(const std::string &key, const T &value) { this->properties[key] = value; }
+
+    /**
+     * @brief Get the property object, keep the implementation in this header file to avoid linker problem. 
+    */
+    template <typename T>
+    T get_property(const std::string &key) const
+    {
+        try
+        {
+            return std::any_cast<T>(this->properties.at(key));
+        }
+        catch (const std::out_of_range &e)
+        {
+            throw std::out_of_range("track::get_property: " + key + " not found.");
+        }
+        return T();
+    }
+
 private:
     unsigned int N, Z;
     double mass;
     double vx, vy, vz;
     double x, y, z, t;
+    std::map<std::string, std::any> properties;
 };
 
 #endif
