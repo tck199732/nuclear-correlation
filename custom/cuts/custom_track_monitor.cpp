@@ -7,7 +7,7 @@ custom_track_monitor::custom_track_monitor(const std::string &name)
     this->h1_transverse_velocity->Sumw2();
     this->h1_transverse_velocity->SetDirectory(0);
 
-    h2_kinergy_theta = new TH2D("", "", 50, 0, 200, 120, 20, 80);
+    h2_kinergy_theta = new TH2D("h2_kinergy_theta", "", 50, 0, 200, 120, 20, 80);
     h2_kinergy_theta->Sumw2();
     h2_kinergy_theta->SetDirectory(0);
 }
