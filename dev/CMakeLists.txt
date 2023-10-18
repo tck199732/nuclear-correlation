@@ -1,5 +1,6 @@
 set ( 
     dev_sources 
+    base_cut.cpp
     fevent.cpp
     event.cpp
     particle.cpp
