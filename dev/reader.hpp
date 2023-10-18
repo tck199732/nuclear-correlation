@@ -5,8 +5,8 @@ class event;
 class reader
 {
 public:
-    reader(){;}
-    virtual ~reader() {;}
+    reader() = default;
+    virtual ~reader() = default;
     virtual event *return_event() = 0;
     unsigned int  get_status() const {return status;}
 

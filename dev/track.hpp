@@ -12,7 +12,7 @@
 class track
 {
 public:
-    track() { ; }
+    track()  = default;
     track(const unsigned int &N, const unsigned int &Z, const double &vx, const double &vy, const double &vz, const double &mass, const double &x = 0., const double &y = 0., const double &z = 0., const double &t = 0.);
 
     track(const unsigned int &N, const unsigned int &Z, const double &mass, const std::array<double, 3> &v, const std::array<double, 4> &x = {0., 0., 0., 0.});
