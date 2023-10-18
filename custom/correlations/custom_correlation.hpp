@@ -16,15 +16,15 @@ public:
     custom_correlation(const correlation &other);
     ~custom_correlation();
 
-    virtual void add_real_pair(const pair *) ;
-    virtual void add_mixed_pair(const pair *) ;
+    virtual void add_real_pair(const pair *);
+    virtual void add_mixed_pair(const pair *);
 
-    TH1D *get_numerator(){ return numerator; }
-    TH1D *get_denominator(){ return denominator; }
+    TH1D *get_numerator() { return numerator; }
+    TH1D *get_denominator() { return denominator; }
 
-    void set_numerator(const std::string& name, const std::string& title, const int& bins, const double& vmin, const double& vmax);
-    void set_denominator(const std::string& name, const std::string& title, const int& bins, const double& vmin, const double& vmax);
-    void Write();
+    void set_numerator(const std::string &name, const std::string &title, const int &bins, const double &vmin, const double &vmax);
+    void set_denominator(const std::string &name, const std::string &title, const int &bins, const double &vmin, const double &vmax);
+    void write();
 
 private:
     TH1D *numerator;
