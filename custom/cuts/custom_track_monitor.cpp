@@ -24,7 +24,7 @@ void custom_track_monitor::fill(const track *trk)
     double vt = std::sqrt(vx * vx + vy * vy);
     double px = vx * a, py = vy * a, pz = vz * a;
     double mass = trk->get_mass();
-    double kinergy = (1. / a) * std::sqrt(px * px + py * py + pz * pz + mass * mass) - mass;
+    double kinergy = (1. / a) * (std::sqrt(px * px + py * py + pz * pz + mass * mass) - mass);
     double theta_lab = std::atan2(vt, vz) * TMath::RadToDeg();
     this->h1_transverse_velocity->Fill(vt);
     this->h2_kinergy_theta->Fill(kinergy, theta_lab);
