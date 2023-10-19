@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
     }
 
     TFile *outf = new TFile("output.root", "RECREATE");
-    corr->Write();
+    corr->write();
     outf->Write();
     outf->Close();
 
