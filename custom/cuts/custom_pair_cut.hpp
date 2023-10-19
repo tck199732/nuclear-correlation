@@ -12,7 +12,7 @@ class custom_pair_cut : public pair_cut
 public:
     custom_pair_cut();
     custom_pair_cut(const custom_pair_cut & cut);
-    bool pass(const pair *pr);
+    virtual bool pass(const pair *pr) override;
 
     void set_transverse_velocity_gate(const double &vmin, const double &vmax) { this->transverse_velocity_gate = {vmin, vmax}; }
     void set_consider_detector_index(const bool &v) { this->is_consider_detector_index = v; }

@@ -21,7 +21,6 @@ pair::pair(const pair &pr)
 pair::~pair()
 {
     // do not delete the particles, they are owned by the track collection
-    ;
 }
 
 void pair::set_first_particle(particle *ptcl)
