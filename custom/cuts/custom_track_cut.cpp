@@ -3,7 +3,6 @@
 custom_track_cut::custom_track_cut() {
 	ntracks_passed = 0;
 	ntracks_failed = 0;
-
 	accepted_neutron = 0;
 	accepted_proton = 0;
 	transverse_velocity_gate = {0., DBL_MAX};
@@ -18,20 +17,16 @@ custom_track_cut::custom_track_cut(const custom_track_cut &cut) {
 }
 
 bool custom_track_cut::pass(const track *trk) {
-	auto ctrk = dynamic_cast<const custom_track *>(trk);
-	if (!ctrk)
-		throw std::bad_cast();
-	return this->pass(ctrk);
-}
+	double vt = std::sqrt(trk->get_vx() * trk->get_vx() + trk->get_vy() * trk->get_vy());
+	double efficiency = trk->get_property<double>("efficiency");
 
-bool custom_track_cut::pass(const custom_track *ctrk) {
-	double vt = std::sqrt(ctrk->get_vx() * ctrk->get_vx() + ctrk->get_vy() * ctrk->get_vy());
-	bool accepted = (ctrk->get_neutron() == this->accepted_neutron &&
-					 ctrk->get_proton() == this->accepted_proton);
-	accepted = accepted &&
-			   (vt >= this->transverse_velocity_gate[0] && vt <= this->transverse_velocity_gate[1]);
-	accepted = accepted && (ctrk->get_efficiency() > this->accepted_efficiency[0] &&
-							ctrk->get_efficiency() <= this->accepted_efficiency[1]);
+	auto is_inside = [](const double &x, const std::array<double, 2> &range) -> bool {
+		return (x >= range[0] && x <= range[1]);
+	};
+	bool accepted = (trk->get_neutron() == this->accepted_neutron &&
+					 trk->get_proton() == this->accepted_proton);
+	accepted = accepted && is_inside(vt, this->transverse_velocity_gate);
+	accepted = accepted && is_inside(efficiency, this->accepted_efficiency);
 
 	accepted ? ntracks_passed++ : ntracks_failed++;
 	return accepted;
