@@ -1,6 +1,7 @@
 set (
     util_sources
     ame/ame.cpp
+    physics/physics.cpp
 )
 
 
