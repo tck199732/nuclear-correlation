@@ -2,11 +2,11 @@
 #define custom_correlation_hpp
 
 #include "TH1D.h"
-#include <stdexcept>
-#include <string>
-
 #include "correlation.hpp"
 #include "pair.hpp"
+#include "physics/physics.hpp"
+#include <stdexcept>
+#include <string>
 
 class custom_correlation : public correlation {
 public:
@@ -20,16 +20,12 @@ public:
 
 	TH1D *get_numerator() { return numerator; }
 	TH1D *get_denominator() { return denominator; }
-
-	void set_numerator(const std::string &name, const std::string &title, const int &bins,
-					   const double &vmin, const double &vmax);
-	void set_denominator(const std::string &name, const std::string &title, const int &bins,
-						 const double &vmin, const double &vmax);
 	void write();
 
 private:
 	TH1D *numerator;
 	TH1D *denominator;
+	double calculate_relative_momentum(const pair *pr);
 };
 
 #endif
