@@ -35,9 +35,6 @@ public:
 	}
 
 private:
-	explicit ame(const std::string &version) : version(version), is_loaded(false) {
-		this->read_ame_table();
-	}
 	bool is_loaded;
 	std::string version;
 	std::mutex m_mutex;
@@ -45,6 +42,11 @@ private:
 	std::map<std::string, std::pair<int, int>> neutron_proton_table;
 	std::map<std::pair<int, int>, std::string> symbol_table;
 
+	explicit ame(const std::string &version) {
+		this->version = version;
+		this->is_loaded = false;
+		this->read_ame_table();
+	}
 	void read_ame_table();
 	std::optional<double> get_unphysical_mass(const int &neutron, const int &proton) const;
 
