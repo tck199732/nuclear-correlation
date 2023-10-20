@@ -8,10 +8,10 @@
 #include <string>
 #include <vector>
 
-#include "custom_event.hpp"
-#include "custom_track.hpp"
+#include "ame/ame.hpp"
 #include "event.hpp"
 #include "reader.hpp"
+#include "readers/custom_event.hpp"
 #include "track.hpp"
 
 constexpr int MAX_MULTI = 128;
@@ -33,19 +33,19 @@ public:
 	event *return_event();
 
 private:
+	// random generators for making fake detector IDs
 	std::random_device rd;
 	std::mt19937 gen;
 
-	std::string tree_name;
+	// for reading ROOT files
 	TChain *chain;
-	long current_event_index;
+	std::string tree_name;
 	custom_branches branches;
+	long current_event_index;
+
 	void set_branches(TChain *&chain);
 	event *read();
-
-protected:
-	const double proton_mass = 938.272;
-	const double neutron_mass = 939.565;
-	const double nucleon_mass = 938.918;
+	void begin_event();
+	void end_event();
 };
 #endif
