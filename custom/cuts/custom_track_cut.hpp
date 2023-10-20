@@ -1,10 +1,8 @@
 #ifndef custom_track_cut_hpp
 #define custom_track_cut_hpp
 
-#include "custom_track.hpp"
 #include "track.hpp"
 #include "track_cut.hpp"
-
 #include <array>
 #include <cfloat>
 #include <climits>
@@ -15,8 +13,7 @@ class custom_track_cut : public track_cut {
 public:
 	custom_track_cut();
 	custom_track_cut(const custom_track_cut &);
-	virtual bool pass(const track *trk) override;
-	bool pass(const custom_track *ctrk);
+	virtual bool pass(const track *trk);
 
 	void set_accepted_neutron(const unsigned int &N) { this->accepted_neutron = N; }
 	void set_accepted_proton(const unsigned int &Z) { this->accepted_proton = Z; }
