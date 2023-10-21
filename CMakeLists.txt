@@ -1,31 +1,49 @@
-cmake_minimum_required(VERSION 3.10)
-project(NuclearCorrelation VERSION 1.0)
+cmake_minimum_required(VERSION 3.14)
+project(NuclearCorrelation VERSION 1.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-find_package(ROOT REQUIRED)
-if (ROOT_FOUND)
-    message(STATUS "ROOT FOUND")
+if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
+  message(
+    FATAL_ERROR
+      "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there."
+  )
 endif()
 
-# name of the dynamically-linked library
-set(dev_name "dev")
-set(custom_name "custom")
-set(util_name "util")
+include(cmake/CPM.cmake)
+CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
 
-# folder name of the source codes
-set(dev_folder "dev")
-set(custom_folder "custom")
-set(util_folder "util")
-set(exec_folder "exec")
+set ( 
+    dev_sources 
+    base_cut.cpp
+    fevent.cpp
+    event.cpp
+    particle.cpp
+    track.cpp
+    pair.cpp
+    analysis.cpp
+    manager.cpp
+)
 
-# subfolder name of the source codes in $custom_folder
-set(reader_folder "readers")
-set(cut_folder "cuts")
-set(corrfctn_folder "correlations")
+List(TRANSFORM dev_sources PREPEND "dev/")
 
-add_subdirectory(${util_folder})
-add_subdirectory(${dev_folder})
-add_subdirectory(${custom_folder})
-add_subdirectory(${exec_folder})
+
+add_library(${PROJECT_NAME} SHARED ${dev_sources})
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
+
+target_include_directories(
+    ${PROJECT_NAME}
+    PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/dev>
+    $<INSTALL_INTERFACE:dev/${PROJECT_NAME}-${PROJECT_VERSION}>
+)
+
+string(TOLOWER ${PROJECT_NAME}/version.h VERSION_HEADER_LOCATION)
+packageProject(
+  NAME ${PROJECT_NAME}
+  VERSION ${PROJECT_VERSION}
+  NAMESPACE ${PROJECT_NAME}
+  BINARY_DIR ${PROJECT_BINARY_DIR}
+  INCLUDE_DIR ${PROJECT_SOURCE_DIR}/dev
+  INCLUDE_DESTINATION dev/${PROJECT_NAME}-${PROJECT_VERSION}
+  VERSION_HEADER "${VERSION_HEADER_LOCATION}"
+  COMPATIBILITY SameMajorVersion
+)
