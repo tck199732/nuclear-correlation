@@ -1,0 +1,41 @@
+name: all
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  BUILD_TYPE: Release
+  CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/cache@v3
+      with:
+        path: "**/cpm_modules"
+        key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
+    
+    # create and activate conda environment
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: "latest"
+        environment-file: ${{ github.workspace }}/environment.yml
+        activate-environment: ${{ github.workspace }}/env
+    
+    # export env variables
+    - name: starter
+      run: . ${{ github.workspace }}/config.sh
+
+    - name: configure
+      run: cmake -B ${{github.workspace}}/build -S all
+
+    - name: build
+      run: cmake --build ${{github.workspace}}/build -j4
