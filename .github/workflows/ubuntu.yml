@@ -23,12 +23,17 @@ jobs:
         path: "**/cpm_modules"
         key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
     
-    # create and activate conda environment
+    # install miniconda
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
-        environment-file: ./environment.yml
-        activate-environment: ./env
+        # environment-file: ./environment.yml
+        activate-environment: ""
+
+    - name: create-conda-env
+      run: |
+        conda env create -f environment.yml --prefix ./env
+        conda activate ./env
 
     - name: check conda
       shell: bash -el {0}
