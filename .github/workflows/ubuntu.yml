@@ -27,15 +27,15 @@ jobs:
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
-        environment-file: ${{ github.workspace }}/environment.yml
-        activate-environment: ${{ github.workspace }}/env
+        environment-file: ./environment.yml
+        activate-environment: ./env
     
     # export env variables
     - name: starter
-      run: . ${{ github.workspace }}/config.sh
+      run: . config.sh
 
     - name: configure
-      run: cmake -B ${{github.workspace}}/build -S all
+      run: cmake -B build -S all -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
 
     - name: build
-      run: cmake --build ${{github.workspace}}/build -j4
+      run: cmake --build ./build -j4
