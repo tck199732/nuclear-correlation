@@ -27,9 +27,8 @@ jobs:
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
-        # environment-file: ./environment.yml
-        auto-active-base: true
         activate-environment: ""
+        auto-activate-base: true
 
     - name: create-conda-env
       run: |
