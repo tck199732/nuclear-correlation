@@ -130,3 +130,6 @@ dmypy.json
 
 # conda env
 env
+
+# all custom builds
+build-*
