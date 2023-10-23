@@ -29,10 +29,16 @@ jobs:
         miniconda-version: "latest"
         environment-file: ./environment.yml
         activate-environment: ./env
-    
+
+    - name: check conda
+      shell: bash -el {0}
+      run: |
+        conda info
+        conda list
+
     # export env variables
     - name: starter
-      run: . config.sh
+      run: export PROJECT_DIR=$(pwd)
 
     - name: configure
       run: cmake -B build -S all -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
