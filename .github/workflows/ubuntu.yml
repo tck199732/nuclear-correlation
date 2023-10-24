@@ -27,26 +27,22 @@ jobs:
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
-        activate-environment: ""
-        auto-activate-base: true
-
-    - name: create-conda-env
-      run: |
-        conda env create -f environment.yml --prefix ./env
-        conda activate ./env
+        activate-environment: ./env
+        environment-file: ./environment.yml
 
     - name: check conda
       shell: bash -el {0}
       run: |
         conda info
         conda list
+        conda list | grep cmake
 
     # export env variables
     - name: starter
       run: export PROJECT_DIR=$(pwd)
 
-    - name: configure
-      run: cmake -B build -S all -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+    # - name: configure
+    #   run: cmake -B build -S all -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
 
-    - name: build
-      run: cmake --build ./build -j4
+    # - name: build
+    #   run: cmake --build ./build -j4
