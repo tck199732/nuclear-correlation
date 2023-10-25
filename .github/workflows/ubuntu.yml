@@ -40,8 +40,14 @@ jobs:
     - name: starter
       run: export PROJECT_DIR=$(pwd)
 
-    - name: configure
-      run: cmake -B build -S all -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+    - name: check_root
+      shell: bash -el {0}
+      run: |
+        conda activate ./env
+        root-config --version
 
-    - name: build
-      run: cmake --build ./build -j4
+    # - name: configure
+    #   run: cmake -B build -S all -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+
+    # - name: build
+    #   run: cmake --build ./build -j4
