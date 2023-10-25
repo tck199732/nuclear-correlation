@@ -52,4 +52,4 @@ jobs:
       run: |
         conda activate ./env
         cmake -B build -S all -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
-        cmake --build ./build -j4
+        cmake --build ./build
