@@ -10,19 +10,21 @@
 
 class custom_correlation : public correlation {
 public:
-	custom_correlation();
-	custom_correlation(const int &bins, const double &vmin, const double &vmax);
-	custom_correlation(const correlation &other);
+	custom_correlation(const std::string &name = "");
+	custom_correlation(const std::string &name, const int &bins, const double &vmin,
+					   const double &vmax);
+	custom_correlation(const custom_correlation &other);
 	~custom_correlation();
 
 	virtual void add_real_pair(const pair *);
 	virtual void add_mixed_pair(const pair *);
 
-	TH1D *get_numerator() { return numerator; }
-	TH1D *get_denominator() { return denominator; }
+	TH1D *get_numerator() const { return numerator; }
+	TH1D *get_denominator() const { return denominator; }
 	void write();
 
 private:
+	std::string name;
 	TH1D *numerator;
 	TH1D *denominator;
 	double calculate_relative_momentum(const pair *pr);

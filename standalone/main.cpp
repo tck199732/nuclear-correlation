@@ -5,7 +5,8 @@ int main(int argc, char *argv[]) {
 	analysis *anal = new analysis();
 
 	std::string PROJECT_DIR = std::getenv("PROJECT_DIR");
-	custom_reader *reader = new custom_reader("tree", (PROJECT_DIR + "/assets/samples/output.root"));
+	custom_reader *reader =
+		new custom_reader("tree", (PROJECT_DIR + "/assets/samples/output.root"));
 
 	custom_event_cut *evcut = new custom_event_cut();
 	custom_track_cut *trkcut1 = new custom_track_cut();
@@ -19,7 +20,7 @@ int main(int argc, char *argv[]) {
 	custom_pair_monitor *real_pair_monitor = new custom_pair_monitor("real_pair_monitor");
 	custom_pair_monitor *mixed_pair_monitor = new custom_pair_monitor("mixed_pair_monitor");
 
-	custom_correlation *corr = new custom_correlation(50, 0., 200.);
+	custom_correlation *corr = new custom_correlation("my_correlation", 50, 0., 200.);
 
 	evcut->set_accepted_impact_parameter(0, 1e5);
 	evcut->set_accepted_multiplicity(0, 128);

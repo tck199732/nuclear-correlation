@@ -45,6 +45,7 @@ get_filename_component(libutil ${PROJECT_BINARY_DIR}/../util/libutil.so ABSOLUTE
 get_filename_component(util_inc ${CMAKE_CURRENT_LIST_DIR}/../util ABSOLUTE)
 add_library(${PROJECT_NAME} SHARED ${reader_sources} ${cut_sources} ${corrfctn_sources})
 add_dependencies(${PROJECT_NAME} ${package_name} util)
+target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
 target_include_directories(
     ${PROJECT_NAME}

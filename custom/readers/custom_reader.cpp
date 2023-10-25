@@ -13,7 +13,12 @@ custom_reader::custom_reader(const std::string &tree_name, const std::string &fi
 	current_event_index = 0;
 }
 
-custom_reader::custom_reader(const custom_reader &reader) { chain = 0; }
+custom_reader::custom_reader(const custom_reader &reader) {
+	this->chain = 0;
+	this->tree_name = reader.tree_name;
+	this->branches = reader.branches;
+	this->current_event_index = reader.current_event_index;
+}
 
 custom_reader::~custom_reader() { delete chain; }
 
