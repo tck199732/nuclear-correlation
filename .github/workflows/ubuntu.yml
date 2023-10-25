@@ -35,14 +35,13 @@ jobs:
       run: |
         conda info
         conda list
-        conda list | grep cmake
 
     # export env variables
     - name: starter
       run: export PROJECT_DIR=$(pwd)
 
-    # - name: configure
-    #   run: cmake -B build -S all -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+    - name: configure
+      run: cmake -B build -S all -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
 
-    # - name: build
-    #   run: cmake --build ./build -j4
+    - name: build
+      run: cmake --build ./build -j4
