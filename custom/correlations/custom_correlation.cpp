@@ -1,16 +1,20 @@
 #include "custom_correlation.hpp"
-custom_correlation::custom_correlation() {
+custom_correlation::custom_correlation(const std::string &name) {
+	this->name = name;
 	this->numerator = nullptr;
 	this->denominator = nullptr;
 }
 
-custom_correlation::custom_correlation(const int &bins, const double &vmin, const double &vmax) {
+custom_correlation::custom_correlation(const std::string &name, const int &bins, const double &vmin,
+									   const double &vmax) {
+	this->name = name;
 	this->numerator = new TH1D("num", "", bins, vmin, vmax);
 	this->denominator = new TH1D("den", "", bins, vmin, vmax);
 	this->numerator->Sumw2();
 	this->denominator->Sumw2();
 }
-custom_correlation::custom_correlation(const correlation &other) {
+custom_correlation::custom_correlation(const custom_correlation &other) {
+	this->name = other.name;
 	this->numerator = 0;
 	this->denominator = 0;
 }
