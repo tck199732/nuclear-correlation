@@ -25,9 +25,10 @@ set (
 
 List(TRANSFORM dev_sources PREPEND "dev/")
 
-
 add_library(${PROJECT_NAME} SHARED ${dev_sources})
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
+target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+# target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
 
 target_include_directories(
     ${PROJECT_NAME}
