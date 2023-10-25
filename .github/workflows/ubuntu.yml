@@ -49,13 +49,14 @@ jobs:
 
     - name: check_root_without_bash
       run: |
-        conda activate ./env
         root-config --version
         cmake --version
   
     - name: configure
       shell: bash -el {0}
-      run: cmake -B build -S all -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+      run: |
+        conda activate ./env
+        cmake -B build -S all -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
 
     # - name: build
     #   run: cmake --build ./build -j4
