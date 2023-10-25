@@ -60,7 +60,14 @@ jobs:
             conda activate test
             root-config --version
             cmake --version 
+
+      - name: build-cmake
+        shell: bash -el {0}
+        run: |
+          conda activate test
+          cmake -B build -S all
+          cmake --build ./build
         
 
-            
+
 
