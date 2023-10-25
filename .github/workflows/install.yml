@@ -1,4 +1,4 @@
-name: all
+name: install
 
 on:
   push:
@@ -20,14 +20,15 @@ jobs:
           - os: ubuntu-latest
             label: linux-64
             prefix: /usr/share/miniconda3/envs/test
-
-          - os: macos-latest
-            label: osx-64
-            prefix: /Users/runner/miniconda3/envs/test
-
-          - os: windows-latest
-            label: win-64
-            prefix: C:\Miniconda3\envs\test
+        
+        #   - os: macos-latest
+        #     label: osx-64
+        #     prefix: /Users/runner/miniconda3/envs/test
+        
+        # root-6.28.4 not supported on windows
+        #   - os: windows-latest
+        #     label: win-64
+        #     prefix: C:\Miniconda3\envs\test
 
     name: ${{ matrix.label }}
     runs-on: ${{ matrix.os }}
