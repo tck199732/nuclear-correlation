@@ -46,8 +46,8 @@ jobs:
         conda activate ./env
         root-config --version
 
-    # - name: configure
-    #   run: cmake -B build -S all -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+    - name: configure
+      run: cmake -B build -S all -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
 
     # - name: build
     #   run: cmake --build ./build -j4
