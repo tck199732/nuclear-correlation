@@ -4,7 +4,8 @@ include(../cmake/tools.cmake)
 include(../cmake/CPM.cmake)
 
 # add main package
-CPMAddPackage(NAME NuclearCorrelation SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
+set(package_name NuclearCorrelation)
+CPMAddPackage(NAME ${package_name} SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 find_package(ROOT REQUIRED)
 
 set (
@@ -40,20 +41,23 @@ add_compile_options(
     -Os
 )
 
+get_filename_component(libutil ${PROJECT_BINARY_DIR}/../util/libutil.so ABSOLUTE)
+get_filename_component(util_inc ${CMAKE_CURRENT_LIST_DIR}/../util ABSOLUTE)
 add_library(${PROJECT_NAME} SHARED ${reader_sources} ${cut_sources} ${corrfctn_sources})
+add_dependencies(${PROJECT_NAME} ${package_name} util)
 
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_LIST_DIR}/../util
+    ${util_inc}
     ${ROOT_INCLUDE_DIRS}
 )
 
 target_link_libraries(
     ${PROJECT_NAME} 
     PRIVATE
-    NuclearCorrelation
-    ${PROJECT_BINARY_DIR}/../util/libutil.so
+    ${package_name}
+    ${libutil}
     ${ROOT_LIBRARIES}
 )
