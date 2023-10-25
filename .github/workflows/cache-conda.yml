@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [ "main" ]
 
+  schedule:
+    - cron: '0 0 * * *'
 env:
   CACHE_NUMBER: 0  # increase to reset cache manually
 
@@ -16,7 +18,7 @@ jobs:
         include:
           - os: ubuntu-latest
             label: linux-64
-            prefix: ${{github.workspace}}/env
+            prefix: /usr/share/miniconda3/envs/test
 
         #   - os: macos-latest
         #     label: osx-64
@@ -36,7 +38,7 @@ jobs:
         with:
             miniforge-variant: Mambaforge
             miniforge-version: latest
-            activate-environment: ./env
+            activate-environment: test
             use-mamba: true
 
       - name: Set cache date
@@ -49,13 +51,13 @@ jobs:
         id: cache
 
       - name: Update environment
-        run: mamba env update --prefix ./env -f environment.yml
+        run: mamba env update --prefix -n test -f environment.yml
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: check
         shell: bash -el {0}
         run: |
-            conda activate ./env
+            conda activate test
             root-config --version
             cmake --version 
         
