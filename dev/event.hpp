@@ -2,9 +2,10 @@
 #define event_hpp
 
 #include "collection.hpp"
+#include "property.hpp"
 #include "track.hpp"
 
-class event {
+class event : public property {
 public:
 	event();
 	event(const event &ev);

@@ -8,16 +8,18 @@ event::event(const event &evt) {
 	this->impact_parameter = evt.impact_parameter;
 
 	this->tracks = new track_collection();
-
 	for (auto &trk : *evt.tracks) {
 		this->tracks->push_back(new track(*trk));
 	}
+	this->properties = evt.properties;
 }
 
 event::~event() {
-
-	for (auto &trk : *tracks)
-		delete trk;
-	tracks->clear();
-	delete tracks;
+	for (auto &trk : *tracks) {
+		if (trk != nullptr) {
+			delete trk;
+		}
+	}
+	this->tracks->clear();
+	delete this->tracks;
 }
