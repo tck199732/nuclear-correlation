@@ -1,64 +1,55 @@
 cmake_minimum_required(VERSION 3.14)
-project(custom LANGUAGES CXX)
+project(UserCorrelation VERSION 1.0 LANGUAGES CXX)
 include(../cmake/tools.cmake)
 include(../cmake/CPM.cmake)
 
-# add main package
-set(package_name NuclearCorrelation)
-CPMAddPackage(NAME ${package_name} SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
+CPMAddPackage(NAME NuclearCorrelation SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
+CPMAddPackage(NAME NuclearUtilities SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../util)
+
 find_package(ROOT REQUIRED)
 
 set (
-    reader_sources
-    custom_reader.cpp
-    custom_event.cpp
+    custom_sources
+    readers/custom_reader.cpp
+    readers/custom_event.cpp
+    cuts/custom_event_cut.cpp
+    cuts/custom_track_cut.cpp
+    cuts/custom_pair_cut.cpp
+    cuts/custom_event_monitor.cpp
+    cuts/custom_track_monitor.cpp
+    cuts/custom_pair_monitor.cpp
+    correlations/custom_correlation.cpp
 )
 
-set ( 
-    cut_sources
-    custom_event_cut.cpp
-    custom_track_cut.cpp
-    custom_pair_cut.cpp
-    custom_event_monitor.cpp
-    custom_track_monitor.cpp
-    custom_pair_monitor.cpp
-)
-
-set (
-    corrfctn_sources
-    custom_correlation.cpp
-)
-
-List(TRANSFORM reader_sources PREPEND "readers/")
-List(TRANSFORM cut_sources PREPEND "cuts/")
-List(TRANSFORM corrfctn_sources PREPEND "correlations/")
-
-add_compile_options(
-    -fPIC
-    -pipe
-    -Wall
-    -g
-    -Os
-)
-
-get_filename_component(libutil ${PROJECT_BINARY_DIR}/../util/libutil.so ABSOLUTE)
-get_filename_component(util_inc ${CMAKE_CURRENT_LIST_DIR}/../util ABSOLUTE)
-add_library(${PROJECT_NAME} SHARED ${reader_sources} ${cut_sources} ${corrfctn_sources})
-add_dependencies(${PROJECT_NAME} ${package_name} util)
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+add_library(${PROJECT_NAME} SHARED ${custom_sources})
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
+target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
 
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${util_inc}
-    ${ROOT_INCLUDE_DIRS}
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:${PROJECT_NAME}-${PROJECT_VERSION}>
 )
 
 target_link_libraries(
     ${PROJECT_NAME} 
     PRIVATE
-    ${package_name}
-    ${libutil}
+    NuclearCorrelation
+    NuclearUtilities
     ${ROOT_LIBRARIES}
 )
+
+string(TOLOWER ${PROJECT_NAME}/version.h VERSION_HEADER_LOCATION)
+packageProject(
+  NAME ${PROJECT_NAME}
+  VERSION ${PROJECT_VERSION}
+  NAMESPACE ${PROJECT_NAME}
+  BINARY_DIR ${PROJECT_BINARY_DIR}
+  INCLUDE_DIR ${PROJECT_SOURCE_DIR}
+  INCLUDE_DESTINATION ${PROJECT_SOURCE_DIR}/${PROJECT_NAME}-${PROJECT_VERSION}
+  VERSION_HEADER "${VERSION_HEADER_LOCATION}"
+  COMPATIBILITY SameMajorVersion
+  DEPENDENCIES "ROOT ${ROOT_VERSION}" 
+)
+
