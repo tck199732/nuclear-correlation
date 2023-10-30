@@ -1,5 +1,13 @@
 #include "physics.hpp"
 
+physics::four_vector::four_vector(const double &x, const double &y, const double &z,
+								  const double &t) {
+	p0 = t;
+	p1 = x;
+	p2 = y;
+	p3 = z;
+}
+
 physics::four_vector::four_vector(const four_vector &other) {
 	this->p0 = other.p0;
 	this->p1 = other.p1;
@@ -101,9 +109,6 @@ double physics::get_qz(const four_vector &first, const four_vector &second) {
 	return (first.Pz() * second.M() - second.Pz() * first.M()) / (first.M() + second.M());
 }
 
-// out-side-long coordinate system (Bertsch-Pratt)
-// first boost to the frame where the pair Pz = 0 (longitudinal pair rest frame)
-// then rotate the transverse plane with an angle \cos\theta = Px / Pt
 double physics::get_qout(const four_vector &first, const four_vector &second) {
 	auto P = (first + second);
 	auto q = (first - second);
