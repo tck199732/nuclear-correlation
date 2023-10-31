@@ -68,59 +68,57 @@ std::optional<double> ame::get_mass(const std::string &symbol) const {
 		return std::find(this->elements.begin(), this->elements.end(), ele) != this->elements.end();
 	};
 
-	std::string lower_case_symbol = lower(symbol);
-	if (this->mass_table.count(lower_case_symbol) == 0) {
-		if (this->alias.count(symbol) == 0) {
-			auto ele = get_element(symbol);
-			auto nucleons = get_nucleons(symbol);
-			if (find(ele) && nucleons <= this->maximum_mass_number) {
-				return this->get_unphysical_mass(nucleons);
-			}
-			return std::nullopt;
-		}
-		std::string ame_symbol = this->alias.at(symbol);
-		return this->mass_table.at(ame_symbol);
+	std::string key;
+	if (this->alias.count(symbol) == 1) {
+		key = this->alias.at(symbol);
+	} else {
+		key = lower(symbol);
 	}
-	return this->mass_table.at(lower_case_symbol);
+	if (this->mass_table.count(key) == 0) {
+		auto ele = get_element(key);
+		auto nucleons = get_nucleons(key);
+		if (find(ele)) {
+			return this->get_unphysical_mass(nucleons);
+		}
+		return std::nullopt;
+	}
+	return std::optional<double>(this->mass_table.at(key));
 }
 
-std::optional<std::string> ame::get_symbol(const int &neutron, const int &proton) const {
+std::optional<std::string> ame::get_symbol(const unsigned int &neutron,
+										   const unsigned int &proton) const {
 	if (this->symbol_table.count({neutron, proton}) == 0) {
 		return std::nullopt;
 	}
-	return this->symbol_table.at({neutron, proton});
+	return std::optional<std::string>(this->symbol_table.at({neutron, proton}));
 }
 
 std::optional<std::string> ame::get_symbol(const std::string &alias) const {
 	// if alias is a symbol, return itself
 	if (this->neutron_proton_table.count(alias) == 1) {
-		return alias;
+		return std::optional<std::string>(alias);
 	}
 	// if alias is found in alias table, return the corresponding symbol
 	return (this->alias.count(alias) == 0) ? std::nullopt
 										   : std::optional<std::string>(this->alias.at(alias));
 }
 
-std::optional<double> ame::get_mass(const int &neutron, const int &proton) const {
+std::optional<double> ame::get_mass(const unsigned int &neutron, const unsigned int &proton) const {
 	if (this->symbol_table.count({neutron, proton}) == 0) {
 		return this->get_unphysical_mass(neutron, proton);
 	}
 	std::string symbol = this->symbol_table.at({neutron, proton});
-	return this->mass_table.at(symbol);
+	return std::optional<double>(this->mass_table.at(symbol));
 }
 
-std::optional<double> ame::get_unphysical_mass(const int &neutron, const int &proton) const {
-	if (neutron < 0 || proton < 0) {
-		return std::nullopt;
-	}
+std::optional<double> ame::get_unphysical_mass(const unsigned int &neutron,
+											   const unsigned int &proton) const {
 	return this->get_unphysical_mass(neutron + proton);
 }
 
-std::optional<double> ame::get_unphysical_mass(const int &nucleons) const {
-	if (nucleons < 0) {
-		return std::nullopt;
-	}
-	return nucleons * this->default_nucleon_mass;
+std::optional<double> ame::get_unphysical_mass(const unsigned int &nucleons) const {
+	std::optional<double> mass = nucleons * this->default_nucleon_mass;
+	return (nucleons > this->maximum_mass_number) ? std::nullopt : mass;
 }
 
 std::optional<std::pair<int, int>> ame::get_neutron_proton_number(const std::string &symbol) const {
@@ -132,7 +130,6 @@ std::optional<std::pair<int, int>> ame::get_neutron_proton_number(const std::str
 	};
 
 	std::string lower_case_symbol = lower(symbol);
-
 	if (this->neutron_proton_table.count(lower_case_symbol) == 0) {
 		if (this->alias.count(symbol) == 0) {
 			return std::nullopt;
