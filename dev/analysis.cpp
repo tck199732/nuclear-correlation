@@ -128,24 +128,23 @@ void analysis::fill_real_pair_correlation(particle_collection *first, particle_c
 
 	if (!second) {
 		end_inner = first->end();
-		;
 		end_outer--;
+
 	} else {
 		start_inner = second->begin();
 		end_inner = second->end();
 	}
 
 	for (auto &iptcl = start_outer; iptcl != end_outer; iptcl++) {
+		if (!second) {
+			start_inner = iptcl;
+			start_inner++;
+		}
 		for (auto &jptcl = start_inner; jptcl != end_inner; jptcl++) {
+
 			pr->set_first_particle(*iptcl);
 			pr->set_second_particle(*jptcl);
-			// if (real_pr_cut == nullptr || real_pr_cut->pass(pr))
-			// {
-			//     for (auto &corr : *correlations)
-			//     {
-			//         corr->add_real_pair(pr);
-			//     }
-			// }
+
 			bool is_passed_pair = true;
 			if (real_pr_cut) {
 				is_passed_pair = real_pr_cut->pass(pr);
@@ -167,13 +166,6 @@ void analysis::fill_mixed_pair_correlation(particle_collection *first,
 		for (auto &jptcl : *second) {
 			pr->set_first_particle(iptcl);
 			pr->set_second_particle(jptcl);
-			// if (mixed_pr_cut == nullptr || mixed_pr_cut->pass(pr))
-			// {
-			//     for (auto &corr : *correlations)
-			//     {
-			//         corr->add_mixed_pair(pr);
-			//     }
-			// }
 
 			bool is_passed_pair = true;
 			if (mixed_pr_cut) {
@@ -190,12 +182,6 @@ void analysis::fill_mixed_pair_correlation(particle_collection *first,
 }
 
 void fill_particle_collection(track_cut *cut, track_collection *src, particle_collection *des) {
-	// for (auto& trk : *src) {
-	//     if (cut == nullptr || cut->pass(trk)) {
-	//         des->push_back(new particle(trk));
-	//     }
-	// }
-
 	for (auto &trk : *src) {
 		if (cut) {
 			bool is_passed_track = cut->pass(trk);
