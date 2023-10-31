@@ -24,19 +24,26 @@ public:
 		this->version = ver;
 	}
 
+	void set_maximum_mass_number(const int &A) {
+		std::lock_guard<std::mutex> lock(m_mutex);
+		this->maximum_mass_number = A;
+	}
+
 	// We don't want getters to be thread-safe in our case.
 	std::optional<double> get_mass(const std::string &symbol) const;
-	std::optional<double> get_mass(const int &neutron, const int &proton) const;
+	std::optional<double> get_mass(const unsigned int &neutron, const unsigned int &proton) const;
 
 	std::optional<std::pair<int, int>> get_neutron_proton_number(const std::string &symbol) const;
 	std::optional<int> get_neutron_number(const std::string &symbol) const;
 	std::optional<int> get_proton_number(const std::string &symbol) const;
 
-	std::optional<std::string> get_symbol(const int &neutron, const int &proton) const;
+	std::optional<std::string> get_symbol(const unsigned int &neutron,
+										  const unsigned int &proton) const;
 	std::optional<std::string> get_symbol(const std::string &alias) const;
 
-	int get_number_of_instances() const { return this->instance_counts; }
-	int get_number_of_elements() const { return this->elements.size(); }
+	unsigned int get_number_of_instances() const { return this->instance_counts; }
+	unsigned int get_number_of_elements() const { return this->elements.size(); }
+	unsigned int get_maximum_mass_number() const { return this->maximum_mass_number; }
 
 	static ame *get_instance(const std::string &version = "20") {
 		// Static local variable initialization is thread-safe and will be initialized only once.
@@ -46,13 +53,13 @@ public:
 
 private:
 	bool is_loaded;
-	int instance_counts = 0;
-	int maximum_mass_number;
+	unsigned int instance_counts = 0;
+	unsigned int maximum_mass_number;
 	std::string version;
 	std::mutex m_mutex;
 	std::map<std::string, double> mass_table;
-	std::map<std::string, std::pair<int, int>> neutron_proton_table;
-	std::map<std::pair<int, int>, std::string> symbol_table;
+	std::map<std::string, std::pair<unsigned int, unsigned int>> neutron_proton_table;
+	std::map<std::pair<unsigned int, unsigned int>, std::string> symbol_table;
 	std::vector<std::string> elements;
 
 	explicit ame(const std::string &version) {
@@ -67,8 +74,10 @@ private:
 	void read_ame_table();
 	void extract_elements();
 	void extract_maximum_mass_number();
-	std::optional<double> get_unphysical_mass(const int &neutron, const int &proton) const;
-	std::optional<double> get_unphysical_mass(const int &nucleons) const;
+
+	std::optional<double> get_unphysical_mass(const unsigned int &neutron,
+											  const unsigned int &proton) const;
+	std::optional<double> get_unphysical_mass(const unsigned int &nucleons) const;
 
 protected:
 	const double default_nucleon_mass = 938.918;
