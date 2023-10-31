@@ -23,8 +23,8 @@ set (
     analysis.cpp
     manager.cpp
 )
-List(TRANSFORM dev_sources PREPEND ${CMAKE_CURRENT_LIST_DIR}/${dev_folder_name}/)
 
+List(TRANSFORM dev_sources PREPEND ${CMAKE_CURRENT_LIST_DIR}/${dev_folder_name}/)
 add_library(${PROJECT_NAME} SHARED ${dev_sources})
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
@@ -42,8 +42,10 @@ packageProject(
   VERSION ${PROJECT_VERSION}
   NAMESPACE ${PROJECT_NAME}
   BINARY_DIR ${PROJECT_BINARY_DIR}
+
   INCLUDE_DIR ${PROJECT_SOURCE_DIR}/${dev_folder_name}
   INCLUDE_DESTINATION ${dev_folder_name}/${PROJECT_NAME}-${PROJECT_VERSION}
+
   VERSION_HEADER "${VERSION_HEADER_LOCATION}"
   COMPATIBILITY SameMajorVersion
 )

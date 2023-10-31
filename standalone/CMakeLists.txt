@@ -6,7 +6,6 @@ include(../cmake/CPM.cmake)
 CPMAddPackage(NAME NuclearCorrelation SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 CPMAddPackage(NAME NuclearUtilities SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../util)
 CPMAddPackage(NAME UserCorrelation SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../custom)
-
 find_package(ROOT REQUIRED)
 
 set(

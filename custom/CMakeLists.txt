@@ -52,4 +52,3 @@ packageProject(
   COMPATIBILITY SameMajorVersion
   DEPENDENCIES "ROOT ${ROOT_VERSION}" 
 )
-
