@@ -38,3 +38,8 @@ target_include_directories(
 enable_testing()
 include(${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake)
 doctest_discover_tests(${PROJECT_NAME})
+
+if (ENABLE_TEST_COVERAGE)
+    target_compile_options(NuclearUtilities PUBLIC -O0 -g -fprofile-arcs -ftest-coverage)
+    target_link_options(NuclearUtilities PUBLIC -fprofile-arcs -ftest-coverage)
+endif()
