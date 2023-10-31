@@ -20,8 +20,9 @@ TEST_CASE("get-mass-of-non-existing-element") {
 	const double mN = 938.918;
 	// uranium is a valid element but it can't hold 999 nucleons
 	CHECK(ame::get_instance()->get_mass("u999") == std::nullopt);
-	// u243 is not found in ame table, thus handled as unphysical maas
-	CHECK(ame::get_instance()->get_mass("u243") == mN * 243);
+	// u244 is not found in ame table, but A is less than the maximum allowed.
+	// thus handled as unphysical maas
+	CHECK(ame::get_instance()->get_mass("u244") == mN * 244);
 }
 
 TEST_CASE("get-neutron-proton-numbers-of-existing-element") {
@@ -54,3 +55,5 @@ TEST_CASE("get-symbol-from-NZ") {
 	CHECK(ame::get_instance()->get_symbol(1, 2) == "he3");
 	CHECK(ame::get_instance()->get_symbol(2, 2) == "he4");
 }
+
+TEST_CASE("get-maximum-A") { CHECK(ame::get_instance()->get_maximum_mass_number() == 295); }
