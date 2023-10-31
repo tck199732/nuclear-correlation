@@ -1,0 +1,10 @@
+coverage:
+  round: nearest
+  range: 20..60
+  precision: 2
+
+ignore:
+  - "tests"
+
+comment:
+  require_changes: true

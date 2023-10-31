@@ -11,6 +11,7 @@ endif()
 include(cmake/CPM.cmake)
 CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
 
+set(dev_folder_name "dev")
 set ( 
     dev_sources 
     base_cut.cpp
@@ -23,18 +24,16 @@ set (
     manager.cpp
 )
 
-List(TRANSFORM dev_sources PREPEND "dev/")
-
+List(TRANSFORM dev_sources PREPEND ${CMAKE_CURRENT_LIST_DIR}/${dev_folder_name}/)
 add_library(${PROJECT_NAME} SHARED ${dev_sources})
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
-# target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
+target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
 
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/dev>
-    $<INSTALL_INTERFACE:dev/${PROJECT_NAME}-${PROJECT_VERSION}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${dev_folder_name}>
+    $<INSTALL_INTERFACE:${dev_folder_name}/${PROJECT_NAME}-${PROJECT_VERSION}>
 )
 
 string(TOLOWER ${PROJECT_NAME}/version.h VERSION_HEADER_LOCATION)
@@ -43,8 +42,10 @@ packageProject(
   VERSION ${PROJECT_VERSION}
   NAMESPACE ${PROJECT_NAME}
   BINARY_DIR ${PROJECT_BINARY_DIR}
-  INCLUDE_DIR ${PROJECT_SOURCE_DIR}/dev
-  INCLUDE_DESTINATION dev/${PROJECT_NAME}-${PROJECT_VERSION}
+
+  INCLUDE_DIR ${PROJECT_SOURCE_DIR}/${dev_folder_name}
+  INCLUDE_DESTINATION ${dev_folder_name}/${PROJECT_NAME}-${PROJECT_VERSION}
+
   VERSION_HEADER "${VERSION_HEADER_LOCATION}"
   COMPATIBILITY SameMajorVersion
 )

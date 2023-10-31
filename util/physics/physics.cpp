@@ -1,5 +1,13 @@
 #include "physics.hpp"
 
+physics::four_vector::four_vector(const double &x, const double &y, const double &z,
+								  const double &t) {
+	p0 = t;
+	p1 = x;
+	p2 = y;
+	p3 = z;
+}
+
 physics::four_vector::four_vector(const four_vector &other) {
 	this->p0 = other.p0;
 	this->p1 = other.p1;
@@ -63,6 +71,14 @@ physics::four_vector physics::four_vector::operator/(const double &scalar) const
 	return four_vector(*this) /= scalar;
 }
 
+bool physics::operator==(const four_vector &first, const four_vector &second) {
+	return first.x() == second.x() && first.y() == second.y() && first.z() == second.z() &&
+		   first.t() == second.t();
+}
+bool physics::operator!=(const four_vector &first, const four_vector &second) {
+	return !(first == second);
+}
+
 void physics::four_vector::boost(const double &beta_x, const double &beta_y, const double &beta_z) {
 	double beta = std::sqrt(beta_x * beta_x + beta_y * beta_y + beta_z * beta_z);
 	double gamma = 1. / std::sqrt(1. - beta * beta);
@@ -101,9 +117,6 @@ double physics::get_qz(const four_vector &first, const four_vector &second) {
 	return (first.Pz() * second.M() - second.Pz() * first.M()) / (first.M() + second.M());
 }
 
-// out-side-long coordinate system (Bertsch-Pratt)
-// first boost to the frame where the pair Pz = 0 (longitudinal pair rest frame)
-// then rotate the transverse plane with an angle \cos\theta = Px / Pt
 double physics::get_qout(const four_vector &first, const four_vector &second) {
 	auto P = (first + second);
 	auto q = (first - second);
