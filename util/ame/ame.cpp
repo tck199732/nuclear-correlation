@@ -101,10 +101,10 @@ std::optional<std::pair<int, int>> ame::get_neutron_proton_number(const std::str
 
 std::optional<int> ame::get_proton_number(const std::string &symbol) const {
 	auto neutron_proton = this->get_neutron_proton_number(symbol);
-	return (neutron_proton) ? std::optional<int>(neutron_proton->first) : std::nullopt;
+	return (neutron_proton) ? std::optional<int>(neutron_proton->second) : std::nullopt;
 }
 
 std::optional<int> ame::get_neutron_number(const std::string &symbol) const {
 	auto neutron_proton = this->get_neutron_proton_number(symbol);
-	return (neutron_proton) ? std::optional<int>(neutron_proton->second) : std::nullopt;
+	return (neutron_proton) ? std::optional<int>(neutron_proton->first) : std::nullopt;
 }
