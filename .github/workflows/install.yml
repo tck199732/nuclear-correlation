@@ -11,6 +11,7 @@ on:
 env:
   DATE: ""
   CACHE_NUMBER: 0  # increase to reset cache manually
+  CTEST_OUTPUT_ON_FAILURE: 1
 
 jobs:
   build:
@@ -63,13 +64,33 @@ jobs:
             root-config --version
             cmake --version 
 
-      - name: build-cmake
+      - name: build-cmake 🔨
         shell: bash -el {0}
         run: |
           conda activate test
-          cmake -B build -S all
-          cmake --build ./build -j4
+          cmake -B build -S tests -DENABLE_TEST_COVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
         
+        # ~/.local/bin/ctest is called instead if ${CONDA_PREFIX}/ is later in ${PATH}
+      - name: check-ctest
+        shell: bash -el {0}
+        run: | 
+          conda activate test
+          which ctest
+
+      - name: build-tests
+        shell: bash -el {0}
+        run: |
+          conda activate test
+          cmake --build build -j4
+          cd build
+          ctest --build-config Debug
+            
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+
 
 
 
