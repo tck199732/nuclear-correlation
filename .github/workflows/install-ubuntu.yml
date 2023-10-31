@@ -48,6 +48,11 @@ jobs:
         run: mamba env update -n test -f environment.yml
         if: steps.cache.outputs.cache-hit != 'true'
 
+      - name: export-project-path
+        shell: bash -el {0}
+        run: |
+            export PROJECT_DIR=$(pwd)
+      
       - name: check
         shell: bash -el {0}
         run: |
