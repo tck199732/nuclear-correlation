@@ -52,6 +52,7 @@ jobs:
         shell: bash -el {0}
         run: |
             export PROJECT_DIR=$(pwd)
+            echo $PROJECT_DIR
       
       - name: check
         shell: bash -el {0}
@@ -78,6 +79,7 @@ jobs:
         run: |
           conda activate test
           cmake --build build -j4
+          export PROJECT_DIR=$(pwd)
           cd build
           ctest --build-config Debug
             
