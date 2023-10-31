@@ -71,6 +71,14 @@ physics::four_vector physics::four_vector::operator/(const double &scalar) const
 	return four_vector(*this) /= scalar;
 }
 
+bool physics::operator==(const four_vector &first, const four_vector &second) {
+	return first.x() == second.x() && first.y() == second.y() && first.z() == second.z() &&
+		   first.t() == second.t();
+}
+bool physics::operator!=(const four_vector &first, const four_vector &second) {
+	return !(first == second);
+}
+
 void physics::four_vector::boost(const double &beta_x, const double &beta_y, const double &beta_z) {
 	double beta = std::sqrt(beta_x * beta_x + beta_y * beta_y + beta_z * beta_z);
 	double gamma = 1. / std::sqrt(1. - beta * beta);

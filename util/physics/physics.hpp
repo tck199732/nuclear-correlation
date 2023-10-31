@@ -11,7 +11,7 @@ public:
 	four_vector() = default;
 	four_vector(const double &x, const double &y, const double &z, const double &t);
 
-	template <typename T, size_t N> four_vector(const T &vec) {
+	template <typename T> four_vector(const T &vec) {
 
 		// clang-format off
 		static_assert(
@@ -25,10 +25,10 @@ public:
 			throw std::invalid_argument("Input array or vector must have 4 elements.");
 		}
 
-		this->p0 = static_cast<double>(vec[0]);
-		this->p1 = static_cast<double>(vec[1]);
-		this->p2 = static_cast<double>(vec[2]);
-		this->p3 = static_cast<double>(vec[3]);
+		this->p1 = static_cast<double>(vec[0]);
+		this->p2 = static_cast<double>(vec[1]);
+		this->p3 = static_cast<double>(vec[2]);
+		this->p0 = static_cast<double>(vec[3]);
 	}
 	four_vector(const four_vector &other);
 	~four_vector() = default;
@@ -76,6 +76,9 @@ public:
 private:
 	double p0, p1, p2, p3;
 };
+
+bool operator==(const four_vector &first, const four_vector &second);
+bool operator!=(const four_vector &first, const four_vector &second);
 
 /**
  * @brief Return the x-component of the relative 3-vector given two four-vectors.
