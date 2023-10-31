@@ -79,6 +79,11 @@ jobs:
         run: |
           conda activate test
           cmake --build build -j4
+        
+      - name: run-tests
+        shell: bash -el {0}
+        run: |
+          conda activate test
           export PROJECT_DIR=$(pwd)
           cd build
           ctest --build-config Debug
