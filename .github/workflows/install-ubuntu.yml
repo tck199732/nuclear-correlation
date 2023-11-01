@@ -88,12 +88,15 @@ jobs:
           cd build
           ctest --build-config Debug
             
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-            token: ${{ secrets.CODECOV_TOKEN }}
-            fail_ci_if_error: true
-            
+    #   - name: Upload coverage reports to Codecov
+    #     uses: codecov/codecov-action@v3
+    #     with:
+    #         token: ${{ secrets.CODECOV_TOKEN }}
+    #         fail_ci_if_error: true
+    
+      - name: upload codecov using cmd
+        run: bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
+
 
 
 
