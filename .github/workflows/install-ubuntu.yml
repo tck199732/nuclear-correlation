@@ -65,7 +65,7 @@ jobs:
         shell: bash -el {0}
         run: |
           conda activate test
-          cmake -B build -S tests -DENABLE_TEST_COVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
+          cmake -B build/util -S tests/util -DENABLE_TEST_COVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
         
         # ~/.local/bin/ctest is called instead if ${CONDA_PREFIX}/ is later in ${PATH}
       - name: check-ctest
@@ -78,29 +78,21 @@ jobs:
         shell: bash -el {0}
         run: |
           conda activate test
-          cmake --build build -j4
+          cmake --build build/util -j4
         
       - name: run-tests
         shell: bash -el {0}
         run: |
           conda activate test
           export PROJECT_DIR=$(pwd)
-          cd build
+          cd build/util
           ctest --build-config Debug
             
-    #   - name: Upload coverage reports to Codecov
-    #     uses: codecov/codecov-action@v3
-    #     with:
-    #         token: ${{ secrets.CODECOV_TOKEN }}
-    #         fail_ci_if_error: true
-    
-      - name: upload codecov using cmd
-        run: bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
-
-
-
-
-
-
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+            token: ${{ secrets.CODECOV_TOKEN }}
+            fail_ci_if_error: true
+            flags: util
 
 

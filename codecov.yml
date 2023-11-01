@@ -2,9 +2,23 @@ coverage:
   round: nearest
   range: 20..60
   precision: 2
+  status:
+    project: off
+    patch: off
 
 ignore:
   - "tests"
 
-comment:
-  require_changes: true
+flag_management:
+  default_rules:
+    carryforward: true
+
+  individual_flags:
+    - name: util
+      paths:
+        - util/
+      statuses:
+        - type: project
+          target: 100%
+          threshold: 10%
+          flags: util
