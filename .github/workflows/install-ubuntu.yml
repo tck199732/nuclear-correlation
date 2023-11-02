@@ -87,12 +87,20 @@ jobs:
           export PROJECT_DIR=$(pwd)
           cd build
           ctest --build-config Debug
-            
+        
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-            token: ${{ secrets.CODECOV_TOKEN }}
-            fail_ci_if_error: true
-            flags: util
+        # codecov/codecov-action does not work
+        # uses: codecov/codecov-action@v3
+        # with:
+        #     token: ${{ secrets.CODECOV_TOKEN }}
+        #     fail_ci_if_error: true
+        #     flags: util
 
+        shell: bash -el {0}
+        run: |
+          conda activate test
+          cd ${{ github.workspace }}
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+          ./codecov -g -t ${{ secrets.CODECOV_TOKEN }}
 
