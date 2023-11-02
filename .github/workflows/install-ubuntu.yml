@@ -38,7 +38,7 @@ jobs:
       - name: Set cache date
         run: echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ${{ matrix.prefix }}
           key: ${{ matrix.label }}-conda-${{ hashFiles('environment.yml') }}-${{ env.DATE }}-${{ env.CACHE_NUMBER }}
@@ -65,7 +65,7 @@ jobs:
         shell: bash -el {0}
         run: |
           conda activate test
-          cmake -B build/util -S tests/util -DENABLE_TEST_COVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
+          cmake -B build -S tests -DENABLE_TEST_COVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
         
         # ~/.local/bin/ctest is called instead if ${CONDA_PREFIX}/ is later in ${PATH}
       - name: check-ctest
@@ -78,14 +78,14 @@ jobs:
         shell: bash -el {0}
         run: |
           conda activate test
-          cmake --build build/util -j4
+          cmake --build build -j4
         
       - name: run-tests
         shell: bash -el {0}
         run: |
           conda activate test
           export PROJECT_DIR=$(pwd)
-          cd build/util
+          cd build
           ctest --build-config Debug
             
       - name: Upload coverage reports to Codecov
