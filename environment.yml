@@ -12,13 +12,4 @@ dependencies:
 
    # formatting
    - clang-format=14.0.6
-
-   # tools
-   - numpy>=1.19.0
-   - astropy>=4.0
-   - scipy>=1.6
-   - pandas>=1.1.0
-   - matplotlib>=3.3.0
-   - ipykernel>=6.16.0
-
-  
+   
