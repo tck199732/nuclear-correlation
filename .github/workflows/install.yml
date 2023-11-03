@@ -88,16 +88,13 @@ jobs:
           root-config --version
 
       - name: build-cmake 🔨
-        run: |
-          cmake -B build -S tests -DENABLE_TEST_COVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
+        run: cmake -B build -S tests -DENABLE_TEST_COVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
           
       - name: build-tests
-        run: |
-          cmake --build build -j4
+        run: cmake --build build -j4
 
       - name: run-tests
         run: |
-          source /opt/root/bin/thisroot.sh
           cd build
           ctest --build-config Debug
 
