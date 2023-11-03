@@ -3,11 +3,9 @@ project(UtilityTests LANGUAGES CXX)
 include(../../cmake/tools.cmake)
 include(../../cmake/CPM.cmake)
 
-
-
 CPMAddPackage(NAME NuclearUtilities SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../../util)
 CPMAddPackage("gh:doctest/doctest@2.4.11")
-find_package(ROOT REQUIRED)
+find_package(ROOT REQUIRED COMPONENTS GenVector)
 
 set(
     testing_sources
@@ -24,7 +22,6 @@ target_link_libraries(
     PUBLIC 
     NuclearUtilities
     ${ROOT_LIBRARIES}
-    GenVector
     doctest::doctest
 )
 
