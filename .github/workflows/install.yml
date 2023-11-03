@@ -90,10 +90,10 @@ jobs:
       - name: build-cmake 🔨
         run: cmake -B build -S tests -DENABLE_TEST_COVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
           
-      - name: build-tests
+      - name: build tests 🔨
         run: cmake --build build -j4
 
-      - name: run-tests
+      - name: run tests 🧪
         run: |
           cd build
           ctest --build-config Debug
