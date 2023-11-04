@@ -1,0 +1,107 @@
+####################################################################################################
+# This workflow performs the following steps: 
+# 1. installs ROOT and its dependencies. 
+#   - Note the archived binary of ROOT must be the same version as the ubuntu distribution. 
+#   - Currently, ubuntu-latest refers to 22.04 which is the version ROOT was built on. 
+#   - For other ROOT version (based on older ubuntu), see `https://hub.docker.com/r/rootproject/root`.
+# 2. Build and Run Tests using ctest
+# 3. Upload coverage reports to Codecov
+#  - Code coverage is gathered using gcov in the codecov action. If one generates output from ctest 
+#    using `--output-junit coverage.xml` and then pass `files : build/coverage.xml` to the codecov, 
+#    the report will be marked as unusable for unknown reasons.
+####################################################################################################
+name: install
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CTEST_OUTPUT_ON_FAILURE: 1
+  CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
+  ROOT_VERSION : 6.28.04 # change this version create a new cache
+
+jobs:
+  build:
+    runs-on: ubuntu-Latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        id: cache-cpm
+        with:
+          path: "**/cpm_modules"
+          key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
+      
+      - uses: actions/cache@v3
+        id: cache-ROOT
+        with:
+          path: /opt/root
+          key: ${{ github.workflow }}-ROOT-${{ env.ROOT_VERSION }}
+
+      - name: install ROOT dependencies
+        env: 
+          root_dependencies: "cmake ca-certificates curl davix-dev dcap-dev fonts-freefont-ttf g++ gcc gfortran libafterimage-dev libcfitsio-dev libfcgi-dev libfftw3-dev libfreetype6-dev libftgl-dev libgfal2-dev libgif-dev libgl2ps-dev libglew-dev libglu-dev libgraphviz-dev libgsl-dev libjpeg-dev liblz4-dev liblzma-dev libmysqlclient-dev libpcre++-dev libpng-dev libpq-dev libsqlite3-dev libssl-dev libtbb-dev libtiff-dev libx11-dev libxext-dev libxft-dev libxml2-dev libxpm-dev libxxhash-dev libz-dev libzstd-dev locales make python3-dev python3-numpy srm-ifce-dev unixodbc-dev python-is-python3"
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get -y install ${{env.root_dependencies}} wget
+          sudo rm -rf /var/lib/apt/lists/*
+      
+      - name: check cmake version
+        run: cmake --version
+
+      - name: install ROOT
+        if: steps.cache-ROOT.outputs.cache-hit != 'true'
+        env:
+            root_binary: root_v${{env.ROOT_VERSION}}.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
+        run: |
+          wget https://root.cern/download/${{env.root_binary}} 
+          tar -xzvf ${{env.root_binary}} --directory /opt
+          rm -f ${{env.root_binary}} 
+        
+      - name: setup ROOT libraries
+        run: | 
+          sudo sh -c "echo $/opt/root/lib >> /etc/ld.so.conf"
+          sudo ldconfig
+
+      - name: setup env variables
+        run: |
+          echo "ROOTSYS=/opt/root" >> "$GITHUB_ENV"
+          echo "CLING_STANDARD_PCH=none" >> "$GITHUB_ENV"
+          echo "PROJECT_DIR=$(pwd)" >> "$GITHUB_ENV"
+     
+      - name: setup ROOT paths
+        run : | 
+          echo "$ROOTSYS/bin" >> $GITHUB_PATH
+          echo "PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH" >> "$GITHUB_ENV"
+          
+      - name : check ROOT env vars and paths
+        run: |
+          echo $ROOTSYS
+          echo $PYTHONPATH
+          echo $PATH
+          
+      - name: check ROOT installation
+        run: |
+          source /opt/root/bin/thisroot.sh
+          root-config --version
+
+      - name: build-cmake 🔨
+        run: cmake -B build -S tests -DENABLE_TEST_COVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
+          
+      - name: build tests 🔨
+        run: cmake --build build -j4
+
+      - name: run tests 🧪
+        run: |
+          cd build
+          ctest --build-config Debug
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          verbose: true
+          gcov: true

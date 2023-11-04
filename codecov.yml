@@ -3,8 +3,10 @@ coverage:
   range: 20..60
   precision: 2
 
-ignore:
-  - "tests"
-
 comment:
   require_changes: true
+
+ignore:
+  - "tests"
+  - "env"
+  - "build*/_deps/doctest-src"

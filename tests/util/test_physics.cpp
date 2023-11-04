@@ -13,6 +13,11 @@ TEST_CASE("initialize-with-vector/array") {
 	std::array<double, 4> arr = {1, 2, 3, 10};
 	physics::four_vector v_arr(arr);
 	REQUIRE_EQ(v_vec, v_arr);
+
+	std::array<double, 5> invalid_arr = {1, 2, 3, 4, 5};
+	std::vector<double> invalid_vec = {1, 2, 3, 4, 5};
+	CHECK_THROWS(physics::four_vector(invalid_arr));
+	CHECK_THROWS(physics::four_vector(invalid_vec));
 }
 
 TEST_CASE("initialize-with-list") {
