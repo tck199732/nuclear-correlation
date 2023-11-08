@@ -26,7 +26,58 @@ TEST_CASE("initialize-with-list") {
 	REQUIRE_EQ(v_list, v_list2);
 }
 
-TEST_CASE("check-beta") {
+TEST_CASE("copy-constructor") {
+	physics::four_vector vec(1, 2, 3, 10);
+	physics::four_vector vec2(vec);
+	REQUIRE_EQ(vec, vec2);
+}
+
+TEST_CASE("operators") {
+	physics::four_vector vec(1, 2, 3, 10);
+	physics::four_vector vec_equal = vec;
+
+	REQUIRE_EQ(vec, vec_equal);
+	REQUIRE_EQ(vec + vec, physics::four_vector(2, 4, 6, 20));
+	REQUIRE_EQ(vec - vec, physics::four_vector(0, 0, 0, 0));
+	REQUIRE_EQ(vec * 2, physics::four_vector(2, 4, 6, 20));
+	REQUIRE_EQ(vec / 2, physics::four_vector(0.5, 1, 1.5, 5));
+}
+
+TEST_CASE("+= operator") {
+	physics::four_vector vec(1, 2, 3, 10);
+	physics::four_vector vec2(1, 2, 3, 10);
+	vec += vec2;
+	REQUIRE_EQ(vec, physics::four_vector(2, 4, 6, 20));
+}
+
+TEST_CASE("-= operator") {
+	physics::four_vector vec(1, 2, 3, 10);
+	physics::four_vector vec2(1, 2, 3, 10);
+	vec -= vec2;
+	REQUIRE_EQ(vec, physics::four_vector(0, 0, 0, 0));
+}
+
+TEST_CASE("*= operator") {
+	physics::four_vector vec(1, 2, 3, 10);
+	vec *= 2;
+	REQUIRE_EQ(vec, physics::four_vector(2, 4, 6, 20));
+}
+
+TEST_CASE("/= operator") {
+	physics::four_vector vec(1, 2, 3, 10);
+	vec /= 2;
+	REQUIRE_EQ(vec, physics::four_vector(0.5, 1, 1.5, 5));
+}
+
+TEST_CASE("==, != operator") {
+	physics::four_vector vec(1, 1, 1, 10);
+	physics::four_vector vec2(1, 1, 1, 10);
+	physics::four_vector vec3(1, 1, 1, 11);
+	REQUIRE(vec == vec2);
+	REQUIRE(vec != vec3);
+}
+
+TEST_CASE("check-beta-component") {
 	physics::four_vector vec(100, 200, 300, 4000);
 	ROOT::Math::PxPyPzEVector vec_root(100, 200, 300, 4000);
 	auto beta = vec_root.BoostToCM();
@@ -35,7 +86,7 @@ TEST_CASE("check-beta") {
 	CHECK(vec.beta_z() == doctest::Approx(beta.Z()));
 }
 
-TEST_CASE("check-beta") {
+TEST_CASE("check-boosting") {
 	physics::four_vector vec(100, 200, 300, 4000);
 	ROOT::Math::PxPyPzEVector vec_root(100, 200, 300, 4000);
 
@@ -49,4 +100,13 @@ TEST_CASE("check-beta") {
 	CHECK(vec.Py() == doctest::Approx(vec_root_boosted.Py()));
 	CHECK(vec.Pz() == doctest::Approx(vec_root_boosted.Pz()));
 	CHECK(vec.E() == doctest::Approx(vec_root_boosted.E()));
+}
+
+TEST_CASE("check physics calculation") {
+	physics::four_vector vec(100, 200, 300, 4000);
+	ROOT::Math::PxPyPzEVector vec_root(100, 200, 300, 4000);
+
+	CHECK(vec.Pt() == doctest::Approx(vec_root.Pt()));
+	CHECK(vec.Mag() == doctest::Approx(vec_root.P()));
+	CHECK(vec.M() == doctest::Approx(vec_root.M()));
 }
