@@ -33,7 +33,7 @@ C(q) = \dfrac{P(p_1, p_2)}{P(p_1)P(p_2)}
 \end{gather*}
 $$
 
-where $P(p_1,p_2)$ refers to the probability of detecting a pair of particles with asymptotic momenta $p_1$ and $p_2$. Although the repository was developed with the objective to analyze large dataset in nuclear/particle physics. The framework is compatible with arbitrary analysis since the base classes were written without assumption of any physics.
+where $P(p_1,p_2)$ refers to the probability of detecting a pair of particles with asymptotic momenta $p_1$ and $p_2$. Although the repository was developed with the objective to analyze large dataset in nuclear/particle physics, the framework is compatible with arbitrary analysis since the base classes were written without assumption of any physics.
 
 ### Why another repository for StHbt? 
 - ⚡️Considered as an updated version, developed with modern `C++` and `cmake` for better readability and tractability.
