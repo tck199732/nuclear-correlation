@@ -25,12 +25,20 @@
 </b>
 
 # nuclear-correlation
-Developed with [**`ROOT`**](root.cern) with `C++17`, `nuclear-correlation` provides a simple framework to calculate **two-particle correlation function** for both experimental data and simulated data. The repository is based on the `StHbt` developed years ago at CERN. 
+Developed with [**`ROOT`**](root.cern) with `C++17`, `nuclear-correlation` provides a simple framework to calculate [**two-particle correlation function**](https://journals.aps.org/prc/abstract/10.1103/PhysRevC.42.2646). Starting from the base classes, this repository provides a framework (based on the `StHbt` developed years ago at CERN) to construct the following observable,
+
+$$
+\begin{gather*} 
+C(q) = \dfrac{P(p_1, p_2)}{P(p_1)P(p_2)}
+\end{gather*}
+$$
+
+where $P(p_1,p_2)$ refers to the probability of detecting a pair of particles with asymptotic momenta $p_1$ and $p_2$. Although the repository was developed with the objective to analyze large dataset in nuclear/particle physics. The framework is compatible with arbitrary analysis since the base classes were written without assumption of any physics.
 
 ### Why another repository for StHbt? 
-- ⚡️Considered as an update version, developed with modern `C++` and `cmake` for better readability and tractability.
-- 🔥 The legacy code was written years ago using `cpp11` and most code are designed for high-energy community in which many features are not required in low-energy nuclear physics. Some old mathematical libraries are also obsolete .
-- 👷Probably the "most important" reason, for me to learn the process of software development, following the [`ModernCppStarter`](https://github.com/TheLartians/ModernCppStarter).
+- ⚡️Considered as an updated version, developed with modern `C++` and `cmake` for better readability and tractability.
+- 🔥 The legacy code was written years ago using `cpp11`. Most codes are designed for high-energy community in which many features are not required in low-energy nuclear physics. Old mathematical libraries are rendered obsolete since the advancement of the `ROOT`.
+- 👷Probably the "most important" reason : for me to learn the process of software development, following the [`ModernCppStarter`](https://github.com/TheLartians/ModernCppStarter). 
 
 ### Change Note
 -----------------
@@ -44,7 +52,7 @@ Developed with [**`ROOT`**](root.cern) with `C++17`, `nuclear-correlation` provi
 
 ## **Table of Content**
  - [Requirements & Installation](#0-requirements--installation)
- - [Starter](#1-starter)
+ - [Starter](#1-get-started)
  - [Directory Structure](#2-directory-structure)
  - [Usage](#3-usage)
  - [Further-Reading](#4-Further-Reading)
@@ -68,8 +76,8 @@ source ${miniconda3-prefix}/bin/activate
 conda env create -f environment.yml --prefix ./env
 ```
 
-### 1. Starter
-----------------
+### 1. Get Started
+-------------------
 First, check your installation of `ROOT6` and `cmake`. If your installatoin of `ROOT` is local, activate the startup script 
 ```
 source ${root-prefix}/bin/thisroot.sh
@@ -101,9 +109,11 @@ cd ./build
 ./main.exe
 ```
 
-The expected output should be ...
+The expected output should be 
 
 ### 2. Directory Structure
+------------------------
+- [**`cmake/`**](cmake/) : utility cmake tools, directly copied from [`ModernCppStarter`](https://github.com/TheLartians/ModernCppStarter).
 - [**`assets/`**](assets/) : contains useful data such as ame amss table and some sample data for testing purpose.
 - [**`dev`**](dev/) : base class and backbone codes for correlation analysis using event-mixing method. User shall not modify in most scenario.
 - [**`util`**](util/) : utility classes containing useful classes. 
@@ -113,12 +123,22 @@ The expected output should be ...
 - [**`all`**](all/) : contains `CMakeLists.txt` to compile everything, useful to developers for CI-CD.
 
 ### 3. Usage
+-------------
+Users need to write the codes in the directories [custom](./custom/) and [standalone](./standalone/). 
+
+- [custom](./custom/) : construct classes derived from those in [dev](./dev/)
+    - [reader](./custom/readers/): an event reader according to the format of data. 
+    - [cuts](./custom/cuts/): set up gates to veto unwanted entity
+    - [correlations](./custom/correlations/): define the correlation function based on the pair information.
+
+- [standalone](./standalone/): main script of the program.
 
 ### 4. Further-Reading
+------------------------
  - [`Two-Proton CF paper`](https://link.aps.org/accepted/10.1103/PhysRevC.85.014606) : uses data from experiment E03045, two-proton CF exhibits dependence on momentum. 
  - [`Zbigniew's phd thesis`](https://inspirehep.net/files/455e02c0dc66388a4e86f2874ecc8023) : Check out chapter 5 for details in spherical-harmonincs decompoistion of Correlation Function.
  - [`Spherical-Harmoncis Components Paper`](https://journals.aps.org/prc/abstract/10.1103/PhysRevC.80.064911) : Directly sample 1D numerator and denominator weighted with $Y_l^m$, which alse used to extract components of CF expanded with $Y_l^m$.
  - [`Theory on the spherical moments`](https://journals.aps.org/prc/abstract/10.1103/PhysRevC.81.064906)
-
+ - [`Debluring source function`](https://www.sciencedirect.com/science/article/pii/S0370269323005816?dgcid=rss_sd_all) : extract the underlying source function from 1D correlation function through deblurring, based on [Richardson-Lucy](https://en.wikipedia.org/wiki/Richardson%E2%80%93Lucy_deconvolution) algorithm.
 
 
