@@ -30,6 +30,9 @@ TEST_CASE("copy-constructor") {
 	physics::four_vector vec(1, 2, 3, 10);
 	physics::four_vector vec2(vec);
 	REQUIRE_EQ(vec, vec2);
+
+	physics::four_vector vec3 = vec;
+	REQUIRE_EQ(vec, vec3);
 }
 
 TEST_CASE("operators") {
@@ -102,11 +105,57 @@ TEST_CASE("check-boosting") {
 	CHECK(vec.E() == doctest::Approx(vec_root_boosted.E()));
 }
 
-TEST_CASE("check physics calculation") {
+TEST_CASE("check-boosting-zero") {
+	physics::four_vector vec(100, 200, 300, 4000);
+	ROOT::Math::PxPyPzEVector vec_root(100, 200, 300, 4000);
+	const std::array<double, 3> beta = {0.0, 0.0, 0.0};
+	vec.boost(beta[0], beta[1], beta[2]);
+
+	ROOT::Math::Boost boost(beta[0], beta[1], beta[2]);
+	auto vec_root_boosted = boost(vec_root);
+	CHECK(vec.Px() == doctest::Approx(vec_root_boosted.Px()));
+	CHECK(vec.Py() == doctest::Approx(vec_root_boosted.Py()));
+	CHECK(vec.Pz() == doctest::Approx(vec_root_boosted.Pz()));
+	CHECK(vec.E() == doctest::Approx(vec_root_boosted.E()));
+}
+
+TEST_CASE("check physics class method") {
 	physics::four_vector vec(100, 200, 300, 4000);
 	ROOT::Math::PxPyPzEVector vec_root(100, 200, 300, 4000);
 
 	CHECK(vec.Pt() == doctest::Approx(vec_root.Pt()));
 	CHECK(vec.Mag() == doctest::Approx(vec_root.P()));
 	CHECK(vec.M() == doctest::Approx(vec_root.M()));
+}
+
+TEST_CASE("check physics calculation") {
+	physics::four_vector vec1(100, 200, 300, 4000);
+	physics::four_vector vec2(100, -200, -300, 4000);
+	ROOT::Math::PxPyPzEVector vec1_root(100, 200, 300, 4000);
+	ROOT::Math::PxPyPzEVector vec2_root(100, -200, -300, 4000);
+
+	CHECK(get_minv(vec1, vec2) == doctest::Approx((vec1_root + vec2_root).M()));
+	CHECK(get_qinv(vec1, vec2) == doctest::Approx((vec1_root - vec2_root).M()));
+
+	auto qx_root = (vec1_root.Px() * vec2_root.M() - vec2_root.Px() * vec1_root.M()) /
+				   (vec1_root.M() + vec2_root.M());
+	auto qy_root = (vec1_root.Py() * vec2_root.M() - vec2_root.Py() * vec1_root.M()) /
+				   (vec1_root.M() + vec2_root.M());
+	auto qz_root = (vec1_root.Pz() * vec2_root.M() - vec2_root.Pz() * vec1_root.M()) /
+				   (vec1_root.M() + vec2_root.M());
+	CHECK(get_qx(vec1, vec2) == doctest::Approx(qx_root));
+	CHECK(get_qy(vec1, vec2) == doctest::Approx(qy_root));
+	CHECK(get_qz(vec1, vec2) == doctest::Approx(qz_root));
+
+	auto q_root = vec1_root - vec2_root;
+	auto P_root = vec1_root + vec2_root;
+
+	auto qout_root = (q_root.Px() * P_root.Px() + q_root.Py() * P_root.Py()) / P_root.Pt();
+	auto qside_root = (q_root.Py() * P_root.Px() - q_root.Px() * P_root.Py()) / P_root.Pt();
+	ROOT::Math::Boost boost(0, 0, -P_root.Pz() / P_root.E());
+	auto qlong_root = boost(q_root).Pz();
+
+	CHECK(get_qout(vec1, vec2) == doctest::Approx(qout_root));
+	CHECK(get_qside(vec1, vec2) == doctest::Approx(qside_root));
+	CHECK(get_qlong(vec1, vec2) == doctest::Approx(qlong_root));
 }
