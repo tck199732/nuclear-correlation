@@ -6,11 +6,8 @@
 #include <cmath>
 class particle {
 public:
-	particle(const unsigned &N, const unsigned &Z, const double &px, const double &py,
-			 const double &pz, const double &E, const double &x, const double &y, const double &z,
-			 const double &t);
-	particle(const track *trk);
 	particle(const particle &ptcl);
+	particle(const track *trk);
 	~particle();
 
 	unsigned int get_N() const { return N; }

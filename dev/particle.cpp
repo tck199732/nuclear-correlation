@@ -1,21 +1,4 @@
 #include "particle.hpp"
-
-particle::particle(const unsigned &N, const unsigned &Z, const double &px, const double &py,
-				   const double &pz, const double &E, const double &x, const double &y,
-				   const double &z, const double &t) {
-	this->N = N;
-	this->Z = Z;
-	this->px = px;
-	this->py = py;
-	this->pz = pz;
-	this->E = E;
-	this->x = x;
-	this->y = y;
-	this->z = z;
-	this->t = t;
-	this->trk = nullptr;
-}
-
 particle::particle(const particle &ptcl) {
 	this->N = ptcl.N;
 	this->Z = ptcl.Z;
@@ -53,6 +36,7 @@ particle::particle(const track *trk) {
 }
 
 particle::~particle() {
-	if (this->trk)
+	if (this->trk) {
 		delete this->trk;
+	}
 }
