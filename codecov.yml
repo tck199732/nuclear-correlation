@@ -1,9 +1,5 @@
-coverage:
-  round: nearest
-  range: 20..60
-  precision: 2
-
 comment:
+  layout: "header, diff, flags, components"  # show component info in the PR comment
   require_changes: true
 
 ignore:
