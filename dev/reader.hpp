@@ -10,7 +10,8 @@ public:
 	unsigned int get_status() const { return status; }
 
 protected:
-	unsigned int status;
+	// status = 0: success; user should define other status ID.
+	unsigned int status = 0;
 };
 
 #endif
