@@ -1,18 +1,15 @@
 #include "particle.hpp"
-
-particle::particle(const unsigned &N, const unsigned &Z, const double &px, const double &py,
-				   const double &pz, const double &E, const double &x, const double &y,
-				   const double &z, const double &t) {
-	this->N = N;
-	this->Z = Z;
-	this->px = px;
-	this->py = py;
-	this->pz = pz;
-	this->E = E;
-	this->x = x;
-	this->y = y;
-	this->z = z;
-	this->t = t;
+particle::particle() {
+	this->N = 0;
+	this->Z = 0;
+	this->px = 0;
+	this->py = 0;
+	this->pz = 0;
+	this->E = 0;
+	this->x = 0;
+	this->y = 0;
+	this->z = 0;
+	this->t = 0;
 	this->trk = nullptr;
 }
 
@@ -53,6 +50,7 @@ particle::particle(const track *trk) {
 }
 
 particle::~particle() {
-	if (this->trk)
+	if (this->trk) {
 		delete this->trk;
+	}
 }

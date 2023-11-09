@@ -64,6 +64,8 @@ public:
 	double Pt() const;
 	double Mag() const;
 	double M() const;
+	double M2() const;
+
 	double beta_x() const { return -this->p1 / this->p0; }
 	double beta_y() const { return -this->p2 / this->p0; }
 	double beta_z() const { return -this->p3 / this->p0; }

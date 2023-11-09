@@ -1,12 +1,19 @@
-coverage:
-  round: nearest
-  range: 20..60
-  precision: 2
-
 comment:
+  layout: "header, diff, flags, components"  # show component info in the PR comment
   require_changes: true
 
 ignore:
   - "tests"
   - "env"
   - "build*/_deps/doctest-src"
+
+component_management:
+  individual_components:
+    - component_id: dev  # this is an identifier that should not be changed
+      name: dev  # this is a display name, and can be changed freely
+      paths:
+        - dev/
+    - component_id: util  # this is an identifier that should not be changed
+      name: util  # this is a display name, and can be changed freely
+      paths:
+        - util/ 

@@ -61,7 +61,8 @@ std::optional<double> ame::get_mass(const std::string &symbol) const {
 	};
 
 	auto get_nucleons = [](const std::string &symbol) -> int {
-		return std::stoi(symbol.substr(symbol.find_first_of("0123456789")));
+		auto pos = symbol.find_first_of("0123456789");
+		return pos != std::string::npos ? std::stoi(symbol.substr(pos)) : -1;
 	};
 
 	auto find = [this](const std::string &ele) -> bool {
@@ -77,7 +78,7 @@ std::optional<double> ame::get_mass(const std::string &symbol) const {
 	if (this->mass_table.count(key) == 0) {
 		auto ele = get_element(key);
 		auto nucleons = get_nucleons(key);
-		if (find(ele)) {
+		if (find(ele) && nucleons != -1) {
 			return this->get_unphysical_mass(nucleons);
 		}
 		return std::nullopt;
