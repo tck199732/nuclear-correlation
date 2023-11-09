@@ -10,3 +10,14 @@ ignore:
   - "tests"
   - "env"
   - "build*/_deps/doctest-src"
+
+component_management:
+  individual_components:
+    - component_id: dev  # this is an identifier that should not be changed
+      name: dev  # this is a display name, and can be changed freely
+      paths:
+        - dev/
+    - component_id: util  # this is an identifier that should not be changed
+      name: util  # this is a display name, and can be changed freely
+      paths:
+        - util/ 
