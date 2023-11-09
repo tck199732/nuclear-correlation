@@ -5,7 +5,6 @@
 class pair {
 public:
 	pair();
-	pair(particle *ptcl1, particle *ptcl2);
 	pair(const pair &pr);
 	~pair();
 
