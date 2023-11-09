@@ -9,6 +9,8 @@ CPMAddPackage("gh:doctest/doctest@2.4.11")
 set(
     testing_sources
     main.cpp
+    test_reader.cpp
+    test_track.cpp
     test_property.cpp
 )
 
