@@ -6,6 +6,7 @@
 #include <cmath>
 class particle {
 public:
+	particle();
 	particle(const particle &ptcl);
 	particle(const track *trk);
 	~particle();

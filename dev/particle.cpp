@@ -1,4 +1,18 @@
 #include "particle.hpp"
+particle::particle() {
+	this->N = 0;
+	this->Z = 0;
+	this->px = 0;
+	this->py = 0;
+	this->pz = 0;
+	this->E = 0;
+	this->x = 0;
+	this->y = 0;
+	this->z = 0;
+	this->t = 0;
+	this->trk = nullptr;
+}
+
 particle::particle(const particle &ptcl) {
 	this->N = ptcl.N;
 	this->Z = ptcl.Z;
