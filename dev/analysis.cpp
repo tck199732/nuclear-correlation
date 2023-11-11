@@ -1,8 +1,5 @@
 #include "analysis.hpp"
-void fill_particle_collection(track_cut *cut, track_collection *src, particle_collection *des);
-
 analysis::analysis() {
-	is_identical = false;
 	event_mixing_size = 5;
 	evt_cut = nullptr;
 	first_track_cut = nullptr;
@@ -14,7 +11,6 @@ analysis::analysis() {
 }
 
 analysis::analysis(const analysis &anal) {
-	this->is_identical = anal.is_identical;
 	this->event_mixing_size = anal.event_mixing_size;
 	this->evt_cut = 0;
 	this->first_track_cut = 0;
@@ -26,42 +22,52 @@ analysis::analysis(const analysis &anal) {
 }
 
 analysis::~analysis() {
-	if (evt_cut != nullptr) {
+	if (evt_cut) {
 		delete evt_cut;
 	}
-	if (first_track_cut != nullptr) {
+	if (is_identical_particle()) {
+		second_track_cut = nullptr;
+	}
+	if (first_track_cut) {
 		delete first_track_cut;
+		first_track_cut = nullptr;
 	}
-	if (second_track_cut != nullptr) {
+	if (second_track_cut) {
 		delete second_track_cut;
+		second_track_cut = nullptr;
 	}
-	if (real_pr_cut != nullptr) {
+	if (real_pr_cut) {
 		delete real_pr_cut;
+		real_pr_cut = nullptr;
 	}
-	if (mixed_pr_cut != nullptr) {
+	if (mixed_pr_cut) {
 		delete mixed_pr_cut;
+		mixed_pr_cut = nullptr;
 	}
-
-	for (auto corr : *correlations) {
-		delete corr;
+	if (correlations) {
+		for (auto &corr : *correlations) {
+			delete corr;
+		}
+		delete correlations;
+		correlations = nullptr;
 	}
-	correlations->clear();
-	delete correlations;
-
-	for (auto evt : *event_mixing_buffer) {
-		delete evt;
+	if (event_mixing_buffer) {
+		for (auto &fevt : *event_mixing_buffer) {
+			delete fevt;
+		}
+		delete event_mixing_buffer;
+		event_mixing_buffer = nullptr;
 	}
-	event_mixing_buffer->clear();
-	delete event_mixing_buffer;
 }
 
 fevent *analysis::preprocess(const event *evt) {
-	fevent *fevt = new fevent();
-	fill_particle_collection(first_track_cut, evt->get_track_collection(),
-							 fevt->get_first_collection());
-	if (!check_identical()) {
-		fill_particle_collection(second_track_cut, evt->get_track_collection(),
-								 fevt->get_second_collection());
+	auto fevt = new fevent();
+	auto tracks = evt->get_track_collection();
+	auto first_collection = fevt->get_first_collection();
+	fill_particles(first_track_cut, tracks, first_collection);
+	if (!is_identical_particle()) {
+		auto second_collection = fevt->get_second_collection();
+		fill_particles(second_track_cut, tracks, second_collection);
 	}
 	return fevt;
 }
@@ -71,46 +77,41 @@ void analysis::process(const event *evt) {
 	if (this->evt_cut) {
 		bool is_passed_event = this->evt_cut->pass(evt);
 		this->evt_cut->fill_monitor(evt, is_passed_event);
-		if (!is_passed_event)
+		if (!is_passed_event) {
 			return;
+		}
 	}
 
 	// retain only the passed particles
 	fevent *fevt = preprocess(evt);
 
 	// determine if the event should be processed
-	unsigned int first_size = fevt->get_first_collection()->size();
-	unsigned int second_size = fevt->get_second_collection()->size();
-	if (check_identical()) {
-		if (first_size < 2) {
-			delete fevt;
-			return;
-		}
-	} else {
-		if (first_size == 0 || second_size == 0 || first_size + second_size < 2) {
-			delete fevt;
-			return;
-		}
+	auto first_size = fevt->get_first_collection()->size();
+	auto second_size = fevt->get_second_collection()->size();
+	auto reject_condition1 = is_identical_particle() && first_size < 2;
+	auto reject_condition2 = !is_identical_particle() && (first_size == 0 || second_size == 0);
+	if (reject_condition1 || reject_condition2) {
+		delete fevt;
+		return;
 	}
 
-	if (check_identical()) {
-		fill_real_pair_correlation(fevt->get_first_collection());
-	} else {
-		fill_real_pair_correlation(fevt->get_first_collection(), fevt->get_second_collection());
-	}
+	auto first_collection = fevt->get_first_collection();
+	auto second_collection = is_identical_particle() ? nullptr : fevt->get_second_collection();
+	fill_real_correlation(first_collection, second_collection);
 
 	for (auto fevt_mix : *event_mixing_buffer) {
-		if (check_identical()) {
-			fill_mixed_pair_correlation(fevt->get_first_collection(),
-										fevt_mix->get_first_collection());
+		if (is_identical_particle()) {
+			auto first_collection = fevt->get_first_collection();
+			auto second_collection = fevt_mix->get_first_collection();
+			fill_mixed_correlation(first_collection, second_collection);
+
 		} else {
-			fill_mixed_pair_correlation(fevt->get_first_collection(),
-										fevt_mix->get_second_collection());
-			fill_mixed_pair_correlation(fevt_mix->get_first_collection(),
-										fevt->get_second_collection());
+			auto first_collection = fevt->get_first_collection();
+			auto second_collection = fevt_mix->get_first_collection();
+			fill_mixed_correlation(first_collection, second_collection);
+			fill_mixed_correlation(second_collection, first_collection);
 		}
 	}
-
 	if (is_buffer_full()) {
 		event_mixing_buffer->pop_front();
 		event_mixing_buffer->push_back(fevt);
@@ -119,7 +120,7 @@ void analysis::process(const event *evt) {
 	}
 }
 
-void analysis::fill_real_pair_correlation(particle_collection *first, particle_collection *second) {
+void analysis::fill_real_correlation(particle_collection *first, particle_collection *second) {
 	pair *pr = new pair();
 	auto start_outer = first->begin();
 	auto end_outer = first->end();
@@ -151,16 +152,16 @@ void analysis::fill_real_pair_correlation(particle_collection *first, particle_c
 				real_pr_cut->fill_monitor(pr, is_passed_pair);
 			}
 			if (is_passed_pair) {
-				for (auto &corr : *correlations)
+				for (auto &corr : *correlations) {
 					corr->add_real_pair(pr);
+				}
 			}
 		}
 	}
 	delete pr;
 }
 
-void analysis::fill_mixed_pair_correlation(particle_collection *first,
-										   particle_collection *second) {
+void analysis::fill_mixed_correlation(particle_collection *first, particle_collection *second) {
 	pair *pr = new pair();
 	for (auto &iptcl : *first) {
 		for (auto &jptcl : *second) {
@@ -173,15 +174,16 @@ void analysis::fill_mixed_pair_correlation(particle_collection *first,
 				mixed_pr_cut->fill_monitor(pr, is_passed_pair);
 			}
 			if (is_passed_pair) {
-				for (auto &corr : *correlations)
+				for (auto &corr : *correlations) {
 					corr->add_mixed_pair(pr);
+				}
 			}
 		}
 	}
 	delete pr;
 }
 
-void fill_particle_collection(track_cut *cut, track_collection *src, particle_collection *des) {
+void analysis::fill_particles(track_cut *cut, track_collection *src, particle_collection *des) {
 	for (auto &trk : *src) {
 		if (cut) {
 			bool is_passed_track = cut->pass(trk);
