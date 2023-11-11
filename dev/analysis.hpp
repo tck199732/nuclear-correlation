@@ -27,8 +27,8 @@ public:
 
 	fevent *preprocess(const event *evt);
 	virtual void process(const event *evt);
-	void fill_real_pair_correlation(particle_collection *first, particle_collection *second = 0);
-	void fill_mixed_pair_correlation(particle_collection *first, particle_collection *second);
+	void fill_real_correlation(particle_collection *first, particle_collection *second = nullptr);
+	void fill_mixed_correlation(particle_collection *first, particle_collection *second);
 
 	void set_event_mixing_size(const unsigned int &size) { event_mixing_size = size; }
 	void set_event_cut(event_cut *cut) { evt_cut = cut; }
@@ -47,9 +47,7 @@ public:
 	correlation *get_correlation(const unsigned int &index) const;
 
 protected:
-	bool is_identical;
 	unsigned int event_mixing_size;
-
 	event_cut *evt_cut;
 	track_cut *first_track_cut;
 	track_cut *second_track_cut;
@@ -59,10 +57,9 @@ protected:
 	correlation_collection *correlations;
 	fevent_collection *event_mixing_buffer;
 
-	bool check_identical() {
-		return (first_track_cut == second_track_cut) && first_track_cut != nullptr;
-	}
+	bool is_identical_particle() { return (first_track_cut == second_track_cut); }
 	bool is_buffer_full() { return event_mixing_buffer->size() == event_mixing_size; }
+	void fill_particles(track_cut *cut, track_collection *src, particle_collection *des);
 };
 
 #endif
