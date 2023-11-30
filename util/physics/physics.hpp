@@ -81,7 +81,8 @@ private:
 
 bool operator==(const four_vector &first, const four_vector &second);
 bool operator!=(const four_vector &first, const four_vector &second);
-
+physics::four_vector relative_four_vector(const physics::four_vector &first,
+										  const physics::four_vector &second);
 /**
  * @brief Return the x-component of the relative 3-vector given two four-vectors.
  */
@@ -124,6 +125,17 @@ double get_minv(const four_vector &first, const four_vector &second);
  * @brief Return the invariant mass of the relative 4-vector.
  */
 double get_qinv(const four_vector &first, const four_vector &second);
+
+/**
+ * @brief math related to spherical harmonics
+ * @details evaluate the CG-coefficient and wigner 3j-symbol
+ */
+
+// double ClebschGordan(const double &aJot1, const double &aEm1, const double &aJot2,
+// 					 const double &aEm2, const double &aJot, const double &aEm);
+// double DeltaJ(const double &aJot1, const double &aJot2, const double &aJot);
+// double WignerSymbol(const double &aJot1, const double &aEm1, const double &aJot2,
+// 					const double &aEm2, const double &aJot, const double &aEm);
 
 }; // namespace physics
 #endif

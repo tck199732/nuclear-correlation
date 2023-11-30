@@ -115,33 +115,41 @@ double physics::get_qinv(const four_vector &first, const four_vector &second) {
 	return qinv2 > 0 ? std::sqrt(qinv2) : -std::sqrt(-qinv2);
 }
 
+physics::four_vector physics::relative_four_vector(const four_vector &first,
+												   const four_vector &second) {
+	return (first * second.M() - second * first.M()) / (first.M() + second.M());
+}
+
 double physics::get_qx(const four_vector &first, const four_vector &second) {
-	return (first.Px() * second.M() - second.Px() * first.M()) / (first.M() + second.M());
+	return physics::relative_four_vector(first, second).Px();
+	// return (first.Px() * second.M() - second.Px() * first.M()) / (first.M() + second.M());
 }
 
 double physics::get_qy(const four_vector &first, const four_vector &second) {
-	return (first.Py() * second.M() - second.Py() * first.M()) / (first.M() + second.M());
+	return physics::relative_four_vector(first, second).Py();
+	// return (first.Py() * second.M() - second.Py() * first.M()) / (first.M() + second.M());
 }
 
 double physics::get_qz(const four_vector &first, const four_vector &second) {
-	return (first.Pz() * second.M() - second.Pz() * first.M()) / (first.M() + second.M());
+	return physics::relative_four_vector(first, second).Pz();
+	// return (first.Pz() * second.M() - second.Pz() * first.M()) / (first.M() + second.M());
 }
 
 double physics::get_qout(const four_vector &first, const four_vector &second) {
 	auto P = (first + second);
-	auto q = (first - second);
+	auto q = physics::relative_four_vector(first, second);
 	return (q.Px() * P.Px() + q.Py() * P.Py()) / P.Pt();
 }
 
 double physics::get_qside(const four_vector &first, const four_vector &second) {
 	auto P = (first + second);
-	auto q = (first - second);
+	auto q = physics::relative_four_vector(first, second);
 	return (q.Py() * P.Px() - q.Px() * P.Py()) / P.Pt();
 }
 
 double physics::get_qlong(const four_vector &first, const four_vector &second) {
 	auto P = (first + second);
-	auto q = (first - second);
+	auto q = physics::relative_four_vector(first, second);
 	q.boost(0, 0, -P.Pz() / P.E());
 	return q.Pz();
 }
