@@ -1,22 +1,22 @@
 #include "custom_correlation.hpp"
-custom_correlation::custom_correlation(const std::string &name) {
-	this->name = name;
-	this->numerator = nullptr;
-	this->denominator = nullptr;
-}
+custom_correlation::custom_correlation(const std::string &name)
+	: name(name), numerator(nullptr), denominator(nullptr) {}
 
 custom_correlation::custom_correlation(const std::string &name, const int &bins, const double &vmin,
-									   const double &vmax) {
-	this->name = name;
+									   const double &vmax)
+	: name(name) {
+
 	this->numerator = new TH1D("num", "", bins, vmin, vmax);
 	this->denominator = new TH1D("den", "", bins, vmin, vmax);
 	this->numerator->Sumw2();
 	this->denominator->Sumw2();
+	this->numerator->SetDirectory(0);
+	this->denominator->SetDirectory(0);
 }
 custom_correlation::custom_correlation(const custom_correlation &other) {
 	this->name = other.name;
-	this->numerator = 0;
-	this->denominator = 0;
+	this->numerator = (TH1D *)other.numerator->Clone((other.name + "_num").c_str());
+	this->denominator = (TH1D *)other.denominator->Clone((other.name + "_den").c_str());
 }
 
 custom_correlation::~custom_correlation() {
@@ -25,15 +25,6 @@ custom_correlation::~custom_correlation() {
 	}
 	if (this->denominator) {
 		delete denominator;
-	}
-}
-
-void custom_correlation::write() {
-	if (this->numerator) {
-		this->numerator->Write();
-	}
-	if (this->denominator) {
-		this->denominator->Write();
 	}
 }
 
@@ -53,9 +44,11 @@ double custom_correlation::calculate_relative_momentum(const pair *pr) {
 }
 
 void custom_correlation::add_real_pair(const pair *pr) {
-	this->numerator->Fill(this->calculate_relative_momentum(pr));
+	this->numerator->Fill(this->calculate_relative_momentum(pr), 1.);
+	return;
 }
 
 void custom_correlation::add_mixed_pair(const pair *pr) {
-	this->denominator->Fill(this->calculate_relative_momentum(pr));
+	this->denominator->Fill(this->calculate_relative_momentum(pr), 1.);
+	return;
 }

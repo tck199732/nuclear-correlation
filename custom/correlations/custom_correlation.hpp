@@ -21,7 +21,6 @@ public:
 
 	TH1D *get_numerator() const { return numerator; }
 	TH1D *get_denominator() const { return denominator; }
-	void write();
 
 private:
 	std::string name;
