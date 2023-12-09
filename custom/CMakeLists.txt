@@ -11,7 +11,6 @@ find_package(ROOT REQUIRED)
 set (
     custom_sources
     readers/custom_reader.cpp
-    readers/custom_event.cpp
     cuts/custom_event_cut.cpp
     cuts/custom_track_cut.cpp
     cuts/custom_pair_cut.cpp

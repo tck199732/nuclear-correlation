@@ -6,6 +6,11 @@ include(../cmake/CPM.cmake)
 CPMAddPackage(NAME NuclearCorrelation SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 CPMAddPackage(NAME NuclearUtilities SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../util)
 CPMAddPackage(NAME UserCorrelation SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../custom)
+CPMAddPackage(
+    NAME argparse
+    GITHUB_REPOSITORY p-ranav/argparse
+    VERSION 3.0
+)
 find_package(ROOT REQUIRED)
 
 set(
@@ -22,6 +27,7 @@ foreach(source ${executable_sources})
         NuclearCorrelation
         NuclearUtilities
         UserCorrelation
+        argparse
         ${ROOT_LIBRARIES} 
     )
     target_include_directories(
