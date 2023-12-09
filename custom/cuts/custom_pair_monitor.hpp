@@ -17,7 +17,7 @@ public:
 
 private:
 	std::string name;
-	TH1D *h1_transverse_velocity;
+	TH1D *h1_kT;
 };
 
 #endif

@@ -38,7 +38,6 @@ private:
 	unsigned int accepted_neutron, accepted_proton;
 	std::array<double, 2> transverse_velocity_gate;
 	std::array<double, 2> accepted_efficiency;
-	long ntracks_passed;
-	long ntracks_failed;
+	long ntracks_passed, ntracks_failed;
 };
 #endif

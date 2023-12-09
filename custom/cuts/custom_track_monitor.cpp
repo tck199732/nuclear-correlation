@@ -1,7 +1,6 @@
 #include "cuts/custom_track_monitor.hpp"
 
-custom_track_monitor::custom_track_monitor(const std::string &name) {
-	this->name = name;
+custom_track_monitor::custom_track_monitor(const std::string &name) : name(name) {
 	this->h1_transverse_velocity = new TH1D("h1_transverse_velocity", "", 30, 0, 600);
 	this->h1_transverse_velocity->Sumw2();
 	this->h1_transverse_velocity->SetDirectory(0);
@@ -11,7 +10,10 @@ custom_track_monitor::custom_track_monitor(const std::string &name) {
 	h2_kinergy_theta->SetDirectory(0);
 }
 
-custom_track_monitor::~custom_track_monitor() { delete h1_transverse_velocity; }
+custom_track_monitor::~custom_track_monitor() {
+	delete h1_transverse_velocity;
+	delete h2_kinergy_theta;
+}
 
 void custom_track_monitor::fill(const track *trk) {
 	int a = trk->get_neutron() + trk->get_proton();
@@ -23,6 +25,7 @@ void custom_track_monitor::fill(const track *trk) {
 	double theta_lab = std::atan2(vt, vz) * TMath::RadToDeg();
 	this->h1_transverse_velocity->Fill(vt);
 	this->h2_kinergy_theta->Fill(kinergy, theta_lab);
+	return;
 }
 
 void custom_track_monitor::write() {
