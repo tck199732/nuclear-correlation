@@ -23,11 +23,7 @@ set(
     physics/physics.hpp
 )
 
-set( external_folder_name "external" )
-file(GLOB_RECURSE external_headers ${CMAKE_CURRENT_LIST_DIR}/${external_folder_name}/**/*.hpp)
-file(GLOB_RECURSE external_sources ${CMAKE_CURRENT_LIST_DIR}/${external_folder_name}/**/*.cpp)
-
-add_library(${PROJECT_NAME} SHARED ${util_headers} ${external_headers} ${util_sources} ${external_sources})
+add_library(${PROJECT_NAME} SHARED ${util_headers} ${util_sources})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
