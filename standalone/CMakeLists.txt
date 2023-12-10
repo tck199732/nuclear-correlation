@@ -11,6 +11,13 @@ CPMAddPackage(
     GITHUB_REPOSITORY p-ranav/argparse
     VERSION 3.0
 )
+
+CPMAddPackage(
+    NAME indicators
+    GITHUB_REPOSITORY p-ranav/indicators
+    VERSION 2.3
+)
+
 find_package(ROOT REQUIRED)
 
 set(
@@ -28,6 +35,7 @@ foreach(source ${executable_sources})
         NuclearUtilities
         UserCorrelation
         argparse
+        indicators
         ${ROOT_LIBRARIES} 
     )
     target_include_directories(
