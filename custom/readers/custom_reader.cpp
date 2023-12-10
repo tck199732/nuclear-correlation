@@ -64,12 +64,11 @@ event *custom_reader::read() {
 
 		// use ame to determine the mass
 		double mass = ame::get_instance()->get_mass(N, Z).value_or(DBL_MAX);
-		auto trackClass = new track(N, Z, mass, px_, py_, pz_);
+		auto trackClass = new track(N, Z, px_, py_, pz_, mass);
 		// do NOT derive the `track` class
 		// use `track::set_property` to set important properties which is crucial in the pair-cut
 		// e.g. set the detector index so as to exclude pairs from the neighboring detectors
 
-		std::cout << "N: " << N << ", Z: " << Z << ", mass: " << mass << std::endl;
 		// fake detector index, either 0 or 1
 		std::bernoulli_distribution d(0.5);
 		trackClass->set_property("detector_index", d(this->gen) ? 0 : 1);

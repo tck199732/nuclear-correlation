@@ -42,6 +42,7 @@ public:
 	void set_filenames(const std::vector<std::string> &filenames);
 	void add_file(const std::string &file_path);
 
+	double get_entries() const { return chain->GetEntries(); }
 	std::string get_tree_name() const { return tree_name; }
 	std::vector<std::filesystem::path> get_filenames() const { return file_paths; }
 
