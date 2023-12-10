@@ -1,7 +1,7 @@
 #include "cuts/custom_pair_monitor.hpp"
 
 custom_pair_monitor::custom_pair_monitor(const std::string &name) : name(name) {
-	this->h1_kT = new TH1D("h1_kT", "", 30, 0, 600);
+	this->h1_kT = new TH1D((this->name + "_h1_kT").c_str(), "", 30, 0, 600);
 	this->h1_kT->Sumw2();
 	this->h1_kT->SetDirectory(0);
 }

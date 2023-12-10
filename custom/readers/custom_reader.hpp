@@ -1,6 +1,7 @@
 #ifndef custom_reader_hpp
 #define custom_reader_hpp
 
+#include <array>
 #include <cfloat>
 #include <filesystem>
 #include <random>
@@ -24,6 +25,7 @@ struct custom_branches {
 	double b;
 	std::array<int, MAX_MULTI> N;
 	std::array<int, MAX_MULTI> Z;
+	// momentum per nucleon
 	std::array<double, MAX_MULTI> px;
 	std::array<double, MAX_MULTI> py;
 	std::array<double, MAX_MULTI> pz;

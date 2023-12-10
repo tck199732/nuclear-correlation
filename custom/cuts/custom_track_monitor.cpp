@@ -1,11 +1,14 @@
 #include "cuts/custom_track_monitor.hpp"
 
 custom_track_monitor::custom_track_monitor(const std::string &name) : name(name) {
-	this->h1_transverse_velocity = new TH1D("h1_transverse_velocity", "", 30, 0, 600);
+
+	this->h1_transverse_velocity =
+		new TH1D((this->name + "_h1_transverse_velocity").c_str(), "", 30, 0, 600);
 	this->h1_transverse_velocity->Sumw2();
 	this->h1_transverse_velocity->SetDirectory(0);
 
-	h2_kinergy_theta = new TH2D("h2_kinergy_theta", "", 50, 0, 200, 120, 20, 80);
+	h2_kinergy_theta =
+		new TH2D((this->name + "_h2_kinergy_theta").c_str(), "", 50, 0, 200, 120, 20, 80);
 	h2_kinergy_theta->Sumw2();
 	h2_kinergy_theta->SetDirectory(0);
 }

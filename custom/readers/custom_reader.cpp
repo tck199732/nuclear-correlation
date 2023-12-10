@@ -4,7 +4,7 @@ custom_reader::custom_reader() : reader() {
 	this->gen = std::mt19937(this->rd());
 	this->chain = nullptr;
 	this->tree_name = "";
-	this->branches = {};
+	// this->branches = {};
 	this->file_paths = {};
 	current_event_index = 0;
 }
@@ -17,7 +17,7 @@ custom_reader::custom_reader(const std::string &tree_name,
 
 	this->chain = new TChain(tree_name.c_str(), "");
 	this->tree_name = tree_name;
-	this->branches = {};
+	// this->branches = {};
 	current_event_index = 0;
 
 	for (auto &file_path : filenames) {
@@ -65,11 +65,11 @@ event *custom_reader::read() {
 		// use ame to determine the mass
 		double mass = ame::get_instance()->get_mass(N, Z).value_or(DBL_MAX);
 		auto trackClass = new track(N, Z, mass, px_, py_, pz_);
-
 		// do NOT derive the `track` class
 		// use `track::set_property` to set important properties which is crucial in the pair-cut
 		// e.g. set the detector index so as to exclude pairs from the neighboring detectors
 
+		std::cout << "N: " << N << ", Z: " << Z << ", mass: " << mass << std::endl;
 		// fake detector index, either 0 or 1
 		std::bernoulli_distribution d(0.5);
 		trackClass->set_property("detector_index", d(this->gen) ? 0 : 1);
@@ -86,7 +86,7 @@ void custom_reader::set_branches(TChain *&chain) {
 	chain->SetMakeClass(1);
 	chain->SetBranchStatus("*", 0);
 
-	chain->SetBranchAddress("b", &branches.b);
+	chain->SetBranchAddress("impact_parameter", &branches.b);
 	chain->SetBranchAddress("N", &branches.N[0]);
 	chain->SetBranchAddress("Z", &branches.Z[0]);
 	chain->SetBranchAddress("px", &branches.px[0]);
@@ -95,7 +95,7 @@ void custom_reader::set_branches(TChain *&chain) {
 
 	chain->SetMakeClass(1);
 	chain->SetBranchStatus("*", false);
-	chain->SetBranchStatus("b", true);
+	chain->SetBranchStatus("impact_parameter", true);
 	chain->SetBranchStatus("N", true);
 	chain->SetBranchStatus("Z", true);
 	chain->SetBranchStatus("px", true);
