@@ -37,10 +37,14 @@ double custom_correlation::calculate_relative_momentum(const pair *pr) {
 	auto pz1 = first->get_pz(), pz2 = second->get_pz();
 	auto e1 = first->get_e(), e2 = second->get_e();
 
-	double qx = physics::get_qx({px1, py1, pz1, e1}, {px2, py2, pz2, e2});
-	double qy = physics::get_qy({px1, py1, pz1, e1}, {px2, py2, pz2, e2});
-	double qz = physics::get_qz({px1, py1, pz1, e1}, {px2, py2, pz2, e2});
-	return std::sqrt(qx * qx + qy * qy + qz * qz);
+	auto p1 = physics::four_vector(px1, py1, pz1, e1);
+	auto p2 = physics::four_vector(px2, py2, pz2, e2);
+
+	auto P = p1 + p2;
+	auto q = physics::relative_four_vector(p1, p2);
+	q.boost(P.beta_x(), P.beta_y(), P.beta_z());
+	// std::cout << q.Mag() << std::endl;
+	return q.Mag();
 }
 
 void custom_correlation::add_real_pair(const pair *pr) {

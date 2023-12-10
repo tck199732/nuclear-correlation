@@ -2,7 +2,7 @@
 
 custom_event_monitor::custom_event_monitor(const std::string &name) : name(name) {
 	this->h1_impact_parameter =
-		new TH1D((this->name + "_h1_impact_parameter").c_str(), "", 100., 0., 1.);
+		new TH1D((this->name + "_h1_impact_parameter").c_str(), "", 60., 0., 3.);
 	this->h1_impact_parameter->Sumw2();
 	this->h1_impact_parameter->SetDirectory(0);
 }
