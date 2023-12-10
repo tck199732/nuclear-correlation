@@ -38,6 +38,10 @@ custom_reader::~custom_reader() {
 
 event *custom_reader::return_event() {
 	try {
+		if (this->current_event_index >= this->chain->GetEntries()) {
+			this->status = 1;
+			throw std::runtime_error("Finished reading all entries");
+		}
 		return this->read();
 	} catch (std::exception &e) {
 		std::cerr << e.what() << std::endl;
