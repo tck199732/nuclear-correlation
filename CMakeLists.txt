@@ -17,9 +17,7 @@ set (
     base_cut.cpp
     fevent.cpp
     event.cpp
-    particle.cpp
     track.cpp
-    pair.cpp
     analysis.cpp
     manager.cpp
 )
