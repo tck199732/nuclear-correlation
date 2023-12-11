@@ -3,15 +3,15 @@
 #include "monitor.hpp"
 #include <doctest/doctest.h>
 
-class mock_monitor : public monitor {
+class derived_monitor : public monitor {
 public:
-	mock_monitor() { ; }
-	mock_monitor(const mock_monitor &) { ; }
-	~mock_monitor() { ; }
+	derived_monitor() { ; }
+	derived_monitor(const derived_monitor &) { ; }
+	~derived_monitor() { ; }
 	void report() override { ; }
 	void fill(const event *) override { ; }
 	void fill(const track *) override { ; }
-	void fill(const pair *) override { ; }
+	void fill(const std::pair<track *, track *> &) override { ; }
 };
 
 TEST_CASE("check constructor") {
@@ -19,8 +19,8 @@ TEST_CASE("check constructor") {
 	CHECK(cut->get_passed_monitor() == nullptr);
 	CHECK(cut->get_failed_monitor() == nullptr);
 
-	auto passed_monitor = new mock_monitor();
-	auto failed_monitor = new mock_monitor();
+	auto passed_monitor = new derived_monitor();
+	auto failed_monitor = new derived_monitor();
 
 	SUBCASE("check setters") {
 		cut->set_passed_monitor(passed_monitor);
@@ -32,12 +32,13 @@ TEST_CASE("check constructor") {
 			auto copied_cut = new base_cut(*cut);
 			CHECK(copied_cut->get_passed_monitor() == passed_monitor);
 			CHECK(copied_cut->get_failed_monitor() == failed_monitor);
+			delete copied_cut;
 		}
 
 		SUBCASE("check fill monitor functions") {
 			auto evt = new event();
 			auto trk = new track();
-			auto pr = new pair();
+			auto pr = std::make_pair(trk, trk);
 
 			SUBCASE("check fill_monitor(event *, bool)") {
 				cut->fill_monitor(evt, true);
@@ -65,12 +66,15 @@ TEST_CASE("check constructor") {
 				CHECK(cut->get_passed_monitor() == passed_monitor);
 				CHECK(cut->get_failed_monitor() == failed_monitor);
 			}
+			delete evt;
+			delete trk;
 		}
-
-		SUBCASE("check destructor") {
-			delete cut;
-			CHECK(passed_monitor != nullptr);
-			CHECK(failed_monitor != nullptr);
-		}
+	}
+	SUBCASE("check destructor") {
+		delete cut;
+		CHECK(passed_monitor != nullptr);
+		CHECK(failed_monitor != nullptr);
+		delete passed_monitor;
+		delete failed_monitor;
 	}
 }
