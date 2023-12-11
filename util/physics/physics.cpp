@@ -117,22 +117,22 @@ double physics::get_qinv(const four_vector &first, const four_vector &second) {
 
 physics::four_vector physics::relative_four_vector(const four_vector &first,
 												   const four_vector &second) {
+	if (first.M() <= 0 || second.M() <= 0) {
+		throw std::runtime_error("Negative mass in relative_four_vector");
+	}
 	return (first * second.M() - second * first.M()) / (first.M() + second.M());
 }
 
 double physics::get_qx(const four_vector &first, const four_vector &second) {
 	return physics::relative_four_vector(first, second).Px();
-	// return (first.Px() * second.M() - second.Px() * first.M()) / (first.M() + second.M());
 }
 
 double physics::get_qy(const four_vector &first, const four_vector &second) {
 	return physics::relative_four_vector(first, second).Py();
-	// return (first.Py() * second.M() - second.Py() * first.M()) / (first.M() + second.M());
 }
 
 double physics::get_qz(const four_vector &first, const four_vector &second) {
 	return physics::relative_four_vector(first, second).Pz();
-	// return (first.Pz() * second.M() - second.Pz() * first.M()) / (first.M() + second.M());
 }
 
 double physics::get_qout(const four_vector &first, const four_vector &second) {
