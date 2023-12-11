@@ -3,7 +3,6 @@
 
 class event;
 class track;
-class pair;
 class monitor {
 public:
 	monitor() = default;
@@ -12,6 +11,6 @@ public:
 	virtual void report() = 0;
 	virtual void fill(const event *) { ; }
 	virtual void fill(const track *) { ; }
-	virtual void fill(const pair *) { ; }
+	virtual void fill(const std::pair<track *, track *> &) { ; }
 };
 #endif

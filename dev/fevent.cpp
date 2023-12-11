@@ -1,13 +1,13 @@
 #include "fevent.hpp"
 
 fevent::fevent() {
-	first_collection = new particle_collection();
-	second_collection = new particle_collection();
+	first_collection = new track_collection();
+	second_collection = new track_collection();
 }
 
 fevent::fevent(const fevent &evt) {
-	this->first_collection = new particle_collection();
-	this->second_collection = new particle_collection();
+	this->first_collection = new track_collection();
+	this->second_collection = new track_collection();
 
 	for (auto &ptcl : *evt.first_collection) {
 		this->first_collection->push_back(ptcl);
