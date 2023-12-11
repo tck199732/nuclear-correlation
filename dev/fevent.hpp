@@ -12,12 +12,9 @@
 class fevent {
 public:
 	fevent();
-	// do not allow copy and move
+	// do not allow copying
 	fevent(const fevent &ev) = delete;
-	fevent(fevent &&ev) = delete;
 	fevent &operator=(const fevent &ev) = delete;
-	fevent &operator=(fevent &&ev) = delete;
-
 	~fevent();
 
 	track_collection *get_first_collection() const { return first_collection; }
