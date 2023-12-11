@@ -35,6 +35,8 @@ public:
 	);
 	// copy constructor
 	track(const track &);
+	// move constructor
+	track(track &&) = default;
 	virtual ~track() { ; }
 	void initalize();
 

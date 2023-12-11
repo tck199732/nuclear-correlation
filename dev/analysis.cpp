@@ -180,7 +180,8 @@ void analysis::fill_particles(track_cut *&cut, track_collection *&src, track_col
 			cut->fill_monitor(src_track, pass);
 		}
 		if (pass) {
-			des->push_back(new track(*src_track));
+			// track is copied via move constructor for performance
+			des->push_back(std::move(src_track));
 		}
 	}
 	return;
