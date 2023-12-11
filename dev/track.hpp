@@ -71,7 +71,7 @@ public:
 	double get_pz() const { return this->pz; }
 	double get_E() const { return this->E; }
 
-private:
+protected:
 	// properties set by constructor
 	unsigned int N, Z;	  // neutron, proton number
 	double mass;		  // rest mass
