@@ -26,7 +26,6 @@ void custom_track_monitor::fill(const track *trk) {
 	auto energy = trk->get_E();
 	auto kinergy = (energy - mass) / A;
 	double theta_lab = std::atan2(pT_, pz_) * TMath::RadToDeg();
-
 	this->h1_transverse_velocity->Fill(pT_);
 	this->h2_kinergy_theta->Fill(kinergy, theta_lab);
 	return;

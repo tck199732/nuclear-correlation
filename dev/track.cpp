@@ -1,6 +1,6 @@
 #include "track.hpp"
 
-track::track() : N(0), Z(0), mass(0.), px_(0.), py_(0.), pz_(0.), x(0.), y(0.), z(0.), t(0.) {}
+track::track() : N(0), Z(0), mass(0.), px_(0.), py_(0.), pz_(0.), x(0.), y(0.), z(0.), t(0.) { this->initalize(); }
 
 track::track(const unsigned int &N, const unsigned int &Z) : N(N), Z(Z) {
 	this->mass = 0.;
@@ -11,7 +11,7 @@ track::track(const unsigned int &N, const unsigned int &Z) : N(N), Z(Z) {
 	this->y = 0.;
 	this->z = 0.;
 	this->t = 0.;
-	this->_initalize();
+	this->initalize();
 }
 
 track::track(
@@ -28,7 +28,7 @@ track::track(
 	y(y),
 	z(z),
 	t(t) {
-	this->_initalize();
+	this->initalize();
 }
 
 track::track(
@@ -45,7 +45,7 @@ track::track(
 	this->y = x_[1];
 	this->z = x_[2];
 	this->t = x_[3];
-	this->_initalize();
+	this->initalize();
 }
 
 track::track(
@@ -66,7 +66,7 @@ track::track(
 	this->y = x_[1];
 	this->z = x_[2];
 	this->t = x_[3];
-	this->_initalize();
+	this->initalize();
 }
 
 track::track(const track &track) :
@@ -83,10 +83,10 @@ track::track(const track &track) :
 	// note : shallow-copy if a pointer object is in the map
 	this->properties = track.properties;
 	// recalculate the four momentum
-	this->_initalize();
+	this->initalize();
 }
 
-void track::_initalize() {
+void track::initalize() {
 	auto nucleons = this->N + this->Z;
 	this->px = this->px_ * nucleons;
 	this->py = this->py_ * nucleons;

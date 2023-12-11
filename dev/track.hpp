@@ -36,6 +36,7 @@ public:
 	// copy constructor
 	track(const track &);
 	virtual ~track() { ; }
+	void initalize();
 
 	// setters
 	void set_N(const unsigned int &N);
@@ -69,8 +70,6 @@ public:
 	double get_E() const { return this->E; }
 
 private:
-	void _initalize();
-
 	// properties set by constructor
 	unsigned int N, Z;	  // neutron, proton number
 	double mass;		  // rest mass

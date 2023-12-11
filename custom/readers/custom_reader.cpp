@@ -71,6 +71,9 @@ event *custom_reader::read() {
 		trackClass->set_px_per_nucleon(px_);
 		trackClass->set_py_per_nucleon(py_);
 		trackClass->set_pz_per_nucleon(pz_);
+		// need to call initalize() to calculate the four-momentum
+		// not required if full constructor is used
+		trackClass->initalize();
 
 		// do NOT derive the `track` class
 		// use `track::set_property` to set important properties which is crucial in the pair-cut
