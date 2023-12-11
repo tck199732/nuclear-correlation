@@ -10,7 +10,14 @@ base_cut::base_cut(const base_cut &cut) {
 	this->failed_monitor = cut.failed_monitor;
 }
 
-base_cut::~base_cut() {}
+base_cut::~base_cut() {
+	if (this->passed_monitor != nullptr) {
+		delete this->passed_monitor;
+	}
+	if (this->failed_monitor != nullptr) {
+		delete this->failed_monitor;
+	}
+}
 
 void base_cut::fill_monitor(const event *evt, bool pass) {
 	if (pass && this->passed_monitor != nullptr) {

@@ -10,6 +10,7 @@ public:
 	base_cut(const base_cut &);
 	virtual ~base_cut();
 
+	// fill monitor only if it is not nullptr
 	void fill_monitor(const event *evt, bool pass);
 	void fill_monitor(const track *trk, bool pass);
 	void fill_monitor(const std::pair<track *, track *> &pr, bool pass);

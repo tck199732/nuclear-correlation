@@ -3,8 +3,6 @@
 #define pair_cut_hpp
 
 #include "base_cut.hpp"
-#include "track.hpp"
-
 class pair_cut : public base_cut {
 public:
 	pair_cut() = default;

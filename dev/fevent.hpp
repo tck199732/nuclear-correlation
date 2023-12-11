@@ -4,10 +4,20 @@
 #include "collection.hpp"
 #include "track.hpp"
 
+/**
+ * @brief This class is used to store two track collections.
+ * Each track collection is a collection of the same type of particles in the same event.
+ * Each fevent object will be stored in the event-mixing buffer.
+ */
 class fevent {
 public:
 	fevent();
-	fevent(const fevent &ev);
+	// do not allow copy and move
+	fevent(const fevent &ev) = delete;
+	fevent(fevent &&ev) = delete;
+	fevent &operator=(const fevent &ev) = delete;
+	fevent &operator=(fevent &&ev) = delete;
+
 	~fevent();
 
 	track_collection *get_first_collection() const { return first_collection; }
