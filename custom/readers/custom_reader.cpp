@@ -9,9 +9,7 @@ custom_reader::custom_reader() : reader() {
 	current_event_index = 0;
 }
 
-custom_reader::custom_reader(const std::string &tree_name,
-							 const std::vector<std::string> &filenames)
-	: reader() {
+custom_reader::custom_reader(const std::string &tree_name, const std::vector<std::string> &filenames) : reader() {
 	// random generators
 	this->gen = std::mt19937(this->rd());
 
@@ -68,7 +66,12 @@ event *custom_reader::read() {
 
 		// use ame to determine the mass
 		double mass = ame::get_instance()->get_mass(N, Z).value_or(DBL_MAX);
-		auto trackClass = new track(N, Z, px_, py_, pz_, mass);
+		auto trackClass = new track(N, Z);
+		trackClass->set_mass(mass);
+		trackClass->set_px_per_nucleon(px_);
+		trackClass->set_py_per_nucleon(py_);
+		trackClass->set_pz_per_nucleon(pz_);
+
 		// do NOT derive the `track` class
 		// use `track::set_property` to set important properties which is crucial in the pair-cut
 		// e.g. set the detector index so as to exclude pairs from the neighboring detectors

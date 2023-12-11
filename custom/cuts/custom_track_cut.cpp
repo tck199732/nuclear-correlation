@@ -17,15 +17,16 @@ custom_track_cut::custom_track_cut(const custom_track_cut &cut) {
 }
 
 bool custom_track_cut::pass(const track *trk) {
-	double vt = std::sqrt(trk->get_vx() * trk->get_vx() + trk->get_vy() * trk->get_vy());
+	double px_ = trk->get_px_per_nucleon();
+	double py_ = trk->get_py_per_nucleon();
+	double pT_ = std::sqrt(px_ * px_ + py_ * py_);
 	double efficiency = trk->get_property<double>("efficiency");
 
 	auto is_inside = [](const double &x, const std::array<double, 2> &range) -> bool {
 		return (x >= range[0] && x <= range[1]);
 	};
-	bool accepted = (trk->get_neutron() == this->accepted_neutron &&
-					 trk->get_proton() == this->accepted_proton);
-	accepted = accepted && is_inside(vt, this->transverse_velocity_gate);
+	bool accepted = (trk->get_N() == this->accepted_neutron && trk->get_Z() == this->accepted_proton);
+	accepted = accepted && is_inside(pT_, this->transverse_velocity_gate);
 	accepted = accepted && is_inside(efficiency, this->accepted_efficiency);
 
 	accepted ? ntracks_passed++ : ntracks_failed++;

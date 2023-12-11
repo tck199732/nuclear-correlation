@@ -8,12 +8,15 @@ custom_pair_monitor::custom_pair_monitor(const std::string &name) : name(name) {
 
 custom_pair_monitor::~custom_pair_monitor() { delete h1_kT; }
 
-void custom_pair_monitor::fill(const pair *pr) {
-	auto first = pr->get_first_particle()->get_track();
-	auto second = pr->get_second_particle()->get_track();
-	double vx = first->get_vx() + second->get_vx();
-	double vy = first->get_vy() + second->get_vy();
-	this->h1_kT->Fill(std::sqrt(vx * vx + vy * vy));
+void custom_pair_monitor::fill(const std::pair<track *, track *> &pr) {
+	auto [ptcl, ptcl2] = pr;
+	double px_ = ptcl->get_px_per_nucleon() + ptcl2->get_px_per_nucleon();
+	double py_ = ptcl->get_py_per_nucleon() + ptcl2->get_py_per_nucleon();
+	this->h1_kT->Fill(std::sqrt(px_ * px_ + py_ * py_));
+	return;
 }
 
-void custom_pair_monitor::write() { this->h1_kT->Write(); }
+void custom_pair_monitor::write() {
+	this->h1_kT->Write();
+	return;
+}

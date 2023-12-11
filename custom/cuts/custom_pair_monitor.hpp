@@ -5,13 +5,13 @@
 #include "TH2D.h"
 #include "TMath.h"
 #include "monitor.hpp"
-#include "pair.hpp"
+#include "track.hpp"
 
 class custom_pair_monitor : public monitor {
 public:
 	custom_pair_monitor(const std::string &name = "");
 	virtual ~custom_pair_monitor();
-	virtual void fill(const pair *evt);
+	virtual void fill(const std::pair<track *, track *> &pr);
 	virtual void report() { ; }
 	void write();
 
