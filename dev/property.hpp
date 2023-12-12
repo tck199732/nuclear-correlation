@@ -49,6 +49,14 @@ public:
 		return T();
 	}
 
+	std::vector<std::string> get_keys() const {
+		std::vector<std::string> keys;
+		for (auto &[key, _] : this->properties) {
+			keys.push_back(key);
+		}
+		return keys;
+	}
+
 protected:
 	std::map<std::string, std::any> properties;
 };
