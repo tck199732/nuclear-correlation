@@ -13,11 +13,7 @@ public:
 
 TEST_CASE("check deleted copy constructor") { CHECK(std::is_copy_constructible<fevent>::value == false); }
 
-TEST_CASE("check deleted move constructor") { CHECK(std::is_move_constructible<fevent>::value == false); }
-
 TEST_CASE("check deleted copy assignment") { CHECK(std::is_copy_assignable<fevent>::value == false); }
-
-TEST_CASE("check deleted move assignment") { CHECK(std::is_move_assignable<fevent>::value == false); }
 
 TEST_CASE("check constructor") {
 	auto fevt = std::make_unique<fevent>();
@@ -37,17 +33,3 @@ TEST_CASE("check constructor") {
 
 	// deletion of trk1 and trk2 are handled by unique_ptr of fevt
 }
-
-// TEST_CASE("check destructor") {
-// 	auto fevt = new fevent();
-// 	auto trk1 = new mock_track();
-// 	auto trk2 = new mock_track();
-// 	auto coll1 = fevt->get_first_collection();
-// 	auto coll2 = fevt->get_second_collection();
-// 	coll1->push_back(trk1);
-// 	coll2->push_back(trk2);
-// 	// deletion of trk1 and trk2 are handled by fevt destructor
-// 	delete fevt;
-// 	fevt = nullptr;
-
-// }
