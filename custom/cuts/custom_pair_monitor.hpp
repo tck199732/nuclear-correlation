@@ -11,9 +11,14 @@ class custom_pair_monitor : public monitor {
 public:
 	custom_pair_monitor(const std::string &name = "");
 	virtual ~custom_pair_monitor();
-	virtual void fill(const std::pair<track *, track *> &pr);
-	virtual void report() { ; }
+
+	virtual void report() override { ; }
+	virtual void fill(const event *) override { ; }
+	virtual void fill(const track *) override { ; }
+	virtual void fill(const std::pair<track *, track *> &pr) override;
+
 	void write();
+	TH1D *get_h1_kT() const { return this->h1_kT; }
 
 private:
 	std::string name;

@@ -8,8 +8,10 @@ class custom_event_monitor : public monitor {
 public:
 	custom_event_monitor(const std::string &name = "");
 	virtual ~custom_event_monitor();
-	virtual void fill(const event *evt);
-	virtual void report() { ; }
+	virtual void report() override { ; }
+	virtual void fill(const event *evt) override;
+	virtual void fill(const track *) override { ; }
+	virtual void fill(const std::pair<track *, track *> &) override { ; }
 	void write();
 	TH1D *get_h1_imapct_parameter() const { return this->h1_impact_parameter; }
 

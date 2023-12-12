@@ -9,8 +9,8 @@ public:
 	monitor(const monitor &) = default;
 	virtual ~monitor() = default;
 	virtual void report() = 0;
-	virtual void fill(const event *) { ; }
-	virtual void fill(const track *) { ; }
-	virtual void fill(const std::pair<track *, track *> &) { ; }
+	virtual void fill(const event *) = 0;
+	virtual void fill(const track *) = 0;
+	virtual void fill(const std::pair<track *, track *> &) = 0;
 };
 #endif

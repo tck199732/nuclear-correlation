@@ -21,7 +21,7 @@ public:
 	monitor *get_passed_monitor() const { return this->passed_monitor; }
 	monitor *get_failed_monitor() const { return this->failed_monitor; }
 
-private:
+protected:
 	monitor *passed_monitor;
 	monitor *failed_monitor;
 };
