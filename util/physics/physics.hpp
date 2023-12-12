@@ -81,8 +81,7 @@ private:
 
 bool operator==(const four_vector &first, const four_vector &second);
 bool operator!=(const four_vector &first, const four_vector &second);
-physics::four_vector relative_four_vector(const physics::four_vector &first,
-										  const physics::four_vector &second);
+physics::four_vector relative_four_vector(const physics::four_vector &first, const physics::four_vector &second);
 /**
  * @brief Return the x-component of the relative 3-vector given two four-vectors.
  */

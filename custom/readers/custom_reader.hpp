@@ -64,16 +64,10 @@ private:
 	void end_event();
 };
 
-inline void custom_reader::set_tree_name(const std::string &tree_name) {
-	this->tree_name = tree_name;
-}
+inline void custom_reader::set_tree_name(const std::string &tree_name) { this->tree_name = tree_name; }
 
-inline void custom_reader::set_filenames(const std::vector<std::string> &filenames) {
-	this->file_paths = file_paths;
-}
+inline void custom_reader::set_filenames(const std::vector<std::string> &filenames) { this->file_paths = file_paths; }
 
-inline void custom_reader::add_file(const std::string &file_path) {
-	this->file_paths.push_back(file_path);
-}
+inline void custom_reader::add_file(const std::string &file_path) { this->file_paths.push_back(file_path); }
 
 #endif

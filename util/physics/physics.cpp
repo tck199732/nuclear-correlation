@@ -1,7 +1,6 @@
 #include "physics.hpp"
 
-physics::four_vector::four_vector(const double &x, const double &y, const double &z,
-								  const double &t) {
+physics::four_vector::four_vector(const double &x, const double &y, const double &z, const double &t) {
 	p0 = t;
 	p1 = x;
 	p2 = y;
@@ -72,12 +71,9 @@ physics::four_vector physics::four_vector::operator/(const double &scalar) const
 }
 
 bool physics::operator==(const four_vector &first, const four_vector &second) {
-	return first.x() == second.x() && first.y() == second.y() && first.z() == second.z() &&
-		   first.t() == second.t();
+	return first.x() == second.x() && first.y() == second.y() && first.z() == second.z() && first.t() == second.t();
 }
-bool physics::operator!=(const four_vector &first, const four_vector &second) {
-	return !(first == second);
-}
+bool physics::operator!=(const four_vector &first, const four_vector &second) { return !(first == second); }
 
 void physics::four_vector::boost(const double &beta_x, const double &beta_y, const double &beta_z) {
 	double beta = std::sqrt(beta_x * beta_x + beta_y * beta_y + beta_z * beta_z);
@@ -87,12 +83,9 @@ void physics::four_vector::boost(const double &beta_x, const double &beta_y, con
 	};
 	auto r_dot_beta = dot({this->p1, this->p2, this->p3}, {beta_x, beta_y, beta_z});
 
-	auto dp1 =
-		beta_x != 0 ? (gamma - 1.) * r_dot_beta * beta_x / (beta * beta) + gamma * beta_x * p0 : 0.;
-	auto dp2 =
-		beta_y != 0 ? (gamma - 1.) * r_dot_beta * beta_y / (beta * beta) + gamma * beta_y * p0 : 0.;
-	auto dp3 =
-		beta_z != 0 ? (gamma - 1.) * r_dot_beta * beta_z / (beta * beta) + gamma * beta_z * p0 : 0.;
+	auto dp1 = beta_x != 0 ? (gamma - 1.) * r_dot_beta * beta_x / (beta * beta) + gamma * beta_x * p0 : 0.;
+	auto dp2 = beta_y != 0 ? (gamma - 1.) * r_dot_beta * beta_y / (beta * beta) + gamma * beta_y * p0 : 0.;
+	auto dp3 = beta_z != 0 ? (gamma - 1.) * r_dot_beta * beta_z / (beta * beta) + gamma * beta_z * p0 : 0.;
 
 	this->p1 += dp1;
 	this->p2 += dp2;
@@ -106,17 +99,14 @@ double physics::four_vector::M() const { return std::sqrt(p0 * p0 - p1 * p1 - p2
 double physics::four_vector::M2() const { return p0 * p0 - p1 * p1 - p2 * p2 - p3 * p3; }
 
 /******************************CORRELATION FUNCTION ************************************/
-double physics::get_minv(const four_vector &first, const four_vector &second) {
-	return (first + second).M();
-}
+double physics::get_minv(const four_vector &first, const four_vector &second) { return (first + second).M(); }
 
 double physics::get_qinv(const four_vector &first, const four_vector &second) {
 	auto qinv2 = (first - second).M2();
 	return qinv2 > 0 ? std::sqrt(qinv2) : -std::sqrt(-qinv2);
 }
 
-physics::four_vector physics::relative_four_vector(const four_vector &first,
-												   const four_vector &second) {
+physics::four_vector physics::relative_four_vector(const four_vector &first, const four_vector &second) {
 	if (first.M() <= 0 || second.M() <= 0) {
 		throw std::runtime_error("Negative mass in relative_four_vector");
 	}
