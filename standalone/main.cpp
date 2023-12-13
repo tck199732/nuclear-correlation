@@ -84,6 +84,7 @@ int main(int argc, char *argv[]) {
 
 	show_console_cursor(false);
 	pbar.set_progress(progress);
+	auto start = std::chrono::high_resolution_clock::now();
 	while (nevents_processed < nevents && reader_status == 0) {
 		reader_status = MyManager->process();
 		nevents_processed++;
@@ -94,6 +95,9 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	show_console_cursor(true);
+	auto end = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
+	std::cout << "\nTime elapsed: " << duration << " s" << std::endl;
 
 	// saving the results
 	TFile *output = new TFile(program.get<std::string>("--output").c_str(), "RECREATE");

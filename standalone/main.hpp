@@ -19,7 +19,13 @@
 #include <indicators/progress_bar.hpp>
 using namespace indicators;
 
+// std library
+#include <chrono>
+
 BlockProgressBar pbar{
-	option::BarWidth{80}, option::Start{"["}, option::End{"]"}, option::ForegroundColor{Color::white},
-	option::FontStyles{std::vector<FontStyle>{FontStyle::bold}}
+	option::BarWidth{80},
+	option::Start{"["},
+	option::End{"]"},
+	option::ForegroundColor{Color::white},
+	option::FontStyles{std::vector<FontStyle>{FontStyle::bold}},
 };
