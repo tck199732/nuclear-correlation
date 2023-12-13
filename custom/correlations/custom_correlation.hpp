@@ -4,6 +4,7 @@
 #include "TH1D.h"
 #include "correlation.hpp"
 #include "physics/physics.hpp"
+#include "track.hpp"
 #include <stdexcept>
 #include <string>
 
@@ -14,8 +15,8 @@ public:
 	custom_correlation(const custom_correlation &other);
 	~custom_correlation();
 
-	virtual void add_real_pair(const std::pair<track *, track *> &);
-	virtual void add_mixed_pair(const std::pair<track *, track *> &);
+	virtual void add_real_pair(const track *first, const track *second) override;
+	virtual void add_mixed_pair(const track *first, const track *second) override;
 
 	TH1D *get_numerator() const { return numerator; }
 	TH1D *get_denominator() const { return denominator; }
@@ -24,7 +25,7 @@ private:
 	std::string name;
 	TH1D *numerator;
 	TH1D *denominator;
-	double calculate_relative_momentum(const std::pair<track *, track *> &);
+	double calculate_relative_momentum(const track *first, const track *second);
 };
 
 #endif

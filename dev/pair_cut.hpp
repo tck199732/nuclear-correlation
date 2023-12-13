@@ -8,7 +8,7 @@ public:
 	pair_cut() = default;
 	pair_cut(const pair_cut &) = default;
 	virtual ~pair_cut() = default;
-	virtual bool pass(const std::pair<track *, track *> &pr) = 0;
+	virtual bool pass(const track *first, const track *second) = 0;
 };
 
 #endif

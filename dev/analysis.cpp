@@ -91,6 +91,7 @@ void analysis::process(event *&evt) {
 		}
 	}
 	if (is_buffer_full()) {
+		delete event_mixing_buffer->front();
 		event_mixing_buffer->pop_front();
 		event_mixing_buffer->push_back(fevt);
 	} else {
@@ -119,15 +120,14 @@ void analysis::fill_real_correlation(track_collection *&first, track_collection 
 			start_inner++;
 		}
 		for (auto &jptcl = start_inner; jptcl != end_inner; jptcl++) {
-			auto pr = std::make_pair(*iptcl, *jptcl);
 			bool is_passed_pair = true;
 			if (real_pair_cut) {
-				is_passed_pair = real_pair_cut->pass(pr);
-				real_pair_cut->fill_monitor(pr, is_passed_pair);
+				is_passed_pair = real_pair_cut->pass(*iptcl, *jptcl);
+				real_pair_cut->fill_monitor(*iptcl, *jptcl, is_passed_pair);
 			}
 			if (is_passed_pair) {
 				for (auto &corr : *correlations) {
-					corr->add_real_pair(pr);
+					corr->add_real_pair(*iptcl, *jptcl);
 				}
 			}
 		}
@@ -135,20 +135,18 @@ void analysis::fill_real_correlation(track_collection *&first, track_collection 
 }
 
 void analysis::fill_mixed_correlation(track_collection *&first, track_collection *&second) {
-
 	for (auto &iptcl : *first) {
 		for (auto &jptcl : *second) {
-			auto pr = std::make_pair(iptcl, jptcl);
-			bool pass = this->mixed_pair_cut ? this->mixed_pair_cut->pass(pr) : true;
+			bool pass = this->mixed_pair_cut ? this->mixed_pair_cut->pass(iptcl, jptcl) : true;
 
 			if (this->mixed_pair_cut) {
-				this->mixed_pair_cut->fill_monitor(pr, pass);
+				this->mixed_pair_cut->fill_monitor(iptcl, jptcl, pass);
 			}
 			if (!pass) {
 				continue;
 			}
 			for (auto &corr : *(this->correlations)) {
-				corr->add_mixed_pair(pr);
+				corr->add_mixed_pair(iptcl, jptcl);
 			}
 		}
 	}

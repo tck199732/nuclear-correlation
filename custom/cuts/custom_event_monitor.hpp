@@ -11,7 +11,7 @@ public:
 	virtual void report() override { ; }
 	virtual void fill(const event *evt) override;
 	virtual void fill(const track *) override { ; }
-	virtual void fill(const std::pair<track *, track *> &) override { ; }
+	virtual void fill(const track *, const track *) override { ; }
 	void write();
 	TH1D *get_h1_imapct_parameter() const { return this->h1_impact_parameter; }
 

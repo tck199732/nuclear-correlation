@@ -11,6 +11,6 @@ public:
 	virtual void report() = 0;
 	virtual void fill(const event *) = 0;
 	virtual void fill(const track *) = 0;
-	virtual void fill(const std::pair<track *, track *> &) = 0;
+	virtual void fill(const track *, const track *) = 0;
 };
 #endif

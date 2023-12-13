@@ -15,7 +15,7 @@ public:
 	virtual void report() override { ; }
 	virtual void fill(const event *) override { ; }
 	virtual void fill(const track *) override { ; }
-	virtual void fill(const std::pair<track *, track *> &pr) override;
+	virtual void fill(const track *first, const track *second) override;
 
 	void write();
 	TH1D *get_h1_kT() const { return this->h1_kT; }

@@ -10,7 +10,7 @@ class custom_pair_cut : public pair_cut {
 public:
 	custom_pair_cut();
 	custom_pair_cut(const custom_pair_cut &cut);
-	virtual bool pass(const std::pair<track *, track *> &pr) override;
+	virtual bool pass(const track *first, const track *second) override;
 
 	void set_kT_gate(const double &vmin, const double &vmax);
 	void set_consider_detector_effect(const bool &v);

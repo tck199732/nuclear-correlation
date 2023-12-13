@@ -13,7 +13,7 @@ public:
 	// fill monitor only if it is not nullptr
 	void fill_monitor(const event *evt, bool pass);
 	void fill_monitor(const track *trk, bool pass);
-	void fill_monitor(const std::pair<track *, track *> &pr, bool pass);
+	void fill_monitor(const track *first, const track *second, bool pass);
 
 	void set_passed_monitor(monitor *mon) { this->passed_monitor = mon; }
 	void set_failed_monitor(monitor *mon) { this->failed_monitor = mon; }

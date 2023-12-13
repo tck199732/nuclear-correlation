@@ -35,10 +35,10 @@ void base_cut::fill_monitor(const track *trk, bool pass) {
 	}
 }
 
-void base_cut::fill_monitor(const std::pair<track *, track *> &pr, bool pass) {
+void base_cut::fill_monitor(const track *first, const track *second, bool pass) {
 	if (pass && this->passed_monitor != nullptr) {
-		this->passed_monitor->fill(pr);
+		this->passed_monitor->fill(first, second);
 	} else if (!pass && this->failed_monitor != nullptr) {
-		this->failed_monitor->fill(pr);
+		this->failed_monitor->fill(first, second);
 	}
 }
