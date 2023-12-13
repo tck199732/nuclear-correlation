@@ -7,8 +7,8 @@ public:
 	mock_correlation() : called_add_real_pair(false), called_add_mixed_pair(false) {}
 	mock_correlation(const mock_correlation &other) = default;
 	~mock_correlation() = default;
-	virtual void add_real_pair(const std::pair<track *, track *> &) override { this->called_add_real_pair = true; }
-	virtual void add_mixed_pair(const std::pair<track *, track *> &) override { this->called_add_mixed_pair = true; }
+	virtual void add_real_pair(const  track* first, const track* second) override { this->called_add_real_pair = true; }
+	virtual void add_mixed_pair(const  track* first, const track* second) override { this->called_add_mixed_pair = true; }
 	bool called_add_real_pair, called_add_mixed_pair;
 };
 
@@ -20,7 +20,7 @@ public:
 	void report() override { ; }
 	void fill(const event *) override { this->is_event_fill = true; }
 	void fill(const track *) override { this->is_track_fill = true; }
-	void fill(const std::pair<track *, track *> &) override { this->is_pair_fill = true; }
+	void fill(const  track* first, const track* second) override { this->is_pair_fill = true; }
 
 	bool is_event_fill;
 	bool is_track_fill;
@@ -45,7 +45,7 @@ class mock_pair_cut : public pair_cut {
 public:
 	mock_pair_cut() = default;
 	mock_pair_cut(const mock_pair_cut &) = default;
-	virtual bool pass(const std::pair<track *, track *> &) override { return true; }
+	virtual bool pass(const  track* first, const track* second) override { return true; }
 };
 
 TEST_CASE("check initialization") {

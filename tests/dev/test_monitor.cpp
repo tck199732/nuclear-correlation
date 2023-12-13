@@ -18,7 +18,7 @@ public:
 		return;
 	}
 	virtual void fill(const track *) override { return; }
-	virtual void fill(const std::pair<track *, track *> &) override { return; }
+	virtual void fill(const track *first, const track *second) override { return; }
 	bool is_called_report;
 	bool is_called_fill;
 };
@@ -37,7 +37,7 @@ public:
 		this->is_called_fill = true;
 		return;
 	}
-	virtual void fill(const std::pair<track *, track *> &) override { return; }
+	virtual void fill(const track *first, const track *second) override { return; }
 	bool is_called_report;
 	bool is_called_fill;
 };
@@ -53,7 +53,7 @@ public:
 	}
 	virtual void fill(const event *) override { return; }
 	virtual void fill(const track *) override { return; }
-	virtual void fill(const std::pair<track *, track *> &) override {
+	virtual void fill(const track *first, const track *second) override {
 		this->is_called_fill = true;
 		return;
 	}
@@ -89,8 +89,7 @@ TEST_CASE("check derived method") {
 
 	SUBCASE("check fill(std::pair<track *, track *>)") {
 		auto trk = std::make_unique<track>();
-		auto pr = std::make_pair(trk.get(), trk.get());
-		pr_mon->fill(pr);
+		pr_mon->fill(trk.get(), trk.get());
 		CHECK(pr_mon->is_called_fill == true);
 	}
 }

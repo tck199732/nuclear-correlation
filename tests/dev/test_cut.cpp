@@ -13,7 +13,7 @@ public:
 	void report() override { ; }
 	void fill(const event *) override { this->is_event_fill = true; }
 	void fill(const track *) override { this->is_track_fill = true; }
-	void fill(const std::pair<track *, track *> &) override { this->is_pair_fill = true; }
+	void fill(const track *first, const track *second) override { this->is_pair_fill = true; }
 
 	bool is_event_fill;
 	bool is_track_fill;
@@ -38,7 +38,7 @@ class mock_pair_cut : public pair_cut {
 public:
 	mock_pair_cut() = default;
 	mock_pair_cut(const mock_pair_cut &) = default;
-	virtual bool pass(const std::pair<track *, track *> &) override { return true; }
+	virtual bool pass(const track *first, const track *second) override { return true; }
 };
 
 TEST_CASE("check base_cut") {
@@ -70,13 +70,12 @@ TEST_CASE("check base_cut") {
 	SUBCASE("check fill_monitor") {
 		auto evt = new event();
 		auto trk = new track();
-		auto pr = std::make_pair(trk, trk);
 		ecut->fill_monitor(evt, true);
 		ecut->fill_monitor(evt, false);
 		tcut->fill_monitor(trk, true);
 		tcut->fill_monitor(trk, false);
-		pcut->fill_monitor(pr, true);
-		pcut->fill_monitor(pr, false);
+		pcut->fill_monitor(trk, trk, true);
+		pcut->fill_monitor(trk, trk, false);
 
 		CHECK(monPass->is_event_fill == true);
 		CHECK(monPass->is_track_fill == true);
