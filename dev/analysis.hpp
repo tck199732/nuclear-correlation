@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <deque>
 #include <iostream>
-#include <memory>
 #include <string>
 
 #include "collection.hpp"
@@ -22,7 +21,9 @@ public:
 	analysis(const std::string &name = "", const int &mixing_size = 5);
 	analysis(const analysis &);
 	virtual ~analysis();
-	virtual void process(event *&evt);
+	virtual void process(const event *evt);
+	// action when the mixing buffer is full
+	virtual void clean_mixing_buffer();
 
 	void set_event_mixing_size(const unsigned int &size);
 	void set_event_cut(event_cut *cut);
@@ -55,8 +56,8 @@ protected:
 
 	fevent *preprocess(const event *evt);
 	void fill_particles(track_cut *&cut, track_collection *&src, track_collection *&des);
-	void fill_real_correlation(track_collection *&first, track_collection *&second);
-	void fill_mixed_correlation(track_collection *&first, track_collection *&second);
+	void fill_real_correlation(track_collection *first, track_collection *second = 0);
+	void fill_mixed_correlation(track_collection *first, track_collection *second);
 
 	bool is_identical_particle() { return (first_track_cut == second_track_cut); }
 	bool is_buffer_full() { return event_mixing_buffer->size() == event_mixing_size; }
