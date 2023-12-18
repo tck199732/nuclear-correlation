@@ -22,8 +22,6 @@ public:
 	analysis(const analysis &);
 	virtual ~analysis();
 	virtual void process(const event *evt);
-	// action when the mixing buffer is full
-	virtual void clean_mixing_buffer();
 
 	void set_event_mixing_size(const unsigned int &size);
 	void set_event_cut(event_cut *cut);
@@ -42,6 +40,17 @@ public:
 	correlation *get_correlation(const unsigned int &index) const { return correlations->at(index); }
 
 protected:
+	fevent *preprocess(const event *evt); //
+	virtual void clean_mixing_buffer();	  // action when the mixing buffer is full
+	void fill_particles(
+		track_cut *&cut, track_collection *&src, track_collection *&des
+	); // select passed tracks from src and fill them into des
+	void fill_real_correlation(track_collection *first, track_collection *second = 0);
+	void fill_mixed_correlation(track_collection *first, track_collection *second);
+
+	bool is_identical_particle() const;
+	bool is_buffer_full() const;
+
 	std::string name;
 	unsigned int event_mixing_size;
 
@@ -53,14 +62,6 @@ protected:
 
 	correlation_collection *correlations;
 	fevent_collection *event_mixing_buffer;
-
-	fevent *preprocess(const event *evt);
-	void fill_particles(track_cut *&cut, track_collection *&src, track_collection *&des);
-	void fill_real_correlation(track_collection *first, track_collection *second = 0);
-	void fill_mixed_correlation(track_collection *first, track_collection *second);
-
-	bool is_identical_particle() { return (first_track_cut == second_track_cut); }
-	bool is_buffer_full() { return event_mixing_buffer->size() == event_mixing_size; }
 };
 
 inline void analysis::set_event_mixing_size(const unsigned int &size) { event_mixing_size = size; }
@@ -77,4 +78,7 @@ inline void analysis::set_mixed_pair_cut(pair_cut *cut) { mixed_pair_cut = cut; 
 
 inline void analysis::add_correlation(correlation *corr) { correlations->push_back(corr); }
 
+inline bool analysis::is_identical_particle() const { return first_track_cut == second_track_cut; }
+
+inline bool analysis::is_buffer_full() const { return event_mixing_buffer->size() == event_mixing_size; }
 #endif
