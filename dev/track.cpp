@@ -86,6 +86,26 @@ track::track(const track &track) :
 	this->initalize();
 }
 
+track &track::operator=(const track &track) {
+	if (this != &track) {
+		this->N = track.N;
+		this->Z = track.Z;
+		this->mass = track.mass;
+		this->px_ = track.px_;
+		this->py_ = track.py_;
+		this->pz_ = track.pz_;
+		this->x = track.x;
+		this->y = track.y;
+		this->z = track.z;
+		this->t = track.t;
+		// note : shallow-copy if a pointer object is in the map
+		this->properties = track.properties;
+		// recalculate the four momentum
+		this->initalize();
+	}
+	return *this;
+}
+
 void track::initalize() {
 	auto nucleons = this->N + this->Z;
 	this->px = this->px_ * nucleons;

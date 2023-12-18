@@ -37,6 +37,11 @@ public:
 	track(const track &);
 	// move constructor
 	track(track &&) = default;
+	// copy assignment
+	track &operator=(const track &);
+	// move assignment
+	track &operator=(track &&) = default;
+
 	virtual ~track() { ; }
 	void initalize();
 
@@ -75,11 +80,11 @@ protected:
 	// properties set by constructor
 	unsigned int N, Z;	  // neutron, proton number
 	double mass;		  // rest mass
-	double px_, py_, pz_; // momentum per nucleon
+	double px_, py_, pz_; // momentum per nucleon in the cms frame of the collision
 	double x, y, z, t;	  // spacetime
 
 	// below are properties to be automatically calculated
-	double px, py, pz, E; // four momentum
+	double px, py, pz, E; // four momentum in the cms frame of the collision
 };
 
 inline void track::set_N(const unsigned int &N) { this->N = N; }
