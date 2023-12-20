@@ -39,6 +39,8 @@ public:
 
 	std::optional<std::string> get_symbol(const unsigned int &neutron, const unsigned int &proton) const;
 	std::optional<std::string> get_symbol(const std::string &alias) const;
+	std::optional<std::string> get_alias(const unsigned int &neutron, const unsigned int &proton) const;
+	std::optional<std::string> get_alias(const std::string &symbol) const;
 
 	unsigned int get_number_of_instances() const { return this->instance_counts; }
 	unsigned int get_number_of_elements() const { return this->elements.size(); }

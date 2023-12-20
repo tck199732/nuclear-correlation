@@ -102,6 +102,21 @@ std::optional<std::string> ame::get_symbol(const std::string &alias) const {
 	return (this->alias.count(alias) == 0) ? std::nullopt : std::optional<std::string>(this->alias.at(alias));
 }
 
+std::optional<std::string> ame::get_alias(const unsigned int &neutron, const unsigned int &proton) const {
+	if (this->symbol_table.count({neutron, proton}) == 0) {
+		return std::nullopt;
+	}
+	std::string symbol = this->symbol_table.at({neutron, proton});
+	return this->get_alias(symbol);
+}
+
+std::optional<std::string> ame::get_alias(const std::string &symbol) const {
+	auto it = std::find_if(this->alias.begin(), this->alias.end(), [symbol](const auto &pair) {
+		return pair.second == symbol;
+	});
+	return (it == this->alias.end()) ? std::nullopt : std::optional<std::string>(it->first);
+}
+
 std::optional<double> ame::get_mass(const unsigned int &neutron, const unsigned int &proton) const {
 	if (this->symbol_table.count({neutron, proton}) == 0) {
 		return this->get_unphysical_mass(neutron, proton);
