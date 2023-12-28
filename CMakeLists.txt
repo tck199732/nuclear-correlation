@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22 ...)
+cmake_minimum_required(VERSION 3.22...3.28)
 project(NuclearCorrelation VERSION 1.0 LANGUAGES CXX)
 
 if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)

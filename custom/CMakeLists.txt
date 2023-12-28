@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22...)
+cmake_minimum_required(VERSION 3.22...3.28)
 project(UserCorrelation VERSION 1.0 LANGUAGES CXX)
 include(../cmake/tools.cmake)
 include(../cmake/CPM.cmake)
