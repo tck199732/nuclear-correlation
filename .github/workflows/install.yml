@@ -77,7 +77,10 @@ jobs:
         run : | 
           echo "$ROOTSYS/bin" >> $GITHUB_PATH
           echo "PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH" >> "$GITHUB_ENV"
-          
+    
+      - name : source thisroot.sh
+        run: source /opt/root/bin/thisroot.sh
+        
       - name : check ROOT env vars and paths
         run: |
           echo $ROOTSYS
