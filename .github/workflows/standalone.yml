@@ -17,7 +17,7 @@ on:
 env:
   CTEST_OUTPUT_ON_FAILURE: 1
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
-  ROOT_VERSION : 6.28.04 # change this version create a new cache
+  ROOT_VERSION : 6.28.10 # change this version create a new cache
 
 jobs:
   build:
@@ -51,7 +51,7 @@ jobs:
       - name: install ROOT
         if: steps.cache-ROOT.outputs.cache-hit != 'true'
         env:
-            root_binary: root_v${{env.ROOT_VERSION}}.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
+            root_binary: root_v${{env.ROOT_VERSION}}.Linux-ubuntu22-x86_64-gcc11.4.tar.gz
         run: |
           wget https://root.cern/download/${{env.root_binary}} 
           tar -xzvf ${{env.root_binary}} --directory /opt
