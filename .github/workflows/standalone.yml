@@ -67,6 +67,8 @@ jobs:
           echo "ROOTSYS=/opt/root" >> "$GITHUB_ENV"
           echo "CLING_STANDARD_PCH=none" >> "$GITHUB_ENV"
           echo "PROJECT_DIR=$(pwd)" >> "$GITHUB_ENV"
+          echo "VDT_INCLUDE_DIR=/opt/root/include" >> "$GITHUB_ENV"
+          echo "VDT_LIBRARY_DIR=/opt/root/lib" >> "$GITHUB_ENV"
      
       - name: setup ROOT paths
         run : | 
