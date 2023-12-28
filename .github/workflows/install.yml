@@ -78,9 +78,6 @@ jobs:
           echo "$ROOTSYS/bin" >> $GITHUB_PATH
           echo "PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH" >> "$GITHUB_ENV"
     
-      - name : source thisroot.sh
-        run: source /opt/root/bin/thisroot.sh
-        
       - name : check ROOT env vars and paths
         run: |
           echo $ROOTSYS
@@ -93,7 +90,9 @@ jobs:
           root-config --version
 
       - name: build-cmake 🔨
-        run: cmake -B build -S tests -DENABLE_TEST_COVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
+        run: |
+          source /opt/root/bin/thisroot.sh
+          cmake -B build -S tests -DENABLE_TEST_COVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
           
       - name: build tests 🔨
         run: cmake --build build -j4
