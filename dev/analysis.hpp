@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <deque>
 #include <iostream>
+#include <random>
 #include <string>
 
 #include "collection.hpp"
@@ -80,5 +81,7 @@ inline void analysis::add_correlation(correlation *corr) { correlations->push_ba
 
 inline bool analysis::is_identical_particle() const { return first_track_cut == second_track_cut; }
 
-inline bool analysis::is_buffer_full() const { return event_mixing_buffer->size() == event_mixing_size; }
+inline bool analysis::is_buffer_full() const {
+	return event_mixing_buffer->size() == static_cast<size_t>(event_mixing_size);
+}
 #endif

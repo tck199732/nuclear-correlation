@@ -37,13 +37,13 @@ analysis::~analysis() {
 		delete this->mixed_pair_cut;
 	}
 
-	for (auto &corr : *(this->correlations)) {
+	for (auto &corr : *this->correlations) {
 		delete corr;
 	}
 	this->correlations->clear();
 	delete this->correlations;
 
-	for (auto &fevt : *(this->event_mixing_buffer)) {
+	for (auto &fevt : *this->event_mixing_buffer) {
 		delete fevt;
 	}
 	this->event_mixing_buffer->clear();
@@ -60,7 +60,7 @@ void analysis::process(const event *evt) {
 	}
 
 	// retain only the passed particles
-	auto fevt = preprocess(evt);
+	auto fevt = this->preprocess(evt);
 
 	// determine if the event should be processed
 	auto first_collection = fevt->get_first_collection();
@@ -68,7 +68,8 @@ void analysis::process(const event *evt) {
 	auto first_size = first_collection->size();
 	auto second_size = second_collection->size();
 
-	auto reject_condition1 = is_identical_particle() && first_size < 2;
+	// auto reject_condition1 = is_identical_particle() && first_size < 2;
+	auto reject_condition1 = is_identical_particle() && first_size < 1;
 	auto reject_condition2 = !is_identical_particle() && (first_size == 0 || second_size == 0);
 	if (reject_condition1 || reject_condition2) {
 		delete fevt;
@@ -81,8 +82,7 @@ void analysis::process(const event *evt) {
 		this->fill_real_correlation(first_collection, second_collection);
 	}
 
-	for (auto it = this->event_mixing_buffer->begin(); it != this->event_mixing_buffer->end(); ++it) {
-		auto storedEvent = *it;
+	for (auto &storedEvent : *this->event_mixing_buffer) {
 		if (is_identical_particle()) {
 			this->fill_mixed_correlation(first_collection, storedEvent->get_first_collection());
 		} else {
@@ -92,8 +92,7 @@ void analysis::process(const event *evt) {
 	}
 
 	if (this->is_buffer_full()) {
-		// delete one fevent randomly
-		this->clean_mixing_buffer();
+		this->clean_mixing_buffer(); // delete one fevent randomly
 	}
 	this->event_mixing_buffer->push_back(fevt);
 }
@@ -125,7 +124,7 @@ void analysis::fill_real_correlation(track_collection *first, track_collection *
 				real_pair_cut->fill_monitor(*iptcl, *jptcl, is_passed_pair);
 			}
 			if (is_passed_pair) {
-				for (auto &corr : *correlations) {
+				for (auto &corr : *this->correlations) {
 					corr->add_real_pair(*iptcl, *jptcl);
 				}
 			}
@@ -145,7 +144,7 @@ void analysis::fill_mixed_correlation(track_collection *first, track_collection 
 			if (!pass) {
 				continue;
 			}
-			for (auto &corr : *(this->correlations)) {
+			for (auto &corr : *this->correlations) {
 				corr->add_mixed_pair(iptcl, jptcl);
 			}
 		}
@@ -186,9 +185,10 @@ void analysis::fill_particles(track_cut *&cut, track_collection *&src, track_col
 }
 
 void analysis::clean_mixing_buffer() {
-	assert(event_mixing_buffer->size() == event_mixing_size);
 	// shuffle the buffer so a random event is removed
-	std::random_shuffle(event_mixing_buffer->begin(), event_mixing_buffer->end());
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(event_mixing_buffer->begin(), event_mixing_buffer->end(), g);
 	delete event_mixing_buffer->front();
 	event_mixing_buffer->pop_front();
 }
