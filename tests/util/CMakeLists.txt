@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.22 ...)
 project(UtilityTests LANGUAGES CXX)
 include(../../cmake/tools.cmake)
 include(../../cmake/CPM.cmake)
