@@ -90,9 +90,6 @@ jobs:
       - name: build standalone 🔨
         run: cmake --build build -j4
     
-    #  require sample data to be uploaded
-    #   - name: run standalone program 🚀
-    #     run: |
-    #         cd build
-    #         ./main.exe
-    
+      - name: run standalone program 🚀
+        run: |
+            ./build/main.exe
