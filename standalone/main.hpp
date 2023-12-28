@@ -21,6 +21,7 @@ using namespace indicators;
 
 // std library
 #include <chrono>
+#include <climits>
 
 BlockProgressBar pbar{
 	option::BarWidth{80},

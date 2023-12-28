@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
 
 	int reader_status = 0;
 	auto reader_entries = MyReader->get_entries();
-	auto max_nevents = program.get<long>("--nevents");
+	auto max_nevents = program.get<int>("--nevents");
 	auto nevents = (reader_entries < max_nevents) ? reader_entries : max_nevents;
 	long nevents_processed = 0;
 	auto progress = 0.d;
@@ -138,9 +138,9 @@ void add_arguments(int argc, char **argv) {
 
 	program.add_argument("-n", "--nevents")
 		.nargs(1)
-		.default_value(long(1000000))
+		.default_value(INT_MAX)
 		.help("number of events to be processed")
-		.scan<'i', long>()
+		.scan<'i', int>()
 		.required();
 
 	program.add_argument("-o", "--output")
