@@ -33,6 +33,12 @@ public:
 		const unsigned int &N, const unsigned int &Z, const double &mass, const std::vector<double> &p_,
 		const std::vector<double> &x_ = {0., 0., 0., 0.}
 	);
+	// constructor with all properties defined in a std::initializer_list
+	track(
+		const unsigned int &N, const unsigned int &Z, const double &mass, const std::initializer_list<double> &p_,
+		const std::initializer_list<double> &x_ = {0., 0., 0., 0.}
+	);
+
 	// copy constructor
 	track(const track &);
 	// move constructor
@@ -56,6 +62,7 @@ public:
 	void set_y(const double &y);
 	void set_z(const double &z);
 	void set_t(const double &t);
+	void set_efficiency(const double &eff);
 
 	// getters
 	unsigned int get_N() const { return this->N; }
@@ -76,6 +83,8 @@ public:
 	double get_pz() const { return this->pz; }
 	double get_E() const { return this->E; }
 
+	double get_efficiency() const { return this->efficiency; }
+
 protected:
 	// properties set by constructor
 	unsigned int N, Z;	  // neutron, proton number
@@ -85,6 +94,8 @@ protected:
 
 	// below are properties to be automatically calculated
 	double px, py, pz, E; // four momentum in the cms frame of the collision
+
+	double efficiency;
 };
 
 inline void track::set_N(const unsigned int &N) { this->N = N; }
@@ -106,4 +117,6 @@ inline void track::set_y(const double &y) { this->y = y; }
 inline void track::set_z(const double &z) { this->z = z; }
 
 inline void track::set_t(const double &t) { this->t = t; }
+
+inline void track::set_efficiency(const double &eff) { this->efficiency = eff; }
 #endif

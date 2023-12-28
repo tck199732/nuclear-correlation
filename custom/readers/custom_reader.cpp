@@ -84,7 +84,7 @@ event *custom_reader::read() {
 		trackClass->set_property("detector_index", d(this->gen) ? 0 : 1);
 		// fake detector efficiency, between 0 and 1
 		std::uniform_real_distribution<double> eff(0.0, 1.0);
-		trackClass->set_property("efficiency", eff(this->gen));
+		trackClass->set_efficiency(eff(this->gen));
 		tracks->push_back(trackClass);
 	}
 	this->end_event();

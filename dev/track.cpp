@@ -1,6 +1,8 @@
 #include "track.hpp"
 
-track::track() : N(0), Z(0), mass(0.), px_(0.), py_(0.), pz_(0.), x(0.), y(0.), z(0.), t(0.) { this->initalize(); }
+track::track() : N(0), Z(0), mass(0.), px_(0.), py_(0.), pz_(0.), x(0.), y(0.), z(0.), t(0.), efficiency(1.) {
+	this->initalize();
+}
 
 track::track(const unsigned int &N, const unsigned int &Z) : N(N), Z(Z) {
 	this->mass = 0.;
@@ -11,6 +13,7 @@ track::track(const unsigned int &N, const unsigned int &Z) : N(N), Z(Z) {
 	this->y = 0.;
 	this->z = 0.;
 	this->t = 0.;
+	this->efficiency = 1.;
 	this->initalize();
 }
 
@@ -27,7 +30,8 @@ track::track(
 	x(x),
 	y(y),
 	z(z),
-	t(t) {
+	t(t),
+	efficiency(1.) {
 	this->initalize();
 }
 
@@ -37,7 +41,8 @@ track::track(
 ) :
 	N(N),
 	Z(Z),
-	mass(mass) {
+	mass(mass),
+	efficiency(1.) {
 	this->px_ = p_[0];
 	this->py_ = p_[1];
 	this->pz_ = p_[2];
@@ -54,7 +59,8 @@ track::track(
 ) :
 	N(N),
 	Z(Z),
-	mass(mass) {
+	mass(mass),
+	efficiency(1.) {
 
 	assert(p_.size() == 3);
 	this->px_ = p_[0];
@@ -69,6 +75,28 @@ track::track(
 	this->initalize();
 }
 
+track::track(
+	const unsigned int &N, const unsigned int &Z, const double &mass, const std::initializer_list<double> &p_,
+	const std::initializer_list<double> &x_
+) :
+	N(N),
+	Z(Z),
+	mass(mass),
+	efficiency(1.) {
+
+	assert(p_.size() == 3);
+	this->px_ = *(p_.begin());
+	this->py_ = *(p_.begin() + 1);
+	this->pz_ = *(p_.begin() + 2);
+
+	assert(x_.size() == 4);
+	this->x = *(x_.begin());
+	this->y = *(x_.begin() + 1);
+	this->z = *(x_.begin() + 2);
+	this->t = *(x_.begin() + 3);
+	this->initalize();
+}
+
 track::track(const track &track) :
 	N(track.N),
 	Z(track.Z),
@@ -79,7 +107,8 @@ track::track(const track &track) :
 	x(track.x),
 	y(track.y),
 	z(track.z),
-	t(track.t) {
+	t(track.t),
+	efficiency(track.efficiency) {
 	// note : shallow-copy if a pointer object is in the map
 	this->properties = track.properties;
 	// recalculate the four momentum
@@ -98,6 +127,7 @@ track &track::operator=(const track &track) {
 		this->y = track.y;
 		this->z = track.z;
 		this->t = track.t;
+		this->efficiency = track.efficiency;
 		// note : shallow-copy if a pointer object is in the map
 		this->properties = track.properties;
 		// recalculate the four momentum

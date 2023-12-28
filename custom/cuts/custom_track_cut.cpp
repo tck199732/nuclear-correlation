@@ -20,7 +20,7 @@ bool custom_track_cut::pass(const track *trk) {
 	double px_ = trk->get_px_per_nucleon();
 	double py_ = trk->get_py_per_nucleon();
 	double pT_ = std::sqrt(px_ * px_ + py_ * py_);
-	double efficiency = trk->get_property<double>("efficiency");
+	double efficiency = trk->get_efficiency();
 
 	auto is_inside = [](const double &x, const std::array<double, 2> &range) -> bool {
 		return (x >= range[0] && x <= range[1]);
