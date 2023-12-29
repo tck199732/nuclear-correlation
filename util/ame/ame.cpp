@@ -86,8 +86,7 @@ std::optional<double> ame::get_mass(const std::string &symbol) const {
 	return std::optional<double>(this->mass_table.at(key));
 }
 
-std::optional<std::string> ame::get_symbol(const unsigned int &neutron,
-										   const unsigned int &proton) const {
+std::optional<std::string> ame::get_symbol(const unsigned int &neutron, const unsigned int &proton) const {
 	if (this->symbol_table.count({neutron, proton}) == 0) {
 		return std::nullopt;
 	}
@@ -100,8 +99,22 @@ std::optional<std::string> ame::get_symbol(const std::string &alias) const {
 		return std::optional<std::string>(alias);
 	}
 	// if alias is found in alias table, return the corresponding symbol
-	return (this->alias.count(alias) == 0) ? std::nullopt
-										   : std::optional<std::string>(this->alias.at(alias));
+	return (this->alias.count(alias) == 0) ? std::nullopt : std::optional<std::string>(this->alias.at(alias));
+}
+
+std::optional<std::string> ame::get_alias(const unsigned int &neutron, const unsigned int &proton) const {
+	if (this->symbol_table.count({neutron, proton}) == 0) {
+		return std::nullopt;
+	}
+	std::string symbol = this->symbol_table.at({neutron, proton});
+	return this->get_alias(symbol);
+}
+
+std::optional<std::string> ame::get_alias(const std::string &symbol) const {
+	auto it = std::find_if(this->alias.begin(), this->alias.end(), [symbol](const auto &pair) {
+		return pair.second == symbol;
+	});
+	return (it == this->alias.end()) ? std::nullopt : std::optional<std::string>(it->first);
 }
 
 std::optional<double> ame::get_mass(const unsigned int &neutron, const unsigned int &proton) const {
@@ -112,8 +125,7 @@ std::optional<double> ame::get_mass(const unsigned int &neutron, const unsigned 
 	return std::optional<double>(this->mass_table.at(symbol));
 }
 
-std::optional<double> ame::get_unphysical_mass(const unsigned int &neutron,
-											   const unsigned int &proton) const {
+std::optional<double> ame::get_unphysical_mass(const unsigned int &neutron, const unsigned int &proton) const {
 	return this->get_unphysical_mass(neutron + proton);
 }
 
@@ -125,8 +137,7 @@ std::optional<double> ame::get_unphysical_mass(const unsigned int &nucleons) con
 std::optional<std::pair<int, int>> ame::get_neutron_proton_number(const std::string &symbol) const {
 	auto lower = [](const std::string &input) -> std::string {
 		std::string output = input;
-		std::transform(output.begin(), output.end(), output.begin(),
-					   [](unsigned char c) { return std::tolower(c); });
+		std::transform(output.begin(), output.end(), output.begin(), [](unsigned char c) { return std::tolower(c); });
 		return output;
 	};
 

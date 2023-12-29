@@ -3,27 +3,20 @@
 #include <doctest/doctest.h>
 #include <memory>
 
-class mock_reader : public reader {
+class derived_reader : public reader {
 public:
-	mock_reader(event *evt) : event_ptr(evt) {}
-	event *return_event() override { return event_ptr; }
-
-private:
-	event *event_ptr;
+	derived_reader() {}
+	~derived_reader() {}
+	event *return_event() { return new event(); }
 };
 
-class mock_event : public event {
-public:
-	mock_event() : event() {}
-	mock_event(const mock_event &ev) : event(ev) {}
-	~mock_event() override = default;
-};
+TEST_CASE("reader default constructor") {
+	auto rdr = std::make_unique<derived_reader>();
+	CHECK(rdr->get_status() == 0);
+}
 
-TEST_CASE("check initialization of reader") {
-	// create a mock event
-	auto evt = std::make_shared<mock_event>();
-	// create a mock reader with the event
-	auto mreader = std::make_shared<mock_reader>(evt.get());
-	// check the reader status is 0
-	CHECK(mreader->get_status() == 0);
+TEST_CASE("read event") {
+	auto rdr = std::make_unique<derived_reader>();
+	auto evt = rdr->return_event();
+	CHECK(evt != nullptr);
 }

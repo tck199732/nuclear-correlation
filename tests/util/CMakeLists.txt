@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.22...3.28)
 project(UtilityTests LANGUAGES CXX)
 include(../../cmake/tools.cmake)
 include(../../cmake/CPM.cmake)
@@ -6,7 +6,7 @@ include(../../cmake/CPM.cmake)
 CPMAddPackage(NAME NuclearUtilities SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../../util)
 CPMAddPackage("gh:doctest/doctest@2.4.11")
 find_package(ROOT REQUIRED COMPONENTS GenVector)
-
+find_package(GSL REQUIRED)
 set(
     testing_sources
     main.cpp
@@ -22,6 +22,7 @@ target_link_libraries(
     PUBLIC 
     NuclearUtilities
     ${ROOT_LIBRARIES}
+    ${GSL_LIBRARIES}
     doctest::doctest
 )
 
@@ -30,6 +31,7 @@ target_include_directories(
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${ROOT_INCLUDE_DIRS}
+    ${GSL_INCLUDE_DIRS}
 )
 
 enable_testing()

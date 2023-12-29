@@ -81,7 +81,7 @@ private:
 
 bool operator==(const four_vector &first, const four_vector &second);
 bool operator!=(const four_vector &first, const four_vector &second);
-
+physics::four_vector relative_four_vector(const physics::four_vector &first, const physics::four_vector &second);
 /**
  * @brief Return the x-component of the relative 3-vector given two four-vectors.
  */
@@ -100,7 +100,7 @@ double get_qz(const four_vector &first, const four_vector &second);
 
 /**
  * @brief Return the out-component of the relative 3-vector given two four-vectors.
- * @details The vector is defined in the Bertsch-Pratt coordinate system. The relative 4-vector `q`
+ * @details The vector is defined in the Bertsch-Pratt coordinate system. The 4-vector `q = p1 - p2`
  * is first boosted to LCMS frame where the pair `Pz = 0`, then rotated the transverse plane with an
  * angle `\cos\theta = Px / Pt`.
  */

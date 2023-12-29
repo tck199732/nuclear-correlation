@@ -137,12 +137,9 @@ TEST_CASE("check physics calculation") {
 	CHECK(get_minv(vec1, vec2) == doctest::Approx((vec1_root + vec2_root).M()));
 	CHECK(get_qinv(vec1, vec2) == doctest::Approx((vec1_root - vec2_root).M()));
 
-	auto qx_root = (vec1_root.Px() * vec2_root.M() - vec2_root.Px() * vec1_root.M()) /
-				   (vec1_root.M() + vec2_root.M());
-	auto qy_root = (vec1_root.Py() * vec2_root.M() - vec2_root.Py() * vec1_root.M()) /
-				   (vec1_root.M() + vec2_root.M());
-	auto qz_root = (vec1_root.Pz() * vec2_root.M() - vec2_root.Pz() * vec1_root.M()) /
-				   (vec1_root.M() + vec2_root.M());
+	auto qx_root = (vec1_root.Px() * vec2_root.M() - vec2_root.Px() * vec1_root.M()) / (vec1_root.M() + vec2_root.M());
+	auto qy_root = (vec1_root.Py() * vec2_root.M() - vec2_root.Py() * vec1_root.M()) / (vec1_root.M() + vec2_root.M());
+	auto qz_root = (vec1_root.Pz() * vec2_root.M() - vec2_root.Pz() * vec1_root.M()) / (vec1_root.M() + vec2_root.M());
 	CHECK(get_qx(vec1, vec2) == doctest::Approx(qx_root));
 	CHECK(get_qy(vec1, vec2) == doctest::Approx(qy_root));
 	CHECK(get_qz(vec1, vec2) == doctest::Approx(qz_root));
@@ -158,4 +155,16 @@ TEST_CASE("check physics calculation") {
 	CHECK(get_qout(vec1, vec2) == doctest::Approx(qout_root));
 	CHECK(get_qside(vec1, vec2) == doctest::Approx(qside_root));
 	CHECK(get_qlong(vec1, vec2) == doctest::Approx(qlong_root));
+}
+
+TEST_CASE("check relative four vector") {
+	physics::four_vector vec1(100, 200, 300, 4000);
+	physics::four_vector vec2(100, -200, -300, 4000);
+
+	auto vec3 = physics::relative_four_vector(vec1, vec2);
+
+	CHECK(vec3.Px() == doctest::Approx((vec1.Px() * vec2.M() - vec2.Px() * vec1.M()) / (vec1.M() + vec2.M())));
+	CHECK(vec3.Py() == doctest::Approx((vec1.Py() * vec2.M() - vec2.Py() * vec1.M()) / (vec1.M() + vec2.M())));
+	CHECK(vec3.Pz() == doctest::Approx((vec1.Pz() * vec2.M() - vec2.Pz() * vec1.M()) / (vec1.M() + vec2.M())));
+	CHECK(vec3.E() == doctest::Approx((vec1.E() * vec2.M() - vec2.E() * vec1.M()) / (vec1.M() + vec2.M())));
 }

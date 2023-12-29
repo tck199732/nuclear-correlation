@@ -3,44 +3,39 @@
 
 #include <array>
 #include <cfloat>
+#include <climits>
 #include <string>
 
 #include "event.hpp"
 #include "event_cut.hpp"
-#include "readers/custom_event.hpp"
 
 class custom_event_cut : public event_cut {
 public:
 	custom_event_cut();
 	custom_event_cut(const custom_event_cut &);
 	virtual bool pass(const event *) override;
-	bool pass(const custom_event *event);
 
-	void set_accepted_multiplicity(const unsigned int &vmin, const unsigned int &vmax);
-	void set_accepted_impact_parameter(const double &vmin, const double &vmax);
-	void set_accepted_trigger_condition(const std::string &v) {
-		this->accepted_trigger_condition = v;
-	}
-	void set_accepted_trigger_value(const double &vmin, const double &vmax) {
-		this->accepted_trigger_value = {vmin, vmax};
-	}
+	void set_multiplicity_range(const int &vmin, const int &vmax);
+	void set_impact_parameter_range(const double &vmin, const double &vmax);
 
-	std::array<unsigned int, 2> get_accepted_multiplicity() const { return accepted_multiplicity; }
-	std::array<double, 2> get_accepted_impact_parameter() const {
-		return accepted_impact_parameter;
-	}
-	std::string get_accepted_trigger_condition() const { return accepted_trigger_condition; }
-	std::array<double, 2> get_accepted_trigger_value() const { return accepted_trigger_value; }
+	std::array<int, 2> get_accepted_multiplicity() const { return multiplicity_range; }
+	std::array<double, 2> get_accepted_impact_parameter() const { return impact_parameter_range; }
 
 	long get_nevents_passed() { return nevents_passed; }
 	long get_nevents_failed() { return nevents_failed; }
 
 private:
-	std::array<unsigned int, 2> accepted_multiplicity;
-	std::array<double, 2> accepted_impact_parameter;
-	std::string accepted_trigger_condition;
-	std::array<double, 2> accepted_trigger_value;
-	long nevents_passed;
-	long nevents_failed;
+	std::array<int, 2> multiplicity_range;
+	std::array<double, 2> impact_parameter_range;
+	long nevents_passed, nevents_failed;
 };
+
+inline void custom_event_cut::set_multiplicity_range(const int &vmin, const int &vmax) {
+	this->multiplicity_range = {vmin, vmax};
+}
+
+inline void custom_event_cut::set_impact_parameter_range(const double &vmin, const double &vmax) {
+	this->impact_parameter_range = {vmin, vmax};
+}
+
 #endif

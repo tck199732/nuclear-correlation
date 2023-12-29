@@ -20,7 +20,7 @@ on:
 env:
   CTEST_OUTPUT_ON_FAILURE: 1
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
-  ROOT_VERSION : 6.28.04 # change this version create a new cache
+  ROOT_VERSION : 6.28.10 # v6.28.04 was retracted due to security issues; change this version create a new cache
 
 jobs:
   build:
@@ -54,7 +54,7 @@ jobs:
       - name: install ROOT
         if: steps.cache-ROOT.outputs.cache-hit != 'true'
         env:
-            root_binary: root_v${{env.ROOT_VERSION}}.Linux-ubuntu22-x86_64-gcc11.3.tar.gz
+            root_binary: root_v${{env.ROOT_VERSION}}.Linux-ubuntu22-x86_64-gcc11.4.tar.gz
         run: |
           wget https://root.cern/download/${{env.root_binary}} 
           tar -xzvf ${{env.root_binary}} --directory /opt
@@ -70,12 +70,14 @@ jobs:
           echo "ROOTSYS=/opt/root" >> "$GITHUB_ENV"
           echo "CLING_STANDARD_PCH=none" >> "$GITHUB_ENV"
           echo "PROJECT_DIR=$(pwd)" >> "$GITHUB_ENV"
+          echo "VDT_INCLUDE_DIR=/opt/root/include" >> "$GITHUB_ENV"
+          echo "VDT_LIBRARY_DIR=/opt/root/lib" >> "$GITHUB_ENV"
      
       - name: setup ROOT paths
         run : | 
           echo "$ROOTSYS/bin" >> $GITHUB_PATH
           echo "PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH" >> "$GITHUB_ENV"
-          
+    
       - name : check ROOT env vars and paths
         run: |
           echo $ROOTSYS
@@ -88,7 +90,9 @@ jobs:
           root-config --version
 
       - name: build-cmake 🔨
-        run: cmake -B build -S tests -DENABLE_TEST_COVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
+        run: |
+          source /opt/root/bin/thisroot.sh
+          cmake -B build -S tests -DENABLE_TEST_COVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
           
       - name: build tests 🔨
         run: cmake --build build -j4

@@ -26,7 +26,7 @@ TEST_CASE("check setters and getters for normal types") {
 	CHECK(prop.get_property<std::vector<int>>("vector") == std::vector<int>{0, 0, 0});
 	CHECK(prop.get_property<std::array<int, 3>>("array") == std::array<int, 3>{0, 0, 0});
 
-	CHECK_THROWS_AS(prop.get_property<int>("double"), std::bad_any_cast);
+	CHECK_THROWS_AS(prop.get_property<int>("double"), std::invalid_argument);
 	CHECK_THROWS_AS(prop.get_property<int>("not exist"), std::out_of_range);
 }
 
@@ -40,6 +40,7 @@ TEST_CASE("check setters and getters for pointers") {
 
 	CHECK(prop.get_property<int *>("int*") == ptr);
 	CHECK(prop.get_property<std::shared_ptr<int>>("shared_ptr<int>") == shared_ptr);
+	delete ptr;
 }
 
 TEST_CASE("check copy constructor") {
@@ -76,6 +77,7 @@ TEST_CASE("check copy constructor") {
 	// check the pointers
 	CHECK(prop_copy.get_property<int *>("int*") == ptr);
 	CHECK(prop_copy.get_property<std::shared_ptr<int>>("shared_ptr<int>") == shared_ptr);
+	delete ptr;
 }
 
 TEST_CASE("check destructor") {
@@ -89,4 +91,5 @@ TEST_CASE("check destructor") {
 	// check the pointers
 	CHECK(*ptr == 1);
 	CHECK(*shared_ptr == 1);
+	delete ptr;
 }

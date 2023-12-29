@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.22...3.28)
 project(DevTests LANGUAGES CXX)
 include(../../cmake/tools.cmake)
 include(../../cmake/CPM.cmake)
@@ -9,13 +9,15 @@ CPMAddPackage("gh:doctest/doctest@2.4.11")
 set(
     testing_sources
     main.cpp
-    test_base_cut.cpp
+    test_event.cpp
+    test_cut.cpp
+    test_monitor.cpp
+    test_analysis.cpp
     test_fevent.cpp
+    test_correlation.cpp
     test_manager.cpp
     test_reader.cpp
-    test_pair.cpp
     test_track.cpp
-    test_particle.cpp
     test_property.cpp
 )
 

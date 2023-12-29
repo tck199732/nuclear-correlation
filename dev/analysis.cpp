@@ -1,203 +1,194 @@
 #include "analysis.hpp"
-void fill_particle_collection(track_cut *cut, track_collection *src, particle_collection *des);
-
-analysis::analysis() {
-	is_identical = false;
-	event_mixing_size = 5;
-	evt_cut = nullptr;
-	first_track_cut = nullptr;
-	second_track_cut = nullptr;
-	real_pr_cut = nullptr;
-	mixed_pr_cut = nullptr;
-	correlations = new correlation_collection();
-	event_mixing_buffer = new fevent_collection();
+analysis::analysis(const std::string &name, const int &mixing_size) : name(name), event_mixing_size(mixing_size) {
+	this->evt_cut = nullptr;
+	this->first_track_cut = nullptr;
+	this->second_track_cut = nullptr;
+	this->real_pair_cut = nullptr;
+	this->mixed_pair_cut = nullptr;
+	this->correlations = new correlation_collection();
+	this->event_mixing_buffer = new fevent_collection();
 }
 
-analysis::analysis(const analysis &anal) {
-	this->is_identical = anal.is_identical;
-	this->event_mixing_size = anal.event_mixing_size;
-	this->evt_cut = 0;
-	this->first_track_cut = 0;
-	this->second_track_cut = 0;
-	this->real_pr_cut = 0;
-	this->mixed_pr_cut = 0;
-	this->correlations = 0;
-	this->event_mixing_buffer = 0;
+analysis::analysis(const analysis &other) {
+	this->event_mixing_size = other.event_mixing_size;
+	this->evt_cut = other.evt_cut;
+	this->first_track_cut = other.first_track_cut;
+	this->second_track_cut = other.second_track_cut;
+	this->real_pair_cut = other.real_pair_cut;
+	this->mixed_pair_cut = other.mixed_pair_cut;
+	this->correlations = other.correlations;
+	this->event_mixing_buffer = other.event_mixing_buffer;
 }
 
 analysis::~analysis() {
-	if (evt_cut != nullptr) {
-		delete evt_cut;
+	if (this->evt_cut) {
+		delete this->evt_cut;
 	}
-	if (first_track_cut != nullptr) {
-		delete first_track_cut;
+	if (this->first_track_cut) {
+		delete this->first_track_cut;
 	}
-	if (second_track_cut != nullptr) {
-		delete second_track_cut;
+	if (this->second_track_cut) {
+		delete this->second_track_cut;
 	}
-	if (real_pr_cut != nullptr) {
-		delete real_pr_cut;
+	if (this->real_pair_cut) {
+		delete this->real_pair_cut;
 	}
-	if (mixed_pr_cut != nullptr) {
-		delete mixed_pr_cut;
+	if (this->mixed_pair_cut) {
+		delete this->mixed_pair_cut;
 	}
 
-	for (auto corr : *correlations) {
+	for (auto &corr : *this->correlations) {
 		delete corr;
 	}
-	correlations->clear();
-	delete correlations;
+	this->correlations->clear();
+	delete this->correlations;
 
-	for (auto evt : *event_mixing_buffer) {
-		delete evt;
+	for (auto &fevt : *this->event_mixing_buffer) {
+		delete fevt;
 	}
-	event_mixing_buffer->clear();
-	delete event_mixing_buffer;
-}
-
-fevent *analysis::preprocess(const event *evt) {
-	fevent *fevt = new fevent();
-	fill_particle_collection(first_track_cut, evt->get_track_collection(),
-							 fevt->get_first_collection());
-	if (!check_identical()) {
-		fill_particle_collection(second_track_cut, evt->get_track_collection(),
-								 fevt->get_second_collection());
-	}
-	return fevt;
+	this->event_mixing_buffer->clear();
+	delete this->event_mixing_buffer;
 }
 
 void analysis::process(const event *evt) {
-	// event will be passed if event_cut == nullptr
+	bool IsPassEvent = this->evt_cut != nullptr ? this->evt_cut->pass(evt) : true;
 	if (this->evt_cut) {
-		bool is_passed_event = this->evt_cut->pass(evt);
-		this->evt_cut->fill_monitor(evt, is_passed_event);
-		if (!is_passed_event)
-			return;
+		this->evt_cut->fill_monitor(evt, IsPassEvent);
+	}
+	if (IsPassEvent == false) {
+		return;
 	}
 
 	// retain only the passed particles
-	fevent *fevt = preprocess(evt);
+	auto fevt = this->preprocess(evt);
 
 	// determine if the event should be processed
-	unsigned int first_size = fevt->get_first_collection()->size();
-	unsigned int second_size = fevt->get_second_collection()->size();
-	if (check_identical()) {
-		if (first_size < 2) {
-			delete fevt;
-			return;
-		}
-	} else {
-		if (first_size == 0 || second_size == 0 || first_size + second_size < 2) {
-			delete fevt;
-			return;
-		}
+	auto first_collection = fevt->get_first_collection();
+	auto second_collection = fevt->get_second_collection();
+	auto first_size = first_collection->size();
+	auto second_size = second_collection->size();
+
+	// auto reject_condition1 = is_identical_particle() && first_size < 2;
+	auto reject_condition1 = is_identical_particle() && first_size < 1;
+	auto reject_condition2 = !is_identical_particle() && (first_size == 0 || second_size == 0);
+	if (reject_condition1 || reject_condition2) {
+		delete fevt;
+		return;
 	}
 
-	if (check_identical()) {
-		fill_real_pair_correlation(fevt->get_first_collection());
+	if (is_identical_particle()) {
+		this->fill_real_correlation(first_collection);
 	} else {
-		fill_real_pair_correlation(fevt->get_first_collection(), fevt->get_second_collection());
+		this->fill_real_correlation(first_collection, second_collection);
 	}
 
-	for (auto fevt_mix : *event_mixing_buffer) {
-		if (check_identical()) {
-			fill_mixed_pair_correlation(fevt->get_first_collection(),
-										fevt_mix->get_first_collection());
+	for (auto &storedEvent : *this->event_mixing_buffer) {
+		if (is_identical_particle()) {
+			this->fill_mixed_correlation(first_collection, storedEvent->get_first_collection());
 		} else {
-			fill_mixed_pair_correlation(fevt->get_first_collection(),
-										fevt_mix->get_second_collection());
-			fill_mixed_pair_correlation(fevt_mix->get_first_collection(),
-										fevt->get_second_collection());
+			this->fill_mixed_correlation(first_collection, storedEvent->get_second_collection());
+			this->fill_mixed_correlation(storedEvent->get_first_collection(), second_collection);
 		}
 	}
 
-	if (is_buffer_full()) {
-		event_mixing_buffer->pop_front();
-		event_mixing_buffer->push_back(fevt);
-	} else {
-		event_mixing_buffer->push_back(fevt);
+	if (this->is_buffer_full()) {
+		this->clean_mixing_buffer(); // delete one fevent randomly
 	}
+	this->event_mixing_buffer->push_back(fevt);
 }
 
-void analysis::fill_real_pair_correlation(particle_collection *first, particle_collection *second) {
-	pair *pr = new pair();
+void analysis::fill_real_correlation(track_collection *first, track_collection *second) {
 	auto start_outer = first->begin();
 	auto end_outer = first->end();
-	particle_collection::iterator start_inner;
-	particle_collection::iterator end_inner;
+	track_collection::iterator start_inner;
+	track_collection::iterator end_inner;
 
-	if (!second) {
-		end_inner = first->end();
-		end_outer--;
-
-	} else {
+	if (second) {
 		start_inner = second->begin();
 		end_inner = second->end();
+
+	} else {
+		end_outer--;
+		end_inner = first->end();
 	}
 
-	for (auto &iptcl = start_outer; iptcl != end_outer; iptcl++) {
+	for (track_collection::iterator iptcl = start_outer; iptcl != end_outer; iptcl++) {
 		if (!second) {
 			start_inner = iptcl;
 			start_inner++;
 		}
-		for (auto &jptcl = start_inner; jptcl != end_inner; jptcl++) {
-
-			pr->set_first_particle(*iptcl);
-			pr->set_second_particle(*jptcl);
-
+		for (track_collection::iterator jptcl = start_inner; jptcl != end_inner; jptcl++) {
 			bool is_passed_pair = true;
-			if (real_pr_cut) {
-				is_passed_pair = real_pr_cut->pass(pr);
-				real_pr_cut->fill_monitor(pr, is_passed_pair);
+			if (real_pair_cut) {
+				is_passed_pair = real_pair_cut->pass(*iptcl, *jptcl);
+				real_pair_cut->fill_monitor(*iptcl, *jptcl, is_passed_pair);
 			}
 			if (is_passed_pair) {
-				for (auto &corr : *correlations)
-					corr->add_real_pair(pr);
+				for (auto &corr : *this->correlations) {
+					corr->add_real_pair(*iptcl, *jptcl);
+				}
 			}
 		}
 	}
-	delete pr;
 }
 
-void analysis::fill_mixed_pair_correlation(particle_collection *first,
-										   particle_collection *second) {
-	pair *pr = new pair();
+void analysis::fill_mixed_correlation(track_collection *first, track_collection *second) {
+
 	for (auto &iptcl : *first) {
 		for (auto &jptcl : *second) {
-			pr->set_first_particle(iptcl);
-			pr->set_second_particle(jptcl);
+			bool pass = this->mixed_pair_cut ? this->mixed_pair_cut->pass(iptcl, jptcl) : true;
 
-			bool is_passed_pair = true;
-			if (mixed_pr_cut) {
-				is_passed_pair = mixed_pr_cut->pass(pr);
-				mixed_pr_cut->fill_monitor(pr, is_passed_pair);
+			if (this->mixed_pair_cut) {
+				this->mixed_pair_cut->fill_monitor(iptcl, jptcl, pass);
 			}
-			if (is_passed_pair) {
-				for (auto &corr : *correlations)
-					corr->add_mixed_pair(pr);
+			if (!pass) {
+				continue;
+			}
+			for (auto &corr : *this->correlations) {
+				corr->add_mixed_pair(iptcl, jptcl);
 			}
 		}
 	}
-	delete pr;
 }
 
-void fill_particle_collection(track_cut *cut, track_collection *src, particle_collection *des) {
-	for (auto &trk : *src) {
+fevent *analysis::preprocess(const event *evt) {
+	auto fevt = new fevent();
+	auto tracks = evt->get_track_collection();
+	auto first_collection = fevt->get_first_collection();
+	fill_particles(first_track_cut, tracks, first_collection);
+	if (!is_identical_particle()) {
+		auto second_collection = fevt->get_second_collection();
+		fill_particles(second_track_cut, tracks, second_collection);
+	}
+	return fevt;
+}
+
+void analysis::fill_particles(track_cut *&cut, track_collection *&src, track_collection *&des) {
+	// pre-clean the destination collection
+	for (auto &des_track : *des) {
+		if (des_track) {
+			delete des_track;
+		}
+	}
+	// fill particles into the destination collection and monitors
+	for (auto &src_track : *src) {
+		bool pass = cut != nullptr ? cut->pass(src_track) : true;
 		if (cut) {
-			bool is_passed_track = cut->pass(trk);
-			cut->fill_monitor(trk, is_passed_track);
-			if (is_passed_track)
-				des->push_back(new particle(trk));
-		} else {
-			des->push_back(new particle(trk));
+			cut->fill_monitor(src_track, pass);
+		}
+		if (pass) {
+			// do not use move constructor, multiple analysis may use the same track
+			des->push_back(new track(*src_track));
 		}
 	}
 	return;
 }
 
-correlation *analysis::get_correlation(const unsigned int &index) const {
-	if (index >= correlations->size()) {
-		return nullptr;
-	}
-	return (*correlations)[index];
+void analysis::clean_mixing_buffer() {
+	// shuffle the buffer so a random event is removed
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(event_mixing_buffer->begin(), event_mixing_buffer->end(), g);
+	delete event_mixing_buffer->front();
+	event_mixing_buffer->pop_front();
 }

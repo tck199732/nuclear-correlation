@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.22...3.28)
 project(UserCorrelation VERSION 1.0 LANGUAGES CXX)
 include(../cmake/tools.cmake)
 include(../cmake/CPM.cmake)
@@ -11,7 +11,6 @@ find_package(ROOT REQUIRED)
 set (
     custom_sources
     readers/custom_reader.cpp
-    readers/custom_event.cpp
     cuts/custom_event_cut.cpp
     cuts/custom_track_cut.cpp
     cuts/custom_pair_cut.cpp

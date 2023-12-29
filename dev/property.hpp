@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <string>
 #include <type_traits>
+#include <vector>
 
 class property {
 public:
@@ -22,8 +23,10 @@ public:
 
 	template <typename T> void set_property(const std::string &key, const T &value) {
 		// avoid setting unique_ptr to property, check at compile time
-		static_assert(!std::is_same_v<T, std::unique_ptr<std::remove_pointer_t<T>>>,
-					  "property::set_property: unique_ptr is not allowed.");
+		static_assert(
+			!std::is_same_v<T, std::unique_ptr<std::remove_pointer_t<T>>>,
+			"property::set_property: unique_ptr is not allowed."
+		);
 		this->properties[key] = value;
 	}
 
@@ -35,12 +38,24 @@ public:
 		try {
 			return std::any_cast<T>(this->properties.at(key));
 		} catch (const std::bad_any_cast &e) {
-			std::cerr << "property::get_property: " << e.what() << " of key : " << key << '\n';
-			throw std::bad_any_cast();
+			auto type = this->properties.at(key).type().name();
+			std::string msg = e.what();
+			msg = msg + " property::get_property: key = " + key + ", type = " + type;
+			msg = msg + ", expected type = " + typeid(T).name();
+			throw std::invalid_argument(msg.c_str());
+
 		} catch (const std::out_of_range &e) {
 			throw std::out_of_range("property::get_property: " + key + " not found.");
 		}
 		return T();
+	}
+
+	std::vector<std::string> get_keys() const {
+		std::vector<std::string> keys;
+		for (auto &[key, _] : this->properties) {
+			keys.push_back(key);
+		}
+		return keys;
 	}
 
 protected:

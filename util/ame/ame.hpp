@@ -37,9 +37,10 @@ public:
 	std::optional<int> get_neutron_number(const std::string &symbol) const;
 	std::optional<int> get_proton_number(const std::string &symbol) const;
 
-	std::optional<std::string> get_symbol(const unsigned int &neutron,
-										  const unsigned int &proton) const;
+	std::optional<std::string> get_symbol(const unsigned int &neutron, const unsigned int &proton) const;
 	std::optional<std::string> get_symbol(const std::string &alias) const;
+	std::optional<std::string> get_alias(const unsigned int &neutron, const unsigned int &proton) const;
+	std::optional<std::string> get_alias(const std::string &symbol) const;
 
 	unsigned int get_number_of_instances() const { return this->instance_counts; }
 	unsigned int get_number_of_elements() const { return this->elements.size(); }
@@ -75,15 +76,13 @@ private:
 	void extract_elements();
 	void extract_maximum_mass_number();
 
-	std::optional<double> get_unphysical_mass(const unsigned int &neutron,
-											  const unsigned int &proton) const;
+	std::optional<double> get_unphysical_mass(const unsigned int &neutron, const unsigned int &proton) const;
 	std::optional<double> get_unphysical_mass(const unsigned int &nucleons) const;
 
 protected:
 	const double default_nucleon_mass = 938.918;
 	const std::map<std::string, std::string> alias = {
-		{"n", "n1"},	{"p", "h1"},	{"d", "h2"},	  {"t", "h3"},
-		{"3He", "he3"}, {"4He", "he4"}, {"alpha", "he4"},
+		{"n", "n1"}, {"p", "h1"}, {"d", "h2"}, {"t", "h3"}, {"3He", "he3"}, {"4He", "he4"}, {"alpha", "he4"},
 	};
 };
 

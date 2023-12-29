@@ -1,34 +1,24 @@
 #include "fevent.hpp"
 
 fevent::fevent() {
-	first_collection = new particle_collection();
-	second_collection = new particle_collection();
-}
-
-fevent::fevent(const fevent &evt) {
-	this->first_collection = new particle_collection();
-	this->second_collection = new particle_collection();
-
-	for (auto &ptcl : *evt.first_collection) {
-		this->first_collection->push_back(ptcl);
-	}
-	for (auto &ptcl : *evt.second_collection) {
-		this->second_collection->push_back(ptcl);
-	}
-
-	delete first_collection;
-	delete second_collection;
+	this->first_collection = new track_collection();
+	this->second_collection = new track_collection();
 }
 
 fevent::~fevent() {
-	for (auto &ptcl : *first_collection) {
+	for (auto &ptcl : *(this->first_collection)) {
 		delete ptcl;
+		ptcl = nullptr;
 	}
-	for (auto &ptcl : *second_collection) {
+	this->first_collection->clear();
+	delete this->first_collection;
+	this->first_collection = nullptr;
+
+	for (auto &ptcl : *(this->second_collection)) {
 		delete ptcl;
+		ptcl = nullptr;
 	}
-	first_collection->clear();
-	second_collection->clear();
-	delete first_collection;
-	delete second_collection;
+	this->second_collection->clear();
+	delete this->second_collection;
+	this->second_collection = nullptr;
 }

@@ -15,7 +15,7 @@ public:
 	reader *get_reader() const { return event_reader; }
 	analysis_collection *get_analyses() const { return analyses; }
 
-private:
+protected:
 	reader *event_reader;
 	analysis_collection *analyses;
 };

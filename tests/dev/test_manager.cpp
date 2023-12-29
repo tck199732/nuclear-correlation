@@ -1,10 +1,10 @@
 #include "manager.hpp"
 #include <doctest/doctest.h>
 
-class mock_reader : public reader {
+class derived_reader : public reader {
 public:
-	mock_reader() : reader() {}
-	~mock_reader() {}
+	derived_reader() {}
+	~derived_reader() {}
 	event *return_event() { return new event(); }
 };
 
@@ -28,7 +28,7 @@ TEST_CASE("check set_reader method") {
 	// create a manager object
 	manager mgr;
 	// create a reader object
-	auto event_reader = new mock_reader();
+	auto event_reader = new derived_reader();
 	// set the reader object in the manager
 	mgr.set_reader(event_reader);
 	// check that the reader object is set correctly
@@ -51,7 +51,7 @@ TEST_CASE("check process method") {
 	// create a manager object
 	manager mgr;
 	// create a reader object
-	auto event_reader = new mock_reader();
+	auto event_reader = new derived_reader();
 	// set the reader object in the manager
 	mgr.set_reader(event_reader);
 	// create an analysis object
