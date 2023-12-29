@@ -163,3 +163,93 @@ TEST_CASE("check full constructor") {
 		CHECK(track_move.get_t() == 0.);
 	}
 }
+
+TEST_CASE("check constructor from std::array") {
+	auto px = dis(gen), py = dis(gen), pz = dis(gen);
+	std::array<double, 3> mom = {px, py, pz};
+	std::array<double, 4> spacetime = {0., 0., 0., 0.};
+	track original_track(N, Z, mass, mom, spacetime);
+
+	CHECK(original_track.get_N() == N);
+	CHECK(original_track.get_Z() == Z);
+	CHECK(original_track.get_mass() == mass);
+	CHECK(original_track.get_px_per_nucleon() == px);
+	CHECK(original_track.get_py_per_nucleon() == py);
+	CHECK(original_track.get_pz_per_nucleon() == pz);
+	CHECK(original_track.get_px() == px * (N + Z));
+	CHECK(original_track.get_py() == py * (N + Z));
+	CHECK(original_track.get_pz() == pz * (N + Z));
+	CHECK(original_track.get_E() >= mass);
+}
+
+TEST_CASE("check constructor from std::vector") {
+	auto px = dis(gen), py = dis(gen), pz = dis(gen);
+	std::vector<double> mom = {px, py, pz};
+	std::vector<double> spacetime = {0., 0., 0., 0.};
+	track original_track(N, Z, mass, mom, spacetime);
+
+	CHECK(original_track.get_N() == N);
+	CHECK(original_track.get_Z() == Z);
+	CHECK(original_track.get_mass() == mass);
+	CHECK(original_track.get_px_per_nucleon() == px);
+	CHECK(original_track.get_py_per_nucleon() == py);
+	CHECK(original_track.get_pz_per_nucleon() == pz);
+	CHECK(original_track.get_px() == px * (N + Z));
+	CHECK(original_track.get_py() == py * (N + Z));
+	CHECK(original_track.get_pz() == pz * (N + Z));
+	CHECK(original_track.get_E() >= mass);
+}
+
+TEST_CASE("check constructor from std::initializer_list") {
+	auto px = dis(gen), py = dis(gen), pz = dis(gen);
+	std::initializer_list<double> mom = {px, py, pz};
+	std::initializer_list<double> spacetime = {0., 0., 0., 0.};
+	track original_track(N, Z, mass, mom, spacetime);
+
+	CHECK(original_track.get_N() == N);
+	CHECK(original_track.get_Z() == Z);
+	CHECK(original_track.get_mass() == mass);
+	CHECK(original_track.get_px_per_nucleon() == px);
+	CHECK(original_track.get_py_per_nucleon() == py);
+	CHECK(original_track.get_pz_per_nucleon() == pz);
+	CHECK(original_track.get_px() == px * (N + Z));
+	CHECK(original_track.get_py() == py * (N + Z));
+	CHECK(original_track.get_pz() == pz * (N + Z));
+	CHECK(original_track.get_E() >= mass);
+}
+
+TEST_CASE("check = operator") {
+	track original_track(N, Z);
+	original_track.set_mass(mass);
+	auto px = dis(gen), py = dis(gen), pz = dis(gen);
+	original_track.set_px_per_nucleon(px);
+	original_track.set_py_per_nucleon(py);
+	original_track.set_pz_per_nucleon(pz);
+
+	auto x = dis(gen), y = dis(gen), z = dis(gen), t = std::abs(dis(gen));
+	original_track.set_x(x);
+	original_track.set_y(y);
+	original_track.set_z(z);
+	original_track.set_t(t);
+
+	// explicitly call initialize() to update px, py, pz, E
+	original_track.initalize();
+
+	track track_copy = original_track;
+	CHECK(track_copy.get_N() == N);
+	CHECK(track_copy.get_Z() == Z);
+
+	CHECK(track_copy.get_mass() == mass);
+	CHECK(track_copy.get_px_per_nucleon() == px);
+	CHECK(track_copy.get_py_per_nucleon() == py);
+	CHECK(track_copy.get_pz_per_nucleon() == pz);
+	CHECK(track_copy.get_px() == px * (N + Z));
+	CHECK(track_copy.get_py() == py * (N + Z));
+	CHECK(track_copy.get_pz() == pz * (N + Z));
+	CHECK(track_copy.get_E() >= mass);
+
+	CHECK(track_copy.get_x() == x);
+	CHECK(track_copy.get_y() == y);
+	CHECK(track_copy.get_z() == z);
+	CHECK(track_copy.get_t() == t);
+}

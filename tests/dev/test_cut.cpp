@@ -24,6 +24,7 @@ class mock_event_cut : public event_cut {
 public:
 	mock_event_cut() = default;
 	mock_event_cut(const mock_event_cut &) = default;
+	virtual ~mock_event_cut() = default;
 	virtual bool pass(const event *) override { return true; }
 };
 
@@ -31,6 +32,7 @@ class mock_track_cut : public track_cut {
 public:
 	mock_track_cut() = default;
 	mock_track_cut(const mock_track_cut &) = default;
+	virtual ~mock_track_cut() = default;
 	virtual bool pass(const track *) override { return true; }
 };
 
@@ -38,6 +40,7 @@ class mock_pair_cut : public pair_cut {
 public:
 	mock_pair_cut() = default;
 	mock_pair_cut(const mock_pair_cut &) = default;
+	virtual ~mock_pair_cut() = default;
 	virtual bool pass(const track *first, const track *second) override { return true; }
 };
 
