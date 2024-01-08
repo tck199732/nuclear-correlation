@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22...3.28)
-project(UserCorrelation VERSION 1.0 LANGUAGES CXX)
+project(HbtUserCode VERSION 1.0 LANGUAGES CXX)
 include(../cmake/tools.cmake)
 include(../cmake/CPM.cmake)
 
@@ -9,18 +9,18 @@ CPMAddPackage(NAME NuclearUtilities SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../util
 find_package(ROOT REQUIRED)
 
 set (
-    custom_sources
-    readers/custom_reader.cpp
-    cuts/custom_event_cut.cpp
-    cuts/custom_track_cut.cpp
-    cuts/custom_pair_cut.cpp
-    cuts/custom_event_monitor.cpp
-    cuts/custom_track_monitor.cpp
-    cuts/custom_pair_monitor.cpp
-    correlations/custom_correlation.cpp
+    CustomSources
+    Reader/CustomReader.cpp
+    Cuts/CustomEventCut.cpp
+    Cuts/CustomTrackCut.cpp
+    Cuts/CustomPairCut.cpp
+    Cuts/CustomEventMonitor.cpp
+    Cuts/CustomTrackMonitor.cpp
+    Cuts/CustomPairMonitor.cpp
+    Correlations/CustomCorrelation.cpp
 )
 
-add_library(${PROJECT_NAME} SHARED ${custom_sources})
+add_library(${PROJECT_NAME} SHARED ${CustomSources})
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
 

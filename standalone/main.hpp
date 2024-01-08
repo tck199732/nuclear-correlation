@@ -1,16 +1,16 @@
 // dev library
-#include "analysis.hpp"
-#include "manager.hpp"
+#include "HbtAnalysis.hpp"
+#include "HbtManager.hpp"
 
 // custom library
-#include "correlations/custom_correlation.hpp"
-#include "cuts/custom_event_cut.hpp"
-#include "cuts/custom_event_monitor.hpp"
-#include "cuts/custom_pair_cut.hpp"
-#include "cuts/custom_pair_monitor.hpp"
-#include "cuts/custom_track_cut.hpp"
-#include "cuts/custom_track_monitor.hpp"
-#include "readers/custom_reader.hpp"
+#include "Correlations/CustomCorrelation.hpp"
+#include "Cuts/CustomEventCut.hpp"
+#include "Cuts/CustomEventMonitor.hpp"
+#include "Cuts/CustomPairCut.hpp"
+#include "Cuts/CustomPairMonitor.hpp"
+#include "Cuts/CustomTrackCut.hpp"
+#include "Cuts/CustomTrackMonitor.hpp"
+#include "Reader/CustomReader.hpp"
 
 // external library
 #include "argparse/argparse.hpp"

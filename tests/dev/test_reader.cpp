@@ -1,22 +1,22 @@
-#include "event.hpp"
-#include "reader.hpp"
+#include "HbtEvent.hpp"
+#include "HbtReader.hpp"
 #include <doctest/doctest.h>
 #include <memory>
 
-class derived_reader : public reader {
+class derived_reader : public HbtReader {
 public:
 	derived_reader() {}
 	~derived_reader() {}
-	event *return_event() { return new event(); }
+	HbtEvent *ReturnHbtEvent() { return new HbtEvent(); }
 };
 
-TEST_CASE("reader default constructor") {
+TEST_CASE("HbtReader default constructor") {
 	auto rdr = std::make_unique<derived_reader>();
-	CHECK(rdr->get_status() == 0);
+	CHECK(rdr->GetStatus() == 0);
 }
 
-TEST_CASE("read event") {
+TEST_CASE("read HbtEvent") {
 	auto rdr = std::make_unique<derived_reader>();
-	auto evt = rdr->return_event();
+	auto evt = rdr->ReturnHbtEvent();
 	CHECK(evt != nullptr);
 }

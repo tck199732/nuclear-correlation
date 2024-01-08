@@ -14,12 +14,12 @@ CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
 set(dev_folder_name "dev")
 set ( 
     dev_sources 
-    base_cut.cpp
-    fevent.cpp
-    event.cpp
-    track.cpp
-    analysis.cpp
-    manager.cpp
+    HbtBaseCut.cpp
+    HbtTempEvent.cpp
+    HbtEvent.cpp
+    HbtTrack.cpp
+    HbtAnalysis.cpp
+    HbtManager.cpp
 )
 
 List(TRANSFORM dev_sources PREPEND ${CMAKE_CURRENT_LIST_DIR}/${dev_folder_name}/)

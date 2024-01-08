@@ -1,65 +1,65 @@
-#include "manager.hpp"
+#include "HbtManager.hpp"
 #include <doctest/doctest.h>
 
-class derived_reader : public reader {
+class derived_reader : public HbtReader {
 public:
 	derived_reader() {}
 	~derived_reader() {}
-	event *return_event() { return new event(); }
+	HbtEvent *ReturnHbtEvent() { return new HbtEvent(); }
 };
 
-class mock_analysis : public analysis {
+class mock_analysis : public HbtAnalysis {
 public:
-	mock_analysis() : analysis() {}
+	mock_analysis() : HbtAnalysis() {}
 	~mock_analysis() {}
-	void process(event *evt) {}
+	void Process(HbtEvent *evt) {}
 };
 
-TEST_CASE("check manager constructor") {
-	// create a manager object
-	manager mgr;
-	// check that the event reader and analysis collection are initialized
+TEST_CASE("check HbtManager constructor") {
+	// create a HbtManager object
+	HbtManager mgr;
+	// check that the HbtEvent HbtReader and HbtAnalysis HbtCollection are initialized
 	CHECK(mgr.get_reader() == nullptr);
 	CHECK(mgr.get_analyses() != nullptr);
 	CHECK(mgr.get_analyses()->size() == 0);
 }
 
-TEST_CASE("check set_reader method") {
-	// create a manager object
-	manager mgr;
-	// create a reader object
+TEST_CASE("check SetReader method") {
+	// create a HbtManager object
+	HbtManager mgr;
+	// create a HbtReader object
 	auto event_reader = new derived_reader();
-	// set the reader object in the manager
-	mgr.set_reader(event_reader);
-	// check that the reader object is set correctly
+	// set the HbtReader object in the HbtManager
+	mgr.SetReader(event_reader);
+	// check that the HbtReader object is set correctly
 	CHECK(mgr.get_reader() == event_reader);
 }
 
-TEST_CASE("check add_analysis method") {
-	// create a manager object
-	manager mgr;
-	// create an analysis object
-	auto anal = new analysis();
-	// add the analysis object to the manager
-	mgr.add_analysis(anal);
-	// check that the analysis object is added correctly
+TEST_CASE("check AddAnalysis method") {
+	// create a HbtManager object
+	HbtManager mgr;
+	// create an HbtAnalysis object
+	auto anal = new HbtAnalysis();
+	// add the HbtAnalysis object to the HbtManager
+	mgr.AddAnalysis(anal);
+	// check that the HbtAnalysis object is added correctly
 	CHECK(mgr.get_analyses()->size() == 1);
 	CHECK(mgr.get_analyses()->at(0) == anal);
 }
 
-TEST_CASE("check process method") {
-	// create a manager object
-	manager mgr;
-	// create a reader object
+TEST_CASE("check Process method") {
+	// create a HbtManager object
+	HbtManager mgr;
+	// create a HbtReader object
 	auto event_reader = new derived_reader();
-	// set the reader object in the manager
-	mgr.set_reader(event_reader);
-	// create an analysis object
+	// set the HbtReader object in the HbtManager
+	mgr.SetReader(event_reader);
+	// create an HbtAnalysis object
 	auto anal = new mock_analysis();
-	// add the analysis object to the manager
+	// add the HbtAnalysis object to the HbtManager
 	mgr.add_analysis(anal);
-	// call the process method
-	int result = mgr.process();
-	// check that the process method returns 0
+	// call the Process method
+	int result = mgr.Process();
+	// check that the Process method returns 0
 	CHECK(result == 0);
 }

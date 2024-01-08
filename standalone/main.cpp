@@ -1,82 +1,80 @@
 #include "main.hpp"
 
 void add_arguments(int argc, char **argv);
-argparse::ArgumentParser program("correlation-benchmark", "1.0");
+argparse::ArgumentParser program("HbtCorrelation-benchmark", "1.0");
 
 int main(int argc, char *argv[]) {
 
 	add_arguments(argc, argv);
 
-	auto MyManager = new manager();
-	auto MyAnalysis = new analysis();
+	auto manager = new HbtManager();
+	auto anal = new HbtAnalysis("sample analysis", 5);
 
 	// clang-format off
-	auto MyReader = new custom_reader(
+	auto reader = new CustomReader(
         program.get<std::string>("--tree_name"),
         program.get<std::vector<std::string>>("--input_files")
 	);
 	// clang-format on
 
-	// initialize cuts classes
-	auto EventCut = new custom_event_cut();
-	auto cutDeuteron = new custom_track_cut();
-	auto cutAlpha = new custom_track_cut();
-	auto RealPairCut = new custom_pair_cut();
-	auto MixedPairCut = new custom_pair_cut();
+	// initialize Cuts classes
+	auto EventCut = new CustomEventCut();
+	auto cutDeuteron = new CustomTrackCut();
+	auto cutAlpha = new CustomTrackCut();
+	auto RealPairCut = new CustomPairCut();
+	auto MixedPairCut = new CustomPairCut();
 
 	// initialize monitors classes
-	auto EventMonitor = new custom_event_monitor("EventMonitor");
-	auto monDeuteron = new custom_track_monitor("monDeuteron");
-	auto monAlpha = new custom_track_monitor("monAlpha");
-	auto RealPairMonitor = new custom_pair_monitor("RealPairMonitor");
-	auto RealPairFailMonitor = new custom_pair_monitor("RealPairFailMonitor");
-	auto MixedPairMonitor = new custom_pair_monitor("MixedPairMonitor");
-	auto MixedPairFailMonitor = new custom_pair_monitor("MixedPairFailMonitor");
+	auto eventMon = new CustomEventMonitor("eventMon");
+	auto DeuteronMon = new CustomTrackCutMonitor("DeuteronMon");
+	auto AlphaMon = new CustomTrackCutMonitor("AlphaMon");
+	auto RePairMon = new CustomPairMonitor("RePairMon");
+	auto RePairFailMon = new CustomPairMonitor("RePairFailMon");
+	auto MixPairMon = new CustomPairMonitor("MixPairMon");
+	auto MixPairFailMon = new CustomPairMonitor("MixPairFailMon");
 
-	// sampler for correlation as a funciton of relative momentum
-	auto MyCorrelation = new custom_correlation("MyCorrelation", 150, 0., 600.);
+	// sampler for HbtCorrelation as a funciton of relative momentum
+	auto corr = new CustomCorrelation("corr", 150, 0., 600.);
 
-	EventCut->set_impact_parameter_range(0, 10);
-	EventCut->set_multiplicity_range(1, 128);
-	EventCut->set_passed_monitor(EventMonitor);
+	EventCut->SetImpactParamRange(0, 10);
+	EventCut->SetMultiplicityRange(1, 128);
+	EventCut->SetPassMonitor(eventMon);
 
-	cutDeuteron->set_accepted_neutron(1);
-	cutDeuteron->set_accepted_proton(1);
-	cutDeuteron->set_transverse_velocity_gate(0, 1e5);
-	cutDeuteron->set_accepted_efficiency(0, 1e5);
-	cutDeuteron->set_passed_monitor(monDeuteron);
+	cutDeuteron->SetNeutron(1);
+	cutDeuteron->SetProton(1);
+	cutDeuteron->SetPtransRange(0, 1e5);
+	cutDeuteron->SetPassMonitor(DeuteronMon);
 
-	// if identical particle, the second cut should point to the first cut
-	cutAlpha->set_accepted_neutron(2);
-	cutAlpha->set_accepted_proton(2);
-	cutAlpha->set_transverse_velocity_gate(0, DBL_MAX);
-	cutAlpha->set_accepted_efficiency(0, DBL_MAX);
-	cutAlpha->set_passed_monitor(monAlpha);
+	// if identical particle, the track2 cut should point to the track1 cut
+	cutAlpha->SetNeutron(2);
+	cutAlpha->SetProton(2);
+	cutAlpha->SetPtransRange(0, DBL_MAX);
+	cutAlpha->SetPassMonitor(AlphaMon);
 
 	// set monitors for both passing pairs and failing pairs
-	RealPairCut->set_consider_detector_effect(true);
-	RealPairCut->set_passed_monitor(RealPairMonitor);
-	RealPairCut->set_failed_monitor(RealPairFailMonitor);
+	RealPairCut->SetConsiderDetEffect(true);
+	RealPairCut->SetPassMonitor(RePairMon);
+	RealPairCut->SetFailMonitor(RePairFailMon);
 
-	MixedPairCut->set_consider_detector_effect(true);
-	MixedPairCut->set_passed_monitor(MixedPairMonitor);
-	MixedPairCut->set_failed_monitor(MixedPairFailMonitor);
+	MixedPairCut->SetConsiderDetEffect(true);
+	MixedPairCut->SetPassMonitor(MixPairMon);
+	MixedPairCut->SetFailMonitor(MixPairFailMon);
 
-	MyAnalysis->set_event_cut(EventCut);
-	MyAnalysis->set_first_track_cut(cutDeuteron);
-	MyAnalysis->set_second_track_cut(cutAlpha);
-	MyAnalysis->set_real_pair_cut(RealPairCut);
-	MyAnalysis->set_mixed_pair_cut(MixedPairCut);
+	anal->SetEventCut(EventCut);
+	anal->SetFirstTrackCut(cutDeuteron);
+	anal->SetSecTrackCut(cutAlpha);
+	anal->SetRealPairCut(RealPairCut);
+	anal->SetMixedPairCut(MixedPairCut);
 
-	MyAnalysis->add_correlation(MyCorrelation);
-	// user can set to higher value to increase statistics in denominator
-	MyAnalysis->set_event_mixing_size(5);
+	anal->AddCorrelation(corr);
+	// user can set to higher value to increase statistics in mDenominator
+	anal->SetEventMixingSize(5);
 
-	MyManager->add_analysis(MyAnalysis);
-	MyManager->set_reader(MyReader);
+	manager->AddAnalysis(anal);
+	manager->SetReader(reader);
 
 	int reader_status = 0;
-	auto reader_entries = MyReader->get_entries();
+	auto reader_entries = reader->GetEntries();
 	auto max_nevents = program.get<int>("--nevents");
 	auto nevents = (reader_entries < max_nevents) ? reader_entries : max_nevents;
 	long nevents_processed = 0;
@@ -86,7 +84,7 @@ int main(int argc, char *argv[]) {
 	pbar.set_progress(progress);
 	auto start = std::chrono::high_resolution_clock::now();
 	while (nevents_processed < nevents && reader_status == 0) {
-		reader_status = MyManager->process();
+		reader_status = manager->Process();
 		nevents_processed++;
 		auto curr_progress = static_cast<double>(nevents_processed) / nevents;
 		if (curr_progress - progress > 0.) {
@@ -103,17 +101,17 @@ int main(int argc, char *argv[]) {
 	TFile *output = new TFile(program.get<std::string>("--output").c_str(), "RECREATE");
 	output->cd();
 
-	MyCorrelation->get_numerator()->Write();
-	MyCorrelation->get_denominator()->Write();
+	corr->GetNumerator()->Write();
+	corr->GetDenominator()->Write();
 
 	// save monitors
-	EventMonitor->write();
-	monDeuteron->write();
-	monAlpha->write();
-	RealPairMonitor->write();
-	RealPairFailMonitor->write();
-	MixedPairMonitor->write();
-	MixedPairFailMonitor->write();
+	eventMon->Write();
+	DeuteronMon->Write();
+	AlphaMon->Write();
+	RePairMon->Write();
+	RePairFailMon->Write();
+	MixPairMon->Write();
+	MixPairFailMon->Write();
 
 	output->Write();
 	output->Close();

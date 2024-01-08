@@ -5,7 +5,7 @@ include(../cmake/CPM.cmake)
 
 CPMAddPackage(NAME NuclearCorrelation SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 CPMAddPackage(NAME NuclearUtilities SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../util)
-CPMAddPackage(NAME UserCorrelation SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../custom)
+CPMAddPackage(NAME HbtUserCode SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../custom)
 CPMAddPackage(
     NAME argparse
     GITHUB_REPOSITORY p-ranav/argparse
@@ -33,7 +33,7 @@ foreach(source ${executable_sources})
         PUBLIC 
         NuclearCorrelation
         NuclearUtilities
-        UserCorrelation
+        HbtUserCode
         argparse
         indicators
         ${ROOT_LIBRARIES} 

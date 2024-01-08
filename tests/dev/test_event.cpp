@@ -1,4 +1,4 @@
-#include "event.hpp"
+#include "HbtEvent.hpp"
 #include <doctest/doctest.h>
 #include <memory>
 #include <random>
@@ -13,22 +13,22 @@ static std::mt19937 gen(rd());
 static std::uniform_int_distribution<unsigned int> dis_int(imin, imax);
 static std::uniform_real_distribution<double> dis_double(dmin, dmax);
 
-class mock_track : public track {
+class mock_track : public HbtTrack {
 public:
-	mock_track(const int &idx = 0) : track() { this->index = idx; }
-	mock_track(const mock_track &trk) : track(trk) { this->index = trk.index; }
+	mock_track(const int &idx = 0) : HbtTrack() { this->index = idx; }
+	mock_track(const mock_track &trk) : HbtTrack(trk) { this->index = trk.index; }
 	~mock_track() {}
 	int index;
 };
 
-TEST_CASE("event default constructor") {
-	auto evt = std::make_unique<event>();
-	CHECK(evt->get_multiplicity() == 0);
-	CHECK(evt->get_impact_parameter() == 0.0);
-	CHECK(evt->get_track_collection() != nullptr);
-	CHECK(evt->get_track_collection()->size() == 0);
+TEST_CASE("HbtEvent default constructor") {
+	auto evt = std::make_unique<HbtEvent>();
+	CHECK(evt->GetMultiplicity() == 0);
+	CHECK(evt->GetImpactParameter() == 0.0);
+	CHECK(evt->GetTrackCollection() != nullptr);
+	CHECK(evt->GetTrackCollection()->size() == 0);
 
-	auto coll = evt->get_track_collection();
+	auto coll = evt->GetTrackCollection();
 	auto ntracks = dis_int(gen);
 	for (unsigned int i = 0; i < ntracks; i++) {
 		coll->push_back(new mock_track(i));
@@ -36,36 +36,36 @@ TEST_CASE("event default constructor") {
 	CHECK(coll->size() == ntracks);
 }
 
-TEST_CASE("event set multiplicity") {
-	auto evt = std::make_unique<event>();
+TEST_CASE("HbtEvent set multiplicity") {
+	auto evt = std::make_unique<HbtEvent>();
 	auto mult = dis_int(gen);
-	evt->set_multiplicity(mult);
-	CHECK(evt->get_multiplicity() == mult);
+	evt->SetMultiplicity(mult);
+	CHECK(evt->GetMultiplicity() == mult);
 }
 
-TEST_CASE("event set impact parameter") {
-	auto evt = std::make_unique<event>();
+TEST_CASE("HbtEvent set impact parameter") {
+	auto evt = std::make_unique<HbtEvent>();
 	auto b = dis_double(gen);
-	evt->set_impact_parameter(b);
-	CHECK(evt->get_impact_parameter() == b);
+	evt->SetImpactParameter(b);
+	CHECK(evt->GetImpactParameter() == b);
 }
 
-TEST_CASE("event copy constructor") {
-	auto evt = std::make_unique<event>();
+TEST_CASE("HbtEvent copy constructor") {
+	auto evt = std::make_unique<HbtEvent>();
 	auto mult = dis_int(gen);
 	auto b = dis_double(gen);
-	evt->set_multiplicity(mult);
-	evt->set_impact_parameter(b);
+	evt->SetMultiplicity(mult);
+	evt->SetImpactParameter(b);
 
-	auto coll = evt->get_track_collection();
+	auto coll = evt->GetTrackCollection();
 	auto ntracks = dis_int(gen);
 	for (unsigned int i = 0; i < ntracks; i++) {
 		coll->push_back(new mock_track(i));
 	}
 
-	auto evt_copy = std::make_unique<event>(*evt);
-	CHECK(evt_copy->get_multiplicity() == mult);
-	CHECK(evt_copy->get_impact_parameter() == b);
-	CHECK(evt_copy->get_track_collection() != nullptr);
-	CHECK(evt_copy->get_track_collection()->size() == ntracks);
+	auto evt_copy = std::make_unique<HbtEvent>(*evt);
+	CHECK(evt_copy->GetMultiplicity() == mult);
+	CHECK(evt_copy->GetImpactParameter() == b);
+	CHECK(evt_copy->GetTrackCollection() != nullptr);
+	CHECK(evt_copy->GetTrackCollection()->size() == ntracks);
 }
