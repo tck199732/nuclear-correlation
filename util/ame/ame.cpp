@@ -7,7 +7,7 @@ void ame::read_ame_table() {
 	}
 
 	fs::path path = std::getenv("PROJECT_DIR");
-	path = path / ("assets/ame/ame-" + this->version + ".tbl");
+	path = path / ("database/ame/ame-" + this->version + ".tbl");
 	if (!fs::exists(path)) {
 		throw std::runtime_error("ame source file not found: " + path.string());
 	}

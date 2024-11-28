@@ -65,7 +65,7 @@ HbtEvent *CustomReader::ReadEvent() {
 		auto pz_ = mBranches.pz[j];
 
 		// use ame to determine the mass
-		double mass = ame::get_instance()->GetMass(N, Z).value_or(DBL_MAX);
+		double mass = ame::get_instance()->get_mass(N, Z).value_or(DBL_MAX);
 		auto trackClass = new HbtTrack(N, Z);
 		trackClass->SetMass(mass);
 		trackClass->SetPxPerNucleon(px_);

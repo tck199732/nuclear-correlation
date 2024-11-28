@@ -10,21 +10,21 @@ TEST_CASE("singleton-test") {
 
 TEST_CASE("get-mass-of-existing-element") {
 	// ni64 36 28 60480.01762332152
-	CHECK(ame::get_instance()->GetMass("ni64") == 60480.01762332152);
-	CHECK(ame::get_instance()->GetMass("Ni64") == 60480.01762332152);
-	CHECK(ame::get_instance()->GetMass("NI64") == 60480.01762332152);
-	CHECK(ame::get_instance()->GetMass("ni64") == 60480.01762332152);
+	CHECK(ame::get_instance()->get_mass("ni64") == 60480.01762332152);
+	CHECK(ame::get_instance()->get_mass("Ni64") == 60480.01762332152);
+	CHECK(ame::get_instance()->get_mass("NI64") == 60480.01762332152);
+	CHECK(ame::get_instance()->get_mass("ni64") == 60480.01762332152);
 }
 
 TEST_CASE("get-mass-of-non-existing-element") {
 	const double mN = 938.918;
 	// uranium is a valid element but it can't hold 999 nucleons
-	CHECK(ame::get_instance()->GetMass("u999") == std::nullopt);
+	CHECK(ame::get_instance()->get_mass("u999") == std::nullopt);
 	// u244 is not found in ame table, but A is less than the maximum allowed.
 	// thus handled as unphysical maas
-	CHECK(ame::get_instance()->GetMass("u244") == mN * 244);
+	CHECK(ame::get_instance()->get_mass("u244") == mN * 244);
 	// get unphysical u244 mass from N, Z
-	CHECK(ame::get_instance()->GetMass(152, 92) == mN * 244);
+	CHECK(ame::get_instance()->get_mass(152, 92) == mN * 244);
 }
 
 TEST_CASE("get-neutron-proton-numbers-of-existing-element") {
@@ -79,22 +79,22 @@ TEST_CASE("get-symbol-from-NZ") {
 TEST_CASE("get-maximum-A") { CHECK(ame::get_instance()->get_maximum_mass_number() == 295); }
 
 TEST_CASE("get-mass-from-alias") {
-	CHECK(ame::get_instance()->GetMass("n") == ame::get_instance()->GetMass("n1"));
-	CHECK(ame::get_instance()->GetMass("p") == ame::get_instance()->GetMass("h1"));
-	CHECK(ame::get_instance()->GetMass("d") == ame::get_instance()->GetMass("h2"));
-	CHECK(ame::get_instance()->GetMass("t") == ame::get_instance()->GetMass("h3"));
-	CHECK(ame::get_instance()->GetMass("3He") == ame::get_instance()->GetMass("he3"));
-	CHECK(ame::get_instance()->GetMass("4He") == ame::get_instance()->GetMass("he4"));
-	CHECK(ame::get_instance()->GetMass("alpha") == ame::get_instance()->GetMass("he4"));
-	CHECK(ame::get_instance()->GetMass("ALPHA") == std::nullopt);
+	CHECK(ame::get_instance()->get_mass("n") == ame::get_instance()->get_mass("n1"));
+	CHECK(ame::get_instance()->get_mass("p") == ame::get_instance()->get_mass("h1"));
+	CHECK(ame::get_instance()->get_mass("d") == ame::get_instance()->get_mass("h2"));
+	CHECK(ame::get_instance()->get_mass("t") == ame::get_instance()->get_mass("h3"));
+	CHECK(ame::get_instance()->get_mass("3He") == ame::get_instance()->get_mass("he3"));
+	CHECK(ame::get_instance()->get_mass("4He") == ame::get_instance()->get_mass("he4"));
+	CHECK(ame::get_instance()->get_mass("alpha") == ame::get_instance()->get_mass("he4"));
+	CHECK(ame::get_instance()->get_mass("ALPHA") == std::nullopt);
 }
 
 TEST_CASE("get-mass-from-NZ") {
-	CHECK(ame::get_instance()->GetMass(1, 0) == ame::get_instance()->GetMass("n1"));
-	CHECK(ame::get_instance()->GetMass(0, 1) == ame::get_instance()->GetMass("h1"));
-	CHECK(ame::get_instance()->GetMass(1, 1) == ame::get_instance()->GetMass("h2"));
-	CHECK(ame::get_instance()->GetMass(2, 1) == ame::get_instance()->GetMass("h3"));
-	CHECK(ame::get_instance()->GetMass(1, 2) == ame::get_instance()->GetMass("he3"));
-	CHECK(ame::get_instance()->GetMass(2, 2) == ame::get_instance()->GetMass("he4"));
-	CHECK(ame::get_instance()->GetMass(-1, -1) == std::nullopt);
+	CHECK(ame::get_instance()->get_mass(1, 0) == ame::get_instance()->get_mass("n1"));
+	CHECK(ame::get_instance()->get_mass(0, 1) == ame::get_instance()->get_mass("h1"));
+	CHECK(ame::get_instance()->get_mass(1, 1) == ame::get_instance()->get_mass("h2"));
+	CHECK(ame::get_instance()->get_mass(2, 1) == ame::get_instance()->get_mass("h3"));
+	CHECK(ame::get_instance()->get_mass(1, 2) == ame::get_instance()->get_mass("he3"));
+	CHECK(ame::get_instance()->get_mass(2, 2) == ame::get_instance()->get_mass("he4"));
+	CHECK(ame::get_instance()->get_mass(-1, -1) == std::nullopt);
 }

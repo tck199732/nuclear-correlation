@@ -19,9 +19,9 @@ TEST_CASE("check HbtManager constructor") {
 	// create a HbtManager object
 	HbtManager mgr;
 	// check that the HbtEvent HbtReader and HbtAnalysis HbtCollection are initialized
-	CHECK(mgr.get_reader() == nullptr);
-	CHECK(mgr.get_analyses() != nullptr);
-	CHECK(mgr.get_analyses()->size() == 0);
+	CHECK(mgr.GetReader() == nullptr);
+	CHECK(mgr.GetAnalysisCollection() != nullptr);
+	CHECK(mgr.GetAnalysisCollection()->size() == 0);
 }
 
 TEST_CASE("check SetReader method") {
@@ -32,7 +32,7 @@ TEST_CASE("check SetReader method") {
 	// set the HbtReader object in the HbtManager
 	mgr.SetReader(event_reader);
 	// check that the HbtReader object is set correctly
-	CHECK(mgr.get_reader() == event_reader);
+	CHECK(mgr.GetReader() == event_reader);
 }
 
 TEST_CASE("check AddAnalysis method") {
@@ -43,8 +43,8 @@ TEST_CASE("check AddAnalysis method") {
 	// add the HbtAnalysis object to the HbtManager
 	mgr.AddAnalysis(anal);
 	// check that the HbtAnalysis object is added correctly
-	CHECK(mgr.get_analyses()->size() == 1);
-	CHECK(mgr.get_analyses()->at(0) == anal);
+	CHECK(mgr.GetAnalysisCollection()->size() == 1);
+	CHECK(mgr.GetAnalysisCollection()->at(0) == anal);
 }
 
 TEST_CASE("check Process method") {
@@ -57,7 +57,7 @@ TEST_CASE("check Process method") {
 	// create an HbtAnalysis object
 	auto anal = new mock_analysis();
 	// add the HbtAnalysis object to the HbtManager
-	mgr.add_analysis(anal);
+	mgr.AddAnalysis(anal);
 	// call the Process method
 	int result = mgr.Process();
 	// check that the Process method returns 0

@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
 void add_arguments(int argc, char **argv) {
 
 	std::string PROJECT_DIR = std::getenv("PROJECT_DIR");
-	auto default_path = PROJECT_DIR + "/assets/samples/benchmark.root";
+	auto default_path = PROJECT_DIR + "/database/samples/benchmark.root";
 
 	program.add_argument("-i", "--input_files")
 		.help("a list of input files separated by space")

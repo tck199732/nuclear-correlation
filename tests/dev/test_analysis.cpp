@@ -7,7 +7,9 @@ public:
 	mock_correlation() : called_add_real_pair(false), called_add_mixed_pair(false) {}
 	mock_correlation(const mock_correlation &other) = default;
 	~mock_correlation() = default;
-	virtual void FillRealCorrelation(const HbtTrack *track1, const HbtTrack *track2) override { this->called_add_real_pair = true; }
+	virtual void FillRealCorrelation(const HbtTrack *track1, const HbtTrack *track2) override {
+		this->called_add_real_pair = true;
+	}
 	virtual void FillMixedCorrelation(const HbtTrack *track1, const HbtTrack *track2) override {
 		this->called_add_mixed_pair = true;
 	}
@@ -33,7 +35,7 @@ class mock_event_cut_ : public HbtEventCut {
 public:
 	mock_event_cut_() : HbtEventCut() { this->processed_events = 0; }
 	mock_event_cut_(const mock_event_cut_ &) = default;
-	virtual ~mock_event_cut_(){};
+	virtual ~mock_event_cut_() {};
 	virtual bool Pass(const HbtEvent *evt) override {
 		this->processed_events++;
 		return true;
@@ -142,7 +144,7 @@ TEST_CASE("check initialization") {
 	SUBCASE("check copy constructor") {
 		auto ana2 = new HbtAnalysis(*ana);
 		CHECK(ana2->GetEventMixingSize() == mixing_size);
-		CHECK(ana2->get_event_cut() == ecut);
+		CHECK(ana2->GetEventCut() == ecut);
 		CHECK(ana2->GetFirstTrackCut() == tcut1);
 		CHECK(ana2->GetRealPairCut() == pcut_real);
 		CHECK(ana2->GetMixedPairCut() == pcut_mixed);
