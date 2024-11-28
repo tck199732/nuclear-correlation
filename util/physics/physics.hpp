@@ -3,6 +3,7 @@
 
 #include <array>
 #include <cmath>
+#include <iostream>
 #include <stdexcept>
 
 namespace physics {
@@ -65,6 +66,7 @@ public:
 	double Mag() const;
 	double M() const;
 	double M2() const;
+	double Rapidity() const;
 
 	double beta_x() const { return -this->p1 / this->p0; }
 	double beta_y() const { return -this->p2 / this->p0; }
@@ -79,51 +81,58 @@ private:
 	double p0, p1, p2, p3;
 };
 
-bool operator==(const four_vector &first, const four_vector &second);
-bool operator!=(const four_vector &first, const four_vector &second);
-physics::four_vector relative_four_vector(const physics::four_vector &first, const physics::four_vector &second);
+bool operator==(const four_vector &track1, const four_vector &track2);
+bool operator!=(const four_vector &track1, const four_vector &track2);
+physics::four_vector relative_four_vector(const physics::four_vector &track1, const physics::four_vector &track2);
+
+physics::four_vector
+get_boosted_vector(const physics::four_vector &track, const double &beta_x, const double &beta_y, const double &beta_z);
 /**
  * @brief Return the x-component of the relative 3-vector given two four-vectors.
  */
-double get_qx(const four_vector &first, const four_vector &second);
+double get_qx(const four_vector &track1, const four_vector &track2);
 /**
  * @brief Return the y-component of the relative 3-vector given two four-vectors.
  */
-double get_qy(const four_vector &first, const four_vector &second);
+double get_qy(const four_vector &track1, const four_vector &track2);
 /**
  * @brief Return the z-component of the relative 3-vector given two four-vectors.
  */
-double get_qz(const four_vector &first, const four_vector &second);
+double get_qz(const four_vector &track1, const four_vector &track2);
 
-// first boost to the frame where the pair Pz = 0 (longitudinal pair rest frame)
+// track1 boost to the frame where the pair Pz = 0 (longitudinal pair rest frame)
 // then rotate the transverse plane with an angle \cos\theta = Px / Pt
 
 /**
  * @brief Return the out-component of the relative 3-vector given two four-vectors.
  * @details The vector is defined in the Bertsch-Pratt coordinate system. The 4-vector `q = p1 - p2`
- * is first boosted to LCMS frame where the pair `Pz = 0`, then rotated the transverse plane with an
+ * is track1 boosted to LCMS frame where the pair `Pz = 0`, then rotated the transverse plane with an
  * angle `\cos\theta = Px / Pt`.
  */
-double get_qout(const four_vector &first, const four_vector &second);
+double get_qout(const four_vector &track1, const four_vector &track2);
 /**
  * @brief Return the side-component of the relative 3-vector given two four-vectors.
  * @details See `get_qout` for details.
  */
-double get_qside(const four_vector &first, const four_vector &second);
+double get_qside(const four_vector &track1, const four_vector &track2);
 /**
  * @brief Return the long-component of the relative 3-vector given two four-vectors.
  * @details See `get_qout` for details.
  */
-double get_qlong(const four_vector &first, const four_vector &second);
+double get_qlong(const four_vector &track1, const four_vector &track2);
 
 /**
  * @brief Return the invariant mass of the pair given two four-vectors.
  */
-double get_minv(const four_vector &first, const four_vector &second);
+double get_minv(const four_vector &track1, const four_vector &track2);
 /**
  * @brief Return the invariant mass of the relative 4-vector.
  */
-double get_qinv(const four_vector &first, const four_vector &second);
+double get_qinv(const four_vector &track1, const four_vector &track2);
 
+/**
+ * @brief Return the relative angle between two four-vectors.
+ */
+double get_relative_angle(const four_vector &track1, const four_vector &track2, bool degree = false);
 }; // namespace physics
 #endif

@@ -1,4 +1,5 @@
 #include <Math/Boost.h>
+#include <Math/Vector3D.h>
 #include <Math/Vector4D.h>
 #include <doctest/doctest.h>
 #include <physics/physics.hpp>
@@ -167,4 +168,25 @@ TEST_CASE("check relative four vector") {
 	CHECK(vec3.Py() == doctest::Approx((vec1.Py() * vec2.M() - vec2.Py() * vec1.M()) / (vec1.M() + vec2.M())));
 	CHECK(vec3.Pz() == doctest::Approx((vec1.Pz() * vec2.M() - vec2.Pz() * vec1.M()) / (vec1.M() + vec2.M())));
 	CHECK(vec3.E() == doctest::Approx((vec1.E() * vec2.M() - vec2.E() * vec1.M()) / (vec1.M() + vec2.M())));
+}
+
+TEST_CASE("check relative angle calculation") {
+	physics::four_vector vec1(100, 200, 300, 4000);
+	physics::four_vector vec2(100, -200, -300, 4000);
+
+	ROOT::Math::XYZVector vec1_root(100, 200, 300);
+	ROOT::Math::XYZVector vec2_root(100, -200, -300);
+
+	auto theta = physics::get_relative_angle(vec1, vec2, false);
+	auto theta_deg = physics::get_relative_angle(vec1, vec2, true);
+	auto theta_root = std::acos(vec1_root.Unit().Dot(vec2_root.Unit()));
+
+	CHECK(theta == doctest::Approx(theta_root));
+	CHECK(theta_deg == doctest::Approx(theta_root * 180. / M_PI));
+}
+
+TEST_CASE("check rapidity calculation") {
+	physics::four_vector vec1(100, 200, 300, 4000);
+	ROOT::Math::PxPyPzEVector vec1_root(100, 200, 300, 4000);
+	CHECK(vec1.Rapidity() == doctest::Approx(vec1_root.Rapidity()));
 }
